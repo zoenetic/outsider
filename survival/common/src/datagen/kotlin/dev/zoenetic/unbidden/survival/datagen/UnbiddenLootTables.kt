@@ -1,6 +1,7 @@
 package dev.zoenetic.unbidden.survival.datagen
 
 import dev.zoenetic.unbidden.survival.datagen.loot.campfireLootTable
+import dev.zoenetic.unbidden.survival.datagen.loot.deadCampfireLootTable
 import dev.zoenetic.unbidden.survival.datagen.loot.firewoodLootTable
 import dev.zoenetic.unbidden.survival.datagen.loot.torchLootTable
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
@@ -21,6 +22,11 @@ class UnbiddenLootTables : LootTableSubProvider {
         output.accept(
             UnbiddenBlocks.CAMPFIRE.lootTable.orElseThrow(),
             campfireLootTable()
+        )
+
+        output.accept(
+            UnbiddenBlocks.DEAD_CAMPFIRE.lootTable.orElseThrow(),
+            deadCampfireLootTable()
         )
 
         output.accept(

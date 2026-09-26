@@ -10,6 +10,7 @@ import dev.zoenetic.unbidden.survival.fuel.Burnout
 import dev.zoenetic.unbidden.survival.fuel.Fuel
 import dev.zoenetic.unbidden.survival.fuel.FuelledBlock
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlockStateProperties
+import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
 import dev.zoenetic.unbidden.survival.units.Duration
 import dev.zoenetic.unbidden.survival.units.Heat
 import dev.zoenetic.unbidden.survival.units.Light
@@ -78,7 +79,10 @@ public open class UnbiddenCampfireBlock(
     override fun getBurnout(existingBurnout: Time?, now: Time, fuel: Fuel): Burnout =
         Burnout.forFuel(existingBurnout, now, fuel, fuelCapacity, burnRate)
 
-    override fun exhausted(state: BlockState): BlockState = state.setValue(LIT, false)
+    override fun exhausted(state: BlockState): BlockState =
+        UnbiddenBlocks.DEAD_CAMPFIRE.defaultBlockState()
+            .setValue(WATERLOGGED, state.getValue(WATERLOGGED))
+            .setValue(FACING, state.getValue(FACING))
 
     override fun useItemOn(
         itemStack: ItemStack,

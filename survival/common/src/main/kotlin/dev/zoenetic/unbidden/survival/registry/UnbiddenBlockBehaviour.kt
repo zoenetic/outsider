@@ -16,6 +16,9 @@ public object UnbiddenBlockBehaviour {
                 .ignitedByLava()
                 .noOcclusion()
 
+        public fun deadCampfire(): BlockBehaviour.Properties =
+            campfire().sound(SoundType.TUFF)
+
         public fun firewood(): BlockBehaviour.Properties = BlockBehaviour.Properties
             .of()
             .strength(2F)

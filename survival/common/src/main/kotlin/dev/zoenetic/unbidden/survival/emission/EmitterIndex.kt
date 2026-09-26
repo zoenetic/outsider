@@ -200,7 +200,15 @@ public object EmitterIndex {
     private fun dropDeadline(state: BlockState, burnout: Burnout?, now: Time): Time? {
         if (burnout == null || burnout == Burnout.NEVER) return null
         val fuelled = state.block.fuelledOrNull() ?: return null
+        val stateIsBehind = burnout.fuelAt(now, fuelled.fuelCapacity, fuelled.burnRate) < fuelled.getFuel(state)
+        if (stateIsBehind) return now
         return burnout.nextDropAt(now, fuelled.fuelCapacity, fuelled.burnRate)
+    }
+
+    private fun reconciledBurnout(state: BlockState, stored: Time?, now: Time): Burnout? {
+        val derived = burnoutFor(state, stored, now) ?: return null
+        if (derived == Burnout.NEVER || stored == null) return derived
+        return Burnout(stored)
     }
 
     public fun encode(map: Long2LongOpenHashMap): LongStream {
@@ -309,7 +317,7 @@ public object EmitterIndex {
                         val blockPos = BlockPos(originX + localX, originY + localY, originZ + localZ)
                         val state = section.getBlockState(localX, localY, localZ)
                         val key = blockPos.asLong()
-                        val burnout = burnoutFor(state, index.burnoutAt(key), now)
+                        val burnout = reconciledBurnout(state, index.burnoutAt(key), now)
                         val write = index.write(key, burnout)
                         didUpdate = didUpdate || write
                         val deadline = dropDeadline(state, burnout, now)
