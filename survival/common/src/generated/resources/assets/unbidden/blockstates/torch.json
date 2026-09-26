@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "lit=false": {
+      "model": "unbidden:block/torch_unlit"
+    },
+    "lit=true": {
       "model": "unbidden:block/torch"
     }
   }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "unbidden:item/campfire"
+    "model": "unbidden:block/campfire_fuel_15"
   }
 }

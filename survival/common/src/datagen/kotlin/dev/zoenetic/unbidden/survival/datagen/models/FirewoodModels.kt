@@ -9,7 +9,6 @@ import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
 import dev.zoenetic.unbidden.survival.registry.UnbiddenItems
 import net.minecraft.client.data.models.BlockModelGenerators
 import net.minecraft.client.data.models.ItemModelOutput
-import net.minecraft.client.data.models.MultiVariant
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
@@ -18,7 +17,6 @@ import net.minecraft.client.renderer.block.dispatch.Variant
 import net.minecraft.client.resources.model.sprite.Material
 import net.minecraft.core.Direction.Axis
 import net.minecraft.resources.Identifier
-import net.minecraft.util.random.WeightedList
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
@@ -27,7 +25,7 @@ fun createFirewood(
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,
-    billetSlot: TextureSlot,
+    billetSlot: TextureSlot
 ) {
     val billet = Material(Identifier.withDefaultNamespace("block/campfire_log"))
     val textures = TextureMapping()
@@ -53,7 +51,7 @@ fun createFirewood(
         MultiVariantGenerator.dispatch(UnbiddenBlocks.FIREWOOD)
             .with(
                 PropertyDispatch.initial(BILLETS).generate { billets ->
-                    MultiVariant(WeightedList.of(Variant(models.getValue(billets))))
+                    variants(Variant(models.getValue(billets)))
                 }
             )
             .with(

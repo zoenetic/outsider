@@ -2,7 +2,7 @@ package dev.zoenetic.unbidden.survival.fuel
 
 public data class Fuel(public val level: Int) {
     init {
-        require(level in 0..15) { "fuel level out of range: $level" }
+        require(level in 0..31) { "fuel level out of range: $level" }
     }
 
     public operator fun plus(other: Fuel): Fuel =

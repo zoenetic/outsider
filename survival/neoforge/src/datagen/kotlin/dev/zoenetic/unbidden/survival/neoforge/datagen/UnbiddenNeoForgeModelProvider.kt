@@ -1,5 +1,6 @@
 package dev.zoenetic.unbidden.survival.neoforge.datagen
 
+import dev.zoenetic.unbidden.survival.datagen.models.createCampfire
 import dev.zoenetic.unbidden.survival.datagen.models.createFirewood
 import dev.zoenetic.unbidden.survival.datagen.models.createTorch
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
@@ -32,15 +33,23 @@ class UnbiddenNeoForgeModelProvider(output: PackOutput, modId: String) :
         )
 
     override fun registerModels(blocks: BlockModelGenerators, items: ItemModelGenerators) {
+
+        createCampfire(
+            blocks.blockStateOutput,
+            blocks.modelOutput,
+            items.itemModelOutput,
+            TextureSlot.create("top"),
+            TextureSlot.create("bottom")
+        )
+
         createFirewood(
             blocks.blockStateOutput,
             blocks.modelOutput,
             items.itemModelOutput,
             TextureSlot.create("billet")
         )
+
         createTorch(
-            UnbiddenBlocks.TORCH,
-            UnbiddenBlocks.WALL_TORCH,
             blocks.blockStateOutput,
             items.modelOutput,
             items.itemModelOutput

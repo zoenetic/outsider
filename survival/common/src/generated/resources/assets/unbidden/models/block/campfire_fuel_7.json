@@ -1,0 +1,7 @@
+{
+  "parent": "unbidden:block/campfire_fuel_7",
+  "textures": {
+    "bottom": "unbidden:block/campfire_fuel_9",
+    "top": "unbidden:block/campfire_fuel_9"
+  }
+}

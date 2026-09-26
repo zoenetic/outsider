@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_torch_wall",
+  "textures": {
+    "particle": "minecraft:block/oak_log",
+    "torch": "minecraft:block/torch"
+  }
+}
