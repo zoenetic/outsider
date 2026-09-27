@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.unbidden.survival.emission.EmittingBlock
 import dev.zoenetic.unbidden.survival.emission.LightTable
-import dev.zoenetic.unbidden.survival.fire.CampfireInteractions
 import dev.zoenetic.unbidden.survival.fuel.Burnout
 import dev.zoenetic.unbidden.survival.fuel.Fuel
 import dev.zoenetic.unbidden.survival.fuel.FuelledBlock
@@ -24,6 +23,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.CampfireBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.IntegerProperty
+import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.BlockHitResult
 
 public open class UnbiddenCampfireBlock(
@@ -50,17 +51,20 @@ public open class UnbiddenCampfireBlock(
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun codec(): MapCodec<CampfireBlock> = CODEC as MapCodec<CampfireBlock>
+
     override val fuelCapacity: Fuel
         get() = Fuel.MAX
 
     override val maxHeat: Heat
-        get() = Heat.ZERO // TODO: Placeholder
+        get() = Heat(20.0)
 
     override val maxLight: Light get() = Light(lightTable[fuelCapacity.level])
 
-    override val burnRate: Duration get() = Duration(200L)
+    override val burnRate: Duration get() = Duration(800L)
 
-    override val lightTable: LightTable = LightTable.IDENTITY
+    override val lightTable: LightTable get() = LightTable.IDENTITY
 
     override fun getHeat(state: BlockState): Heat = if (state.getValue(LIT)) maxHeat else Heat.ZERO
 
@@ -92,12 +96,7 @@ public open class UnbiddenCampfireBlock(
         player: Player,
         hand: InteractionHand,
         hitResult: BlockHitResult
-    ): InteractionResult {
-        if (CampfireInteractions.maybeRefuel(state, itemStack, level, pos, player)) {
-            return InteractionResult.SUCCESS
-        }
-        return super.useItemOn(itemStack, state, level, pos, player, hand, hitResult)
-    }
+    ): InteractionResult = CampfireInteractions.maybeRefuel(state, itemStack, level, pos, player)
 
     override fun useWithoutItem(
         state: BlockState,
@@ -105,16 +104,27 @@ public open class UnbiddenCampfireBlock(
         pos: BlockPos,
         player: Player,
         hitResult: BlockHitResult
-    ): InteractionResult {
-        return CampfireInteractions.maybeLight(state, level, pos, player)
-    }
+    ): InteractionResult = CampfireInteractions.maybeLight(state, level, pos, player)
 
-    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? =
-        this.defaultBlockState().setValue(LIT, false)
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
+        val level = context.level
+        val pos = context.clickedPos
+        val replacedWater = level.getFluidState(pos).`is`(Fluids.WATER)
+        return defaultBlockState()
+            .setValue(WATERLOGGED, replacedWater)
+            .setValue(
+                SIGNAL_FIRE,
+                isSmokeSource(level.getBlockState(pos.below()))
+            )
+            .setValue(LIT, false)
+            .setValue(FACING, context.horizontalDirection)
+    }
 
     public override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(LIT, SIGNAL_FIRE, WATERLOGGED, FACING, FUEL_LEVEL)
     }
+
+    private fun isSmokeSource(blockState: BlockState): Boolean = blockState.`is`(Blocks.HAY_BLOCK)
 
     public companion object {
         public val CODEC: MapCodec<UnbiddenCampfireBlock> =

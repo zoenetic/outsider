@@ -1,0 +1,7 @@
+{
+  "parent": "unbidden:block/template_campfire_unlit_top_sunk",
+  "textures": {
+    "bottom": "unbidden:block/campfire_fuel_4",
+    "top": "unbidden:block/campfire_fuel_0"
+  }
+}

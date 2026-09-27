@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Blocks
 
 internal val VANILLA_EMITTERS: Map<Block, EmittingBlock> by lazy {
     mapOf(
-        Blocks.CAMPFIRE to EmittingBlock.simple(Heat(20.0), Light(15)),
         Blocks.FURNACE to EmittingBlock.simple(Heat(20.0), Light(15)),
         Blocks.LAVA to EmittingBlock.simple(Heat(20.0), Light(15))
     )

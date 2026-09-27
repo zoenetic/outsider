@@ -14,6 +14,15 @@
     ],
     "subtitle": "subtitles.unbidden.fire_failure"
   },
+  "flint_and_steel_fail": {
+    "sounds": [
+      {
+        "name": "minecraft:block.candle.extinguish",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.unbidden.flint_and_steel_fail"
+  },
   "fire_success": {
     "sounds": [
       {
@@ -28,5 +37,14 @@
       "unbidden:heartbeat"
     ],
     "subtitle": "subtitles.unbidden.heartbeat"
+  },
+  "refuel_fire": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.blaze.burn",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.unbidden.refuel_fire"
   }
 }

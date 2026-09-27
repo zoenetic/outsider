@@ -1,243 +1,483 @@
 {
   "variants": {
-    "facing=east,fuel_level=0": {
-      "model": "unbidden:block/campfire_fuel_0",
+    "facing=east,fuel_level=0,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_0",
       "y": 270
     },
-    "facing=east,fuel_level=1": {
-      "model": "unbidden:block/campfire_fuel_1",
+    "facing=east,fuel_level=0,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_0",
       "y": 270
     },
-    "facing=east,fuel_level=10": {
-      "model": "unbidden:block/campfire_fuel_10",
+    "facing=east,fuel_level=1,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_1",
       "y": 270
     },
-    "facing=east,fuel_level=11": {
-      "model": "unbidden:block/campfire_fuel_11",
+    "facing=east,fuel_level=1,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_1",
       "y": 270
     },
-    "facing=east,fuel_level=12": {
-      "model": "unbidden:block/campfire_fuel_12",
+    "facing=east,fuel_level=10,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_10",
       "y": 270
     },
-    "facing=east,fuel_level=13": {
-      "model": "unbidden:block/campfire_fuel_13",
+    "facing=east,fuel_level=10,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_10",
       "y": 270
     },
-    "facing=east,fuel_level=14": {
-      "model": "unbidden:block/campfire_fuel_14",
+    "facing=east,fuel_level=11,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_11",
       "y": 270
     },
-    "facing=east,fuel_level=15": {
-      "model": "unbidden:block/campfire_fuel_15",
+    "facing=east,fuel_level=11,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_11",
       "y": 270
     },
-    "facing=east,fuel_level=2": {
-      "model": "unbidden:block/campfire_fuel_2",
+    "facing=east,fuel_level=12,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_12",
       "y": 270
     },
-    "facing=east,fuel_level=3": {
-      "model": "unbidden:block/campfire_fuel_3",
+    "facing=east,fuel_level=12,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_12",
       "y": 270
     },
-    "facing=east,fuel_level=4": {
-      "model": "unbidden:block/campfire_fuel_4",
+    "facing=east,fuel_level=13,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_13",
       "y": 270
     },
-    "facing=east,fuel_level=5": {
-      "model": "unbidden:block/campfire_fuel_5",
+    "facing=east,fuel_level=13,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_13",
       "y": 270
     },
-    "facing=east,fuel_level=6": {
-      "model": "unbidden:block/campfire_fuel_6",
+    "facing=east,fuel_level=14,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_14",
       "y": 270
     },
-    "facing=east,fuel_level=7": {
-      "model": "unbidden:block/campfire_fuel_7",
+    "facing=east,fuel_level=14,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_14",
       "y": 270
     },
-    "facing=east,fuel_level=8": {
-      "model": "unbidden:block/campfire_fuel_8",
+    "facing=east,fuel_level=15,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_15",
       "y": 270
     },
-    "facing=east,fuel_level=9": {
-      "model": "unbidden:block/campfire_fuel_9",
+    "facing=east,fuel_level=15,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_15",
       "y": 270
     },
-    "facing=north,fuel_level=0": {
-      "model": "unbidden:block/campfire_fuel_0",
+    "facing=east,fuel_level=2,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_2",
+      "y": 270
+    },
+    "facing=east,fuel_level=2,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_2",
+      "y": 270
+    },
+    "facing=east,fuel_level=3,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_3",
+      "y": 270
+    },
+    "facing=east,fuel_level=3,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_3",
+      "y": 270
+    },
+    "facing=east,fuel_level=4,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_4",
+      "y": 270
+    },
+    "facing=east,fuel_level=4,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_4",
+      "y": 270
+    },
+    "facing=east,fuel_level=5,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_5",
+      "y": 270
+    },
+    "facing=east,fuel_level=5,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_5",
+      "y": 270
+    },
+    "facing=east,fuel_level=6,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_6",
+      "y": 270
+    },
+    "facing=east,fuel_level=6,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_6",
+      "y": 270
+    },
+    "facing=east,fuel_level=7,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_7",
+      "y": 270
+    },
+    "facing=east,fuel_level=7,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_7",
+      "y": 270
+    },
+    "facing=east,fuel_level=8,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_8",
+      "y": 270
+    },
+    "facing=east,fuel_level=8,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_8",
+      "y": 270
+    },
+    "facing=east,fuel_level=9,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_9",
+      "y": 270
+    },
+    "facing=east,fuel_level=9,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_9",
+      "y": 270
+    },
+    "facing=north,fuel_level=0,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_0",
       "y": 180
     },
-    "facing=north,fuel_level=1": {
-      "model": "unbidden:block/campfire_fuel_1",
+    "facing=north,fuel_level=0,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_0",
       "y": 180
     },
-    "facing=north,fuel_level=10": {
-      "model": "unbidden:block/campfire_fuel_10",
+    "facing=north,fuel_level=1,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_1",
       "y": 180
     },
-    "facing=north,fuel_level=11": {
-      "model": "unbidden:block/campfire_fuel_11",
+    "facing=north,fuel_level=1,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_1",
       "y": 180
     },
-    "facing=north,fuel_level=12": {
-      "model": "unbidden:block/campfire_fuel_12",
+    "facing=north,fuel_level=10,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_10",
       "y": 180
     },
-    "facing=north,fuel_level=13": {
-      "model": "unbidden:block/campfire_fuel_13",
+    "facing=north,fuel_level=10,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_10",
       "y": 180
     },
-    "facing=north,fuel_level=14": {
-      "model": "unbidden:block/campfire_fuel_14",
+    "facing=north,fuel_level=11,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_11",
       "y": 180
     },
-    "facing=north,fuel_level=15": {
-      "model": "unbidden:block/campfire_fuel_15",
+    "facing=north,fuel_level=11,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_11",
       "y": 180
     },
-    "facing=north,fuel_level=2": {
-      "model": "unbidden:block/campfire_fuel_2",
+    "facing=north,fuel_level=12,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_12",
       "y": 180
     },
-    "facing=north,fuel_level=3": {
-      "model": "unbidden:block/campfire_fuel_3",
+    "facing=north,fuel_level=12,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_12",
       "y": 180
     },
-    "facing=north,fuel_level=4": {
-      "model": "unbidden:block/campfire_fuel_4",
+    "facing=north,fuel_level=13,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_13",
       "y": 180
     },
-    "facing=north,fuel_level=5": {
-      "model": "unbidden:block/campfire_fuel_5",
+    "facing=north,fuel_level=13,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_13",
       "y": 180
     },
-    "facing=north,fuel_level=6": {
-      "model": "unbidden:block/campfire_fuel_6",
+    "facing=north,fuel_level=14,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_14",
       "y": 180
     },
-    "facing=north,fuel_level=7": {
-      "model": "unbidden:block/campfire_fuel_7",
+    "facing=north,fuel_level=14,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_14",
       "y": 180
     },
-    "facing=north,fuel_level=8": {
-      "model": "unbidden:block/campfire_fuel_8",
+    "facing=north,fuel_level=15,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_15",
       "y": 180
     },
-    "facing=north,fuel_level=9": {
-      "model": "unbidden:block/campfire_fuel_9",
+    "facing=north,fuel_level=15,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_15",
       "y": 180
     },
-    "facing=south,fuel_level=0": {
-      "model": "unbidden:block/campfire_fuel_0"
+    "facing=north,fuel_level=2,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_2",
+      "y": 180
     },
-    "facing=south,fuel_level=1": {
-      "model": "unbidden:block/campfire_fuel_1"
+    "facing=north,fuel_level=2,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_2",
+      "y": 180
     },
-    "facing=south,fuel_level=10": {
-      "model": "unbidden:block/campfire_fuel_10"
+    "facing=north,fuel_level=3,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_3",
+      "y": 180
     },
-    "facing=south,fuel_level=11": {
-      "model": "unbidden:block/campfire_fuel_11"
+    "facing=north,fuel_level=3,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_3",
+      "y": 180
     },
-    "facing=south,fuel_level=12": {
-      "model": "unbidden:block/campfire_fuel_12"
+    "facing=north,fuel_level=4,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_4",
+      "y": 180
     },
-    "facing=south,fuel_level=13": {
-      "model": "unbidden:block/campfire_fuel_13"
+    "facing=north,fuel_level=4,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_4",
+      "y": 180
     },
-    "facing=south,fuel_level=14": {
-      "model": "unbidden:block/campfire_fuel_14"
+    "facing=north,fuel_level=5,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_5",
+      "y": 180
     },
-    "facing=south,fuel_level=15": {
-      "model": "unbidden:block/campfire_fuel_15"
+    "facing=north,fuel_level=5,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_5",
+      "y": 180
     },
-    "facing=south,fuel_level=2": {
-      "model": "unbidden:block/campfire_fuel_2"
+    "facing=north,fuel_level=6,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_6",
+      "y": 180
     },
-    "facing=south,fuel_level=3": {
-      "model": "unbidden:block/campfire_fuel_3"
+    "facing=north,fuel_level=6,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_6",
+      "y": 180
     },
-    "facing=south,fuel_level=4": {
-      "model": "unbidden:block/campfire_fuel_4"
+    "facing=north,fuel_level=7,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_7",
+      "y": 180
     },
-    "facing=south,fuel_level=5": {
-      "model": "unbidden:block/campfire_fuel_5"
+    "facing=north,fuel_level=7,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_7",
+      "y": 180
     },
-    "facing=south,fuel_level=6": {
-      "model": "unbidden:block/campfire_fuel_6"
+    "facing=north,fuel_level=8,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_8",
+      "y": 180
     },
-    "facing=south,fuel_level=7": {
-      "model": "unbidden:block/campfire_fuel_7"
+    "facing=north,fuel_level=8,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_8",
+      "y": 180
     },
-    "facing=south,fuel_level=8": {
-      "model": "unbidden:block/campfire_fuel_8"
+    "facing=north,fuel_level=9,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_9",
+      "y": 180
     },
-    "facing=south,fuel_level=9": {
-      "model": "unbidden:block/campfire_fuel_9"
+    "facing=north,fuel_level=9,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_9",
+      "y": 180
     },
-    "facing=west,fuel_level=0": {
-      "model": "unbidden:block/campfire_fuel_0",
+    "facing=south,fuel_level=0,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_0"
+    },
+    "facing=south,fuel_level=0,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_0"
+    },
+    "facing=south,fuel_level=1,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_1"
+    },
+    "facing=south,fuel_level=1,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_1"
+    },
+    "facing=south,fuel_level=10,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_10"
+    },
+    "facing=south,fuel_level=10,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_10"
+    },
+    "facing=south,fuel_level=11,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_11"
+    },
+    "facing=south,fuel_level=11,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_11"
+    },
+    "facing=south,fuel_level=12,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_12"
+    },
+    "facing=south,fuel_level=12,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_12"
+    },
+    "facing=south,fuel_level=13,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_13"
+    },
+    "facing=south,fuel_level=13,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_13"
+    },
+    "facing=south,fuel_level=14,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_14"
+    },
+    "facing=south,fuel_level=14,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_14"
+    },
+    "facing=south,fuel_level=15,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_15"
+    },
+    "facing=south,fuel_level=15,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_15"
+    },
+    "facing=south,fuel_level=2,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_2"
+    },
+    "facing=south,fuel_level=2,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_2"
+    },
+    "facing=south,fuel_level=3,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_3"
+    },
+    "facing=south,fuel_level=3,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_3"
+    },
+    "facing=south,fuel_level=4,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_4"
+    },
+    "facing=south,fuel_level=4,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_4"
+    },
+    "facing=south,fuel_level=5,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_5"
+    },
+    "facing=south,fuel_level=5,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_5"
+    },
+    "facing=south,fuel_level=6,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_6"
+    },
+    "facing=south,fuel_level=6,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_6"
+    },
+    "facing=south,fuel_level=7,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_7"
+    },
+    "facing=south,fuel_level=7,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_7"
+    },
+    "facing=south,fuel_level=8,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_8"
+    },
+    "facing=south,fuel_level=8,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_8"
+    },
+    "facing=south,fuel_level=9,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_9"
+    },
+    "facing=south,fuel_level=9,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_9"
+    },
+    "facing=west,fuel_level=0,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_0",
       "y": 90
     },
-    "facing=west,fuel_level=1": {
-      "model": "unbidden:block/campfire_fuel_1",
+    "facing=west,fuel_level=0,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_0",
       "y": 90
     },
-    "facing=west,fuel_level=10": {
-      "model": "unbidden:block/campfire_fuel_10",
+    "facing=west,fuel_level=1,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_1",
       "y": 90
     },
-    "facing=west,fuel_level=11": {
-      "model": "unbidden:block/campfire_fuel_11",
+    "facing=west,fuel_level=1,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_1",
       "y": 90
     },
-    "facing=west,fuel_level=12": {
-      "model": "unbidden:block/campfire_fuel_12",
+    "facing=west,fuel_level=10,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_10",
       "y": 90
     },
-    "facing=west,fuel_level=13": {
-      "model": "unbidden:block/campfire_fuel_13",
+    "facing=west,fuel_level=10,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_10",
       "y": 90
     },
-    "facing=west,fuel_level=14": {
-      "model": "unbidden:block/campfire_fuel_14",
+    "facing=west,fuel_level=11,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_11",
       "y": 90
     },
-    "facing=west,fuel_level=15": {
-      "model": "unbidden:block/campfire_fuel_15",
+    "facing=west,fuel_level=11,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_11",
       "y": 90
     },
-    "facing=west,fuel_level=2": {
-      "model": "unbidden:block/campfire_fuel_2",
+    "facing=west,fuel_level=12,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_12",
       "y": 90
     },
-    "facing=west,fuel_level=3": {
-      "model": "unbidden:block/campfire_fuel_3",
+    "facing=west,fuel_level=12,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_12",
       "y": 90
     },
-    "facing=west,fuel_level=4": {
-      "model": "unbidden:block/campfire_fuel_4",
+    "facing=west,fuel_level=13,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_13",
       "y": 90
     },
-    "facing=west,fuel_level=5": {
-      "model": "unbidden:block/campfire_fuel_5",
+    "facing=west,fuel_level=13,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_13",
       "y": 90
     },
-    "facing=west,fuel_level=6": {
-      "model": "unbidden:block/campfire_fuel_6",
+    "facing=west,fuel_level=14,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_14",
       "y": 90
     },
-    "facing=west,fuel_level=7": {
-      "model": "unbidden:block/campfire_fuel_7",
+    "facing=west,fuel_level=14,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_14",
       "y": 90
     },
-    "facing=west,fuel_level=8": {
-      "model": "unbidden:block/campfire_fuel_8",
+    "facing=west,fuel_level=15,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_15",
       "y": 90
     },
-    "facing=west,fuel_level=9": {
-      "model": "unbidden:block/campfire_fuel_9",
+    "facing=west,fuel_level=15,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_15",
+      "y": 90
+    },
+    "facing=west,fuel_level=2,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_2",
+      "y": 90
+    },
+    "facing=west,fuel_level=2,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_2",
+      "y": 90
+    },
+    "facing=west,fuel_level=3,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_3",
+      "y": 90
+    },
+    "facing=west,fuel_level=3,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_3",
+      "y": 90
+    },
+    "facing=west,fuel_level=4,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_4",
+      "y": 90
+    },
+    "facing=west,fuel_level=4,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_4",
+      "y": 90
+    },
+    "facing=west,fuel_level=5,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_5",
+      "y": 90
+    },
+    "facing=west,fuel_level=5,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_5",
+      "y": 90
+    },
+    "facing=west,fuel_level=6,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_6",
+      "y": 90
+    },
+    "facing=west,fuel_level=6,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_6",
+      "y": 90
+    },
+    "facing=west,fuel_level=7,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_7",
+      "y": 90
+    },
+    "facing=west,fuel_level=7,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_7",
+      "y": 90
+    },
+    "facing=west,fuel_level=8,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_8",
+      "y": 90
+    },
+    "facing=west,fuel_level=8,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_8",
+      "y": 90
+    },
+    "facing=west,fuel_level=9,lit=false": {
+      "model": "unbidden:block/campfire_unlit_fuel_9",
+      "y": 90
+    },
+    "facing=west,fuel_level=9,lit=true": {
+      "model": "unbidden:block/campfire_lit_fuel_9",
       "y": 90
     }
   }

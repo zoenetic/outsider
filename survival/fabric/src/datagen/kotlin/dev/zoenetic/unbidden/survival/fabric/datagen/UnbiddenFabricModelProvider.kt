@@ -20,6 +20,8 @@ class UnbiddenFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             blocks.itemModelOutput,
             TextureSlot.create("top"),
             TextureSlot.create("bottom"),
+            TextureSlot.create("ember_top"),
+            TextureSlot.create("ember_bottom"),
         )
 
         deadCampfireModel(

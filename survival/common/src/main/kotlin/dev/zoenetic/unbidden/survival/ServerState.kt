@@ -1,6 +1,6 @@
 package dev.zoenetic.unbidden.survival
 
-import dev.zoenetic.unbidden.survival.fire.FireAttempts
+import dev.zoenetic.unbidden.survival.campfire.FireAttempts
 import dev.zoenetic.unbidden.survival.fuel.DropSchedule
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level

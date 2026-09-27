@@ -2,5 +2,7 @@
   "subtitles.unbidden.breath": "Player breathes",
   "subtitles.unbidden.heartbeat": "Heart pounds",
   "subtitles.unbidden.fire_failure": "Striking a fire",
-  "subtitles.unbidden.fire_success": "Fire catches"
+  "subtitles.unbidden.fire_success": "Fire catches",
+  "subtitles.unbidden.flint_and_steel_fail": "Spark fizzles",
+  "subtitles.unbidden.refuel_fire": "Fire flares"
 }

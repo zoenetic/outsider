@@ -1,0 +1,9 @@
+{
+  "parent": "unbidden:block/template_campfire_lit_full",
+  "textures": {
+    "bottom": "unbidden:block/campfire_fuel_15",
+    "ember_bottom": "unbidden:block/campfire_ember_15",
+    "ember_top": "unbidden:block/campfire_ember_11",
+    "top": "unbidden:block/campfire_fuel_11"
+  }
+}

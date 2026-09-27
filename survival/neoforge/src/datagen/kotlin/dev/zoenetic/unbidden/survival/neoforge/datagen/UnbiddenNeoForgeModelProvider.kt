@@ -22,6 +22,8 @@ class UnbiddenNeoForgeModelProvider(output: PackOutput, modId: String) :
 
     override fun getKnownBlocks(): Stream<out Holder<Block>> =
         Stream.of(
+            BuiltInRegistries.BLOCK.wrapAsHolder(UnbiddenBlocks.CAMPFIRE),
+            BuiltInRegistries.BLOCK.wrapAsHolder(UnbiddenBlocks.DEAD_CAMPFIRE),
             BuiltInRegistries.BLOCK.wrapAsHolder(UnbiddenBlocks.FIREWOOD),
             BuiltInRegistries.BLOCK.wrapAsHolder(UnbiddenBlocks.TORCH),
             BuiltInRegistries.BLOCK.wrapAsHolder(UnbiddenBlocks.WALL_TORCH),
@@ -29,6 +31,7 @@ class UnbiddenNeoForgeModelProvider(output: PackOutput, modId: String) :
 
     override fun getKnownItems(): Stream<out Holder<Item>> =
         Stream.of(
+            BuiltInRegistries.ITEM.wrapAsHolder(UnbiddenItems.CAMPFIRE),
             BuiltInRegistries.ITEM.wrapAsHolder(UnbiddenItems.FIREWOOD),
             BuiltInRegistries.ITEM.wrapAsHolder(UnbiddenItems.TORCH),
         )
@@ -40,7 +43,9 @@ class UnbiddenNeoForgeModelProvider(output: PackOutput, modId: String) :
             blocks.modelOutput,
             items.itemModelOutput,
             TextureSlot.create("top"),
-            TextureSlot.create("bottom")
+            TextureSlot.create("bottom"),
+            TextureSlot.create("ember_top"),
+            TextureSlot.create("ember_bottom"),
         )
 
         deadCampfireModel(
