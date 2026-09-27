@@ -1,8 +1,9 @@
 package dev.zoenetic.unbidden.survival.fabric.datagen
 
-import dev.zoenetic.unbidden.survival.datagen.models.createCampfire
-import dev.zoenetic.unbidden.survival.datagen.models.createFirewood
-import dev.zoenetic.unbidden.survival.datagen.models.createTorch
+import dev.zoenetic.unbidden.survival.datagen.models.campfireModel
+import dev.zoenetic.unbidden.survival.datagen.models.deadCampfireModel
+import dev.zoenetic.unbidden.survival.datagen.models.firewoodModel
+import dev.zoenetic.unbidden.survival.datagen.models.torchModel
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -13,7 +14,7 @@ class UnbiddenFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
 
     override fun generateBlockStateModels(blocks: BlockModelGenerators) {
 
-        createCampfire(
+        val campfire0 = campfireModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
             blocks.itemModelOutput,
@@ -21,14 +22,19 @@ class UnbiddenFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             TextureSlot.create("bottom"),
         )
 
-        createFirewood(
+        deadCampfireModel(
+            blocks.blockStateOutput,
+            campfire0,
+        )
+
+        firewoodModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
             blocks.itemModelOutput,
             TextureSlot.create("billet")
         )
 
-        createTorch(
+        torchModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
             blocks.itemModelOutput,

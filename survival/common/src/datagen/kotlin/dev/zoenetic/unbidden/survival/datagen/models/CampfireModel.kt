@@ -3,34 +3,25 @@ package dev.zoenetic.unbidden.survival.datagen.models
 import dev.zoenetic.unbidden.survival.Survival
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlockStateProperties
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
-import net.minecraft.client.data.models.BlockModelGenerators.*
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
 import net.minecraft.client.data.models.model.*
 import net.minecraft.client.data.models.model.TextureMapping.getBlockTexture
-import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
-import net.minecraft.world.level.block.CampfireBlock
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
-fun createCampfire(
+fun campfireModel(
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,
     topSlot: TextureSlot,
     bottomSlot: TextureSlot,
-) {
+): Identifier {
     val block = UnbiddenBlocks.CAMPFIRE
-
-    val rotation = PropertyDispatch.modify(CampfireBlock.FACING)
-        .select(Direction.NORTH, NOP)
-        .select(Direction.EAST, Y_ROT_90)
-        .select(Direction.SOUTH, Y_ROT_180)
-        .select(Direction.WEST, Y_ROT_270)
 
     // TODO: placeholder — one geometry for every level until the stage table exists.
     val templateFor: (Int) -> Identifier = { level ->
@@ -62,8 +53,10 @@ fun createCampfire(
                         plainVariant(models.getValue(level))
                     }
             )
-            .with(rotation)
+            .with(horizontalRotation())
     )
 
     registerSimpleItemModel(block, models.getValue(15), itemModelOutput)
+
+    return models.getValue(0)
 }

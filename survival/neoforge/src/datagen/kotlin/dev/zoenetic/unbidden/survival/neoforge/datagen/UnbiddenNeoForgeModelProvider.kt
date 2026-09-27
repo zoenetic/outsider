@@ -1,8 +1,9 @@
 package dev.zoenetic.unbidden.survival.neoforge.datagen
 
-import dev.zoenetic.unbidden.survival.datagen.models.createCampfire
-import dev.zoenetic.unbidden.survival.datagen.models.createFirewood
-import dev.zoenetic.unbidden.survival.datagen.models.createTorch
+import dev.zoenetic.unbidden.survival.datagen.models.campfireModel
+import dev.zoenetic.unbidden.survival.datagen.models.deadCampfireModel
+import dev.zoenetic.unbidden.survival.datagen.models.firewoodModel
+import dev.zoenetic.unbidden.survival.datagen.models.torchModel
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
 import dev.zoenetic.unbidden.survival.registry.UnbiddenItems
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -34,7 +35,7 @@ class UnbiddenNeoForgeModelProvider(output: PackOutput, modId: String) :
 
     override fun registerModels(blocks: BlockModelGenerators, items: ItemModelGenerators) {
 
-        createCampfire(
+        val campfire0 = campfireModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
             items.itemModelOutput,
@@ -42,14 +43,19 @@ class UnbiddenNeoForgeModelProvider(output: PackOutput, modId: String) :
             TextureSlot.create("bottom")
         )
 
-        createFirewood(
+        deadCampfireModel(
+            blocks.blockStateOutput,
+            campfire0,
+        )
+
+        firewoodModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
             items.itemModelOutput,
             TextureSlot.create("billet")
         )
 
-        createTorch(
+        torchModel(
             blocks.blockStateOutput,
             items.modelOutput,
             items.itemModelOutput

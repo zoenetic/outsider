@@ -1,88 +1,184 @@
 {
   "variants": {
-    "axis=x,billets=1": {
+    "billets=1,facing=east": {
+      "model": "unbidden:block/firewood_1",
+      "y": 270
+    },
+    "billets=1,facing=north": {
+      "model": "unbidden:block/firewood_1",
+      "y": 180
+    },
+    "billets=1,facing=south": {
+      "model": "unbidden:block/firewood_1"
+    },
+    "billets=1,facing=west": {
       "model": "unbidden:block/firewood_1",
       "y": 90
     },
-    "axis=x,billets=10": {
+    "billets=10,facing=east": {
+      "model": "unbidden:block/firewood_10",
+      "y": 270
+    },
+    "billets=10,facing=north": {
+      "model": "unbidden:block/firewood_10",
+      "y": 180
+    },
+    "billets=10,facing=south": {
+      "model": "unbidden:block/firewood_10"
+    },
+    "billets=10,facing=west": {
       "model": "unbidden:block/firewood_10",
       "y": 90
     },
-    "axis=x,billets=11": {
+    "billets=11,facing=east": {
+      "model": "unbidden:block/firewood_11",
+      "y": 270
+    },
+    "billets=11,facing=north": {
+      "model": "unbidden:block/firewood_11",
+      "y": 180
+    },
+    "billets=11,facing=south": {
+      "model": "unbidden:block/firewood_11"
+    },
+    "billets=11,facing=west": {
       "model": "unbidden:block/firewood_11",
       "y": 90
     },
-    "axis=x,billets=12": {
+    "billets=12,facing=east": {
+      "model": "unbidden:block/firewood_12",
+      "y": 270
+    },
+    "billets=12,facing=north": {
+      "model": "unbidden:block/firewood_12",
+      "y": 180
+    },
+    "billets=12,facing=south": {
+      "model": "unbidden:block/firewood_12"
+    },
+    "billets=12,facing=west": {
       "model": "unbidden:block/firewood_12",
       "y": 90
     },
-    "axis=x,billets=2": {
+    "billets=2,facing=east": {
+      "model": "unbidden:block/firewood_2",
+      "y": 270
+    },
+    "billets=2,facing=north": {
+      "model": "unbidden:block/firewood_2",
+      "y": 180
+    },
+    "billets=2,facing=south": {
+      "model": "unbidden:block/firewood_2"
+    },
+    "billets=2,facing=west": {
       "model": "unbidden:block/firewood_2",
       "y": 90
     },
-    "axis=x,billets=3": {
+    "billets=3,facing=east": {
+      "model": "unbidden:block/firewood_3",
+      "y": 270
+    },
+    "billets=3,facing=north": {
+      "model": "unbidden:block/firewood_3",
+      "y": 180
+    },
+    "billets=3,facing=south": {
+      "model": "unbidden:block/firewood_3"
+    },
+    "billets=3,facing=west": {
       "model": "unbidden:block/firewood_3",
       "y": 90
     },
-    "axis=x,billets=4": {
+    "billets=4,facing=east": {
+      "model": "unbidden:block/firewood_4",
+      "y": 270
+    },
+    "billets=4,facing=north": {
+      "model": "unbidden:block/firewood_4",
+      "y": 180
+    },
+    "billets=4,facing=south": {
+      "model": "unbidden:block/firewood_4"
+    },
+    "billets=4,facing=west": {
       "model": "unbidden:block/firewood_4",
       "y": 90
     },
-    "axis=x,billets=5": {
+    "billets=5,facing=east": {
+      "model": "unbidden:block/firewood_5",
+      "y": 270
+    },
+    "billets=5,facing=north": {
+      "model": "unbidden:block/firewood_5",
+      "y": 180
+    },
+    "billets=5,facing=south": {
+      "model": "unbidden:block/firewood_5"
+    },
+    "billets=5,facing=west": {
       "model": "unbidden:block/firewood_5",
       "y": 90
     },
-    "axis=x,billets=6": {
+    "billets=6,facing=east": {
+      "model": "unbidden:block/firewood_6",
+      "y": 270
+    },
+    "billets=6,facing=north": {
+      "model": "unbidden:block/firewood_6",
+      "y": 180
+    },
+    "billets=6,facing=south": {
+      "model": "unbidden:block/firewood_6"
+    },
+    "billets=6,facing=west": {
       "model": "unbidden:block/firewood_6",
       "y": 90
     },
-    "axis=x,billets=7": {
+    "billets=7,facing=east": {
+      "model": "unbidden:block/firewood_7",
+      "y": 270
+    },
+    "billets=7,facing=north": {
+      "model": "unbidden:block/firewood_7",
+      "y": 180
+    },
+    "billets=7,facing=south": {
+      "model": "unbidden:block/firewood_7"
+    },
+    "billets=7,facing=west": {
       "model": "unbidden:block/firewood_7",
       "y": 90
     },
-    "axis=x,billets=8": {
+    "billets=8,facing=east": {
+      "model": "unbidden:block/firewood_8",
+      "y": 270
+    },
+    "billets=8,facing=north": {
+      "model": "unbidden:block/firewood_8",
+      "y": 180
+    },
+    "billets=8,facing=south": {
+      "model": "unbidden:block/firewood_8"
+    },
+    "billets=8,facing=west": {
       "model": "unbidden:block/firewood_8",
       "y": 90
     },
-    "axis=x,billets=9": {
+    "billets=9,facing=east": {
+      "model": "unbidden:block/firewood_9",
+      "y": 270
+    },
+    "billets=9,facing=north": {
+      "model": "unbidden:block/firewood_9",
+      "y": 180
+    },
+    "billets=9,facing=south": {
+      "model": "unbidden:block/firewood_9"
+    },
+    "billets=9,facing=west": {
       "model": "unbidden:block/firewood_9",
       "y": 90
-    },
-    "axis=z,billets=1": {
-      "model": "unbidden:block/firewood_1"
-    },
-    "axis=z,billets=10": {
-      "model": "unbidden:block/firewood_10"
-    },
-    "axis=z,billets=11": {
-      "model": "unbidden:block/firewood_11"
-    },
-    "axis=z,billets=12": {
-      "model": "unbidden:block/firewood_12"
-    },
-    "axis=z,billets=2": {
-      "model": "unbidden:block/firewood_2"
-    },
-    "axis=z,billets=3": {
-      "model": "unbidden:block/firewood_3"
-    },
-    "axis=z,billets=4": {
-      "model": "unbidden:block/firewood_4"
-    },
-    "axis=z,billets=5": {
-      "model": "unbidden:block/firewood_5"
-    },
-    "axis=z,billets=6": {
-      "model": "unbidden:block/firewood_6"
-    },
-    "axis=z,billets=7": {
-      "model": "unbidden:block/firewood_7"
-    },
-    "axis=z,billets=8": {
-      "model": "unbidden:block/firewood_8"
-    },
-    "axis=z,billets=9": {
-      "model": "unbidden:block/firewood_9"
     }
   }
 }

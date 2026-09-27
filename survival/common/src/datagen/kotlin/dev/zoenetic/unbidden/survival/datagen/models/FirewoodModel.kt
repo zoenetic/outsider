@@ -1,13 +1,11 @@
 package dev.zoenetic.unbidden.survival.datagen.models
 
 import dev.zoenetic.unbidden.survival.Survival
-import dev.zoenetic.unbidden.survival.fuel.firewood.FirewoodBlock.Companion.AXIS
 import dev.zoenetic.unbidden.survival.fuel.firewood.FirewoodBlock.Companion.BILLETS
 import dev.zoenetic.unbidden.survival.fuel.firewood.FirewoodBlock.Companion.MAX_BILLETS
 import dev.zoenetic.unbidden.survival.fuel.firewood.FirewoodBlock.Companion.MIN_BILLETS
 import dev.zoenetic.unbidden.survival.registry.UnbiddenBlocks
 import dev.zoenetic.unbidden.survival.registry.UnbiddenItems
-import net.minecraft.client.data.models.BlockModelGenerators
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
@@ -15,13 +13,12 @@ import net.minecraft.client.data.models.blockstates.PropertyDispatch
 import net.minecraft.client.data.models.model.*
 import net.minecraft.client.renderer.block.dispatch.Variant
 import net.minecraft.client.resources.model.sprite.Material
-import net.minecraft.core.Direction.Axis
 import net.minecraft.resources.Identifier
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
-fun createFirewood(
+fun firewoodModel(
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,
@@ -55,9 +52,7 @@ fun createFirewood(
                 }
             )
             .with(
-                PropertyDispatch.modify(AXIS)
-                    .select(Axis.X, BlockModelGenerators.Y_ROT_90)
-                    .select(Axis.Z, BlockModelGenerators.NOP)
+                horizontalRotation()
             )
     )
 

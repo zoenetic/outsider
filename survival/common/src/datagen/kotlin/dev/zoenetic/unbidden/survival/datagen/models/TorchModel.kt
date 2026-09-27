@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties.HOR
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
-fun createTorch(
+fun torchModel(
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,

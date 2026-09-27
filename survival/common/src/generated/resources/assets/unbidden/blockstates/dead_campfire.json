@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "unbidden:block/campfire_fuel_0",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "unbidden:block/campfire_fuel_0",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "unbidden:block/campfire_fuel_0"
+    },
+    "facing=west": {
+      "model": "unbidden:block/campfire_fuel_0",
+      "y": 90
+    }
+  }
+}

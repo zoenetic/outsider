@@ -12,7 +12,7 @@ public object UnbiddenItems {
         Item.Properties(),
         UnbiddenBlocks::CAMPFIRE,
     )
-
+    
     public val FIREWOOD: Item by Survival.platform.register.blockItem(
         "firewood",
         Item.Properties(),

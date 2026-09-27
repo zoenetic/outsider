@@ -1,13 +1,12 @@
 package dev.zoenetic.unbidden.survival.fuel.firewood
 
+import com.mojang.math.OctahedralGroup
 import com.mojang.serialization.MapCodec
 import dev.zoenetic.unbidden.survival.registry.UnbiddenItems
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.Direction.Axis
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
-import net.minecraft.tags.BlockTags
 import net.minecraft.tags.FluidTags.WATER
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
@@ -39,8 +38,12 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
         registerDefaultState(
             stateDefinition.any()
                 .setValue(WATERLOGGED, false)
-                .setValue(AXIS, Axis.Z)
+                .setValue(FACING, Direction.NORTH)
         )
+    }
+
+    override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
+        builder.add(FACING, BILLETS, WATERLOGGED)
     }
 
     override fun codec(): MapCodec<FirewoodBlock> = CODEC
@@ -81,7 +84,7 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
         val replacedFluidState = context.level.getFluidState(context.clickedPos)
         val isWaterSource = replacedFluidState.`is`(Fluids.WATER)
         return super.getStateForPlacement(context)
-            ?.setValue(AXIS, context.horizontalDirection.axis)
+            ?.setValue(FACING, context.horizontalDirection)
             ?.setValue(WATERLOGGED, isWaterSource)
     }
 
@@ -123,11 +126,7 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
         pos: BlockPos,
         context: CollisionContext
     ): VoxelShape {
-        return shapeFor(state.getValue(BILLETS), state.getValue(AXIS))
-    }
-
-    override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
-        builder.add(AXIS, BILLETS, WATERLOGGED)
+        return shapeFor(state.getValue(BILLETS), state.getValue(FACING))
     }
 
     override fun placeLiquid(
@@ -151,117 +150,33 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
             IntegerProperty.create("billets", MIN_BILLETS, MAX_BILLETS)
         public const val MIN_BILLETS: Int = 1
         public const val MAX_BILLETS: Int = 12
-        public val AXIS: EnumProperty<Axis> = BlockStateProperties.HORIZONTAL_AXIS
+        public val FACING: EnumProperty<Direction> = BlockStateProperties.HORIZONTAL_FACING
         public val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED
 
-        private val SHAPES_Z: Array<VoxelShape> = arrayOf(
+        // Placement order, drawn facing south: left → right, then back → front, per layer.
+        private val BILLETS_IN_ORDER: List<VoxelShape> = listOf(
+            box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
             box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-            Shapes.or(
-                box(2.0, 0.0, 0.0, 6.0, 4.0, 16.0),
-                box(10.0, 0.0, 0.0, 14.0, 4.0, 16.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 2.0, 16.0, 8.0, 6.0),
-                box(0.0, 4.0, 10.0, 16.0, 8.0, 14.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
-                box(6.0, 8.0, 0.0, 10.0, 12.0, 16.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
-                box(2.0, 8.0, 0.0, 6.0, 12.0, 16.0),
-                box(10.0, 8.0, 0.0, 14.0, 12.0, 16.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
-                box(1.0, 8.0, 0.0, 5.0, 12.0, 16.0),
-                box(6.0, 8.0, 0.0, 10.0, 12.0, 16.0),
-                box(11.0, 8.0, 0.0, 15.0, 12.0, 16.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
-                box(1.0, 8.0, 0.0, 5.0, 12.0, 16.0),
-                box(6.0, 8.0, 0.0, 10.0, 12.0, 16.0),
-                box(11.0, 8.0, 0.0, 15.0, 12.0, 16.0),
-                box(0.0, 12.0, 6.0, 16.0, 16.0, 10.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
-                box(1.0, 8.0, 0.0, 5.0, 12.0, 16.0),
-                box(6.0, 8.0, 0.0, 10.0, 12.0, 16.0),
-                box(11.0, 8.0, 0.0, 15.0, 12.0, 16.0),
-                box(0.0, 12.0, 10.0, 16.0, 16.0, 14.0),
-                box(0.0, 12.0, 2.0, 16.0, 16.0, 6.0)
-            ),
-            Shapes.or(
-                box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
-                box(11.0, 0.0, 0.0, 15.0, 4.0, 16.0),
-                box(6.0, 0.0, 0.0, 10.0, 4.0, 16.0),
-                box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
-                box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
-                box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
-                box(1.0, 8.0, 0.0, 5.0, 12.0, 16.0),
-                box(6.0, 8.0, 0.0, 10.0, 12.0, 16.0),
-                box(11.0, 8.0, 0.0, 15.0, 12.0, 16.0),
-                box(0.0, 12.0, 11.0, 16.0, 16.0, 15.0),
-                box(0.0, 12.0, 1.0, 16.0, 16.0, 5.0),
-                box(0.0, 12.0, 6.0, 16.0, 16.0, 10.0)
-            )
+            box(1.0, 0.0, 0.0, 5.0, 4.0, 16.0),
+            box(0.0, 4.0, 11.0, 16.0, 8.0, 15.0),
+            box(0.0, 4.0, 6.0, 16.0, 8.0, 10.0),
+            box(0.0, 4.0, 1.0, 16.0, 8.0, 5.0),
+            box(11.0, 8.0, 0.0, 15.0, 12.0, 16.0),
+            box(6.0, 8.0, 0.0, 10.0, 12.0, 16.0),
+            box(1.0, 8.0, 0.0, 5.0, 12.0, 16.0),
+            box(0.0, 12.0, 11.0, 16.0, 16.0, 15.0),
+            box(0.0, 12.0, 6.0, 16.0, 16.0, 10.0),
+            box(0.0, 12.0, 1.0, 16.0, 16.0, 5.0),
         )
 
-        private val SHAPES: List<Map<Axis, VoxelShape>> =
-            SHAPES_Z.map { Shapes.rotateHorizontalAxis(it) }
+        private val SHAPES: List<Map<Direction, VoxelShape>> =
+            (MIN_BILLETS..MAX_BILLETS).map { count ->
+                val stack = BILLETS_IN_ORDER.take(count).reduce(Shapes::or)
+                Shapes.rotateHorizontal(stack, OctahedralGroup.BLOCK_ROT_Y_180)
+            }
 
-        public fun shapeFor(billets: Int, axis: Axis): VoxelShape =
-            SHAPES[billets - MIN_BILLETS].getValue(axis)
+        public fun shapeFor(billets: Int, facing: Direction): VoxelShape =
+            SHAPES[billets - MIN_BILLETS].getValue(facing)
 
         @JvmStatic
         public fun maybeSplit(context: UseOnContext): Boolean {

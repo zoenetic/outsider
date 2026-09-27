@@ -1,15 +1,18 @@
 package dev.zoenetic.unbidden.survival.datagen.models
 
+import net.minecraft.client.data.models.BlockModelGenerators
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.MultiVariant
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
 import net.minecraft.client.data.models.model.*
 import net.minecraft.client.renderer.block.dispatch.Variant
+import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.minecraft.util.random.Weighted
 import net.minecraft.util.random.WeightedList
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import java.util.*
 import java.util.function.BiConsumer
@@ -50,3 +53,9 @@ fun createFlatItemModelWithBlockTexture(
     TextureMapping.layer0(block),
     modelOutput
 )
+
+fun horizontalRotation() = PropertyDispatch.modify(HORIZONTAL_FACING)
+    .select(Direction.NORTH, BlockModelGenerators.Y_ROT_180)
+    .select(Direction.EAST, BlockModelGenerators.Y_ROT_270)
+    .select(Direction.SOUTH, BlockModelGenerators.NOP)
+    .select(Direction.WEST, BlockModelGenerators.Y_ROT_90)
