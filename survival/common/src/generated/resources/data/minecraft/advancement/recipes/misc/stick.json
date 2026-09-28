@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "unbidden:firewood"
+            "items": "outsider_survival:firewood"
           }
         ]
       },

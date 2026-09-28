@@ -4,7 +4,7 @@ plugins {
 }
 
 def modProject = project.parent
-['mod_id', 'mod_name', 'mod_description'].each { key ->
+['mod_id', 'mod_name', 'mod_description', 'mod_namespace'].each { key ->
     if (modProject == null || !modProject.hasProperty(key)) {
         throw new GradleException(
                 "${project.path} applies multiloader-common but its parent project " +

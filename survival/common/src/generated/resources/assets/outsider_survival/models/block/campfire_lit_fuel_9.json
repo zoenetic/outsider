@@ -1,0 +1,9 @@
+{
+  "parent": "outsider_survival:block/template_campfire_lit_full",
+  "textures": {
+    "bottom": "outsider_survival:block/campfire_fuel_11",
+    "ember_bottom": "outsider_survival:block/campfire_ember_11",
+    "ember_top": "outsider_survival:block/campfire_ember_6",
+    "top": "outsider_survival:block/campfire_fuel_6"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "f": "outsider_survival:firewood"
+  },
+  "pattern": [
+    "ff",
+    "ff"
+  ],
+  "result": {
+    "id": "outsider_survival:campfire"
+  }
+}

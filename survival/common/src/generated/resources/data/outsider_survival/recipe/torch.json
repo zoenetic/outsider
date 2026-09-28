@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": "#minecraft:coals",
+    "s": "minecraft:stick"
+  },
+  "pattern": [
+    "c",
+    "s"
+  ],
+  "result": {
+    "id": "outsider_survival:torch"
+  }
+}

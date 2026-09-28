@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "outsider_survival:block/campfire_dead",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "outsider_survival:block/campfire_dead",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "outsider_survival:block/campfire_dead"
+    },
+    "facing=west": {
+      "model": "outsider_survival:block/campfire_dead",
+      "y": 90
+    }
+  }
+}

@@ -21,9 +21,13 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-rootProject.name = 'unbidden'
+rootProject.name = 'outsider'
 includeBuild('build-logic')
 
 include('survival:common')
 include('survival:fabric')
 include('survival:neoforge')
+
+include('inventory:common')
+include('inventory:fabric')
+include('inventory:neoforge')

@@ -1,0 +1,119 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.fabricmc.fabric-loom'
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${minecraft_version}")
+    implementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
+    implementation("net.fabricmc:fabric-language-kotlin:${flk_version}")
+}
+
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+    }
+}
+
+configurations {
+    commonGametest { canBeResolved = true }
+    commonGametestClasses { canBeResolved = true }
+}
+
+dependencies {
+    commonGametest(project(path: common_project.path, configuration: 'commonGametest'))
+    commonGametestClasses(project(path: common_project.path, configuration: 'commonGametestClasses'))
+}
+
+sourceSets.gametest.compileClasspath += configurations.commonGametestClasses
+
+tasks.named('compileGametestKotlin') {
+    dependsOn(configurations.commonGametest)
+    source(configurations.commonGametest.asFileTree.matching { include '**/*.kt' })
+}
+
+fabricApi {
+    configureDataGeneration {
+        createSourceSet = true
+        createRunConfiguration = true
+        modId = mod_id
+        client = true
+        addToResources = false
+        outputDirectory = common_project.file('src/generated/resources')
+    }
+}
+
+configurations {
+    commonDatagen { canBeResolved = true }
+}
+
+dependencies {
+    commonDatagen(project(path: common_project.path, configuration: 'commonDatagen'))
+}
+
+tasks.named('compileDatagenKotlin') {
+    dependsOn(configurations.commonDatagen)
+    source(configurations.commonDatagen.asFileTree.matching { include '**/*.kt' })
+}
+
+loom {
+    def aw = common_project.file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
+        gametest {
+            server()
+            setConfigName('Fabric Game Test')
+            ideConfigGenerated(true)
+            runDir('runs/gametest')
+            vmArg('-Dfabric-api.gametest')
+            vmArg("-Dfabric-api.gametest.report-file=${layout.buildDirectory.get().asFile}/gametest/report.xml")
+        }
+    }
+}
+
+def syncGeneratedResources = tasks.register('syncGeneratedResources', Copy) {
+    from(common_project.file('src/generated/resources'))
+    into(layout.buildDirectory.dir('resources/main'))
+    exclude('.cache/**')
+}
+afterEvaluate {
+    def datagen = tasks.named('runDatagen')
+    def runClient = tasks.named('runClient')
+    syncGeneratedResources.configure { mustRunAfter(datagen) }
+    runClient.configure { mustRunAfter(syncGeneratedResources) }
+    tasks.register('runClientWithDatagen') {
+        group = runClient.get().group
+        description = 'Regenerates data, syncs it into the run resources, then launches the client.'
+        dependsOn(datagen, syncGeneratedResources, runClient)
+    }
+}
+
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations.named(variant) {
+        attributes { attribute(loaderAttribute, 'fabric') }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant ->
+        configurations.named(variant) {
+            attributes { attribute(loaderAttribute, 'fabric') }
+        }
+    }
+}

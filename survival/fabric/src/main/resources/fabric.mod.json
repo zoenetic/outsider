@@ -13,19 +13,19 @@
     "main": [
       {
         "adapter": "kotlin",
-        "value": "dev.zoenetic.unbidden.survival.fabric.FabricSurvival"
+        "value": "dev.zoenetic.outsider.survival.fabric.FabricSurvival"
       }
     ],
     "client": [
       {
         "adapter": "kotlin",
-        "value": "dev.zoenetic.unbidden.survival.fabric.FabricClient"
+        "value": "dev.zoenetic.outsider.survival.fabric.FabricClient"
       }
     ],
     "fabric-datagen": [
       {
         "adapter": "kotlin",
-        "value": "dev.zoenetic.unbidden.survival.fabric.datagen.UnbiddenFabricDataGen"
+        "value": "dev.zoenetic.outsider.survival.fabric.datagen.OutsiderFabricDataGen"
       }
     ]
   },

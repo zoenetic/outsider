@@ -1,0 +1,50 @@
+{
+  "breath": {
+    "sounds": [
+      "outsider_survival:breath"
+    ],
+    "subtitle": "subtitles.outsider_survival.breath"
+  },
+  "fire_failure": {
+    "sounds": [
+      {
+        "name": "minecraft:item.brush.brushing.generic",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.outsider_survival.fire_failure"
+  },
+  "flint_and_steel_fail": {
+    "sounds": [
+      {
+        "name": "minecraft:block.candle.extinguish",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.outsider_survival.flint_and_steel_fail"
+  },
+  "fire_success": {
+    "sounds": [
+      {
+        "name": "minecraft:item.flintandsteel.use",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.outsider_survival.fire_success"
+  },
+  "heartbeat": {
+    "sounds": [
+      "outsider_survival:heartbeat"
+    ],
+    "subtitle": "subtitles.outsider_survival.heartbeat"
+  },
+  "refuel_fire": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.blaze.burn",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.outsider_survival.refuel_fire"
+  }
+}

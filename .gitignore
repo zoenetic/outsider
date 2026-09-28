@@ -8,9 +8,10 @@ build-logic/build/
 run/
 runs/
 
-# Datagen output lives in survival/common/src/generated/resources and is committed;
-# only the generator's cache is ignored.
-survival/*/src/generated/resources/.cache/
+# Datagen output lives in <mod>/common/src/generated/resources and is committed;
+# only the generator's cache is ignored. Pattern is generic across mod modules
+# (survival, inventory, ...), not just survival.
+*/*/src/generated/resources/.cache/
 
 # IDE
 .idea/
@@ -26,4 +27,4 @@ out/
 
 # Logs
 logs/
-survival/*/logs/
+*/*/logs/

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "outsider_survival:block/torch_unlit"
+    },
+    "lit=true": {
+      "model": "outsider_survival:block/torch"
+    }
+  }
+}

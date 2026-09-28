@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "unbidden_survival_gametest",
+  "id": "outsider_survival_gametest",
   "version": "1.0.0",
-  "name": "Unbidden: Survival GameTests",
+  "name": "Outsider: Survival GameTests",
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "dev.zoenetic.unbidden.survival.fabric.gametest.SurvivalGameTests"
+      "dev.zoenetic.outsider.survival.fabric.gametest.SurvivalGameTests"
     ]
   },
   "depends": {
-    "unbidden_survival": "*",
+    "outsider_survival": "*",
     "fabric-gametest-api-v1": "*"
   }
 }

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    "unbidden:firewood"
+    "outsider_survival:firewood"
   ],
   "result": {
     "id": "minecraft:stick"

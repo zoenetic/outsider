@@ -1,0 +1,176 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "1"
+                  }
+                }
+              ],
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "2"
+                  }
+                }
+              ],
+              "count": 2.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "3"
+                  }
+                }
+              ],
+              "count": 3.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "4"
+                  }
+                }
+              ],
+              "count": 4.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "5"
+                  }
+                }
+              ],
+              "count": 5.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "6"
+                  }
+                }
+              ],
+              "count": 6.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "7"
+                  }
+                }
+              ],
+              "count": 7.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "8"
+                  }
+                }
+              ],
+              "count": 8.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "9"
+                  }
+                }
+              ],
+              "count": 9.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "10"
+                  }
+                }
+              ],
+              "count": 10.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "11"
+                  }
+                }
+              ],
+              "count": 11.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:firewood",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "billets": "12"
+                  }
+                }
+              ],
+              "count": 12.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "function": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "outsider_survival:firewood"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "outsider_survival:blocks/firewood"
+}

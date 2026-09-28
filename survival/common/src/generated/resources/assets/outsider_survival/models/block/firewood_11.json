@@ -1,0 +1,7 @@
+{
+  "parent": "outsider_survival:block/template_firewood_11",
+  "textures": {
+    "billet": "minecraft:block/campfire_log",
+    "particle": "minecraft:block/campfire_log"
+  }
+}
