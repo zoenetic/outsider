@@ -8,7 +8,6 @@ import dev.zoenetic.outsider.survival.emission.EmittingBlock.Companion.emitterOr
 import dev.zoenetic.outsider.survival.fuel.Burnout
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.units.Heat
-import dev.zoenetic.outsider.survival.units.Light
 import dev.zoenetic.outsider.survival.units.Time
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.longs.Long2LongMaps
@@ -31,7 +30,6 @@ public object EmitterIndex {
 
     public const val ABSENT: Long = Long.MIN_VALUE
     internal const val EMISSION_SOFTENING = 1.0
-    internal const val LIGHT_RADIUS: Int = 15
 
     internal val MAX_RADIUS: Int
         get() = 16
@@ -116,20 +114,6 @@ public object EmitterIndex {
         val block = state.block
         val emitter = block.emitterOrNull() ?: return 0
         return emitter.getLight(state).value
-    }
-
-    public fun lightAtPlayer(level: ServerLevel, player: ServerPlayer): Light {
-        val blockPos = player.blockPosition()
-        val emitters = at(level, blockPos, LIGHT_RADIUS)
-        var brightest = Light.ZERO
-        for (pos in emitters) {
-            val state = level.getBlockState(pos)
-            val block = state.block
-            val emitter = block.emitterOrNull() ?: continue
-            val light = emitter.getLight(state)
-            if (light > brightest) brightest = light
-        }
-        return brightest
     }
 
     @JvmStatic

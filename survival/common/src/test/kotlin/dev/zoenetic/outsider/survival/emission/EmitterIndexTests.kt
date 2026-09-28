@@ -18,7 +18,7 @@ class EmitterIndexTests {
     private val topSection = BlockPos(260, 310, 520)
     private val belowZero = BlockPos(260, -60, 520)
 
-    private val campfire = Blocks.CAMPFIRE.defaultBlockState()
+    private val lava = Blocks.LAVA.defaultBlockState()
     private val furnace = Blocks.FURNACE.defaultBlockState()
     private val stone = Blocks.STONE.defaultBlockState()
     private val air = Blocks.AIR.defaultBlockState()
@@ -46,8 +46,8 @@ class EmitterIndexTests {
     @Test
     fun `two heat sources in one section is two entries`() {
         val chunk = chunk()
-        chunk.place(inChunk, campfire)
-        chunk.place(alsoInChunk, campfire)
+        chunk.place(inChunk, lava)
+        chunk.place(alsoInChunk, lava)
         assertNull(chunk.reconcileEmitters(), "a non-fuelled emitter contributes no drop deadline")
         val index = indexOf(chunk)
         assertEquals(2, index.size)
@@ -58,7 +58,7 @@ class EmitterIndexTests {
     @Test
     fun `a heat source in the top section is found`() {
         val chunk = chunk()
-        chunk.place(topSection, campfire)
+        chunk.place(topSection, lava)
         assertNull(chunk.reconcileEmitters(), "a non-fuelled emitter contributes no drop deadline")
         assertTrue(indexOf(chunk).containsKey(topSection.asLong()))
     }
@@ -66,7 +66,7 @@ class EmitterIndexTests {
     @Test
     fun `a heat source at negative y is found`() {
         val chunk = chunk()
-        chunk.place(belowZero, campfire)
+        chunk.place(belowZero, lava)
         assertNull(chunk.reconcileEmitters(), "a non-fuelled emitter contributes no drop deadline")
         val key = indexOf(chunk).keys.single()
         assertEquals(belowZero, BlockPos.of(key), "packed key round-trips through BlockPos.of")
@@ -76,7 +76,7 @@ class EmitterIndexTests {
     fun `a heat source replaced by air is not in the index`() {
         val chunk = chunk()
         chunk.place(alsoInChunk, stone)
-        chunk.place(inChunk, campfire)
+        chunk.place(inChunk, lava)
         chunk.place(inChunk, air)
         assertNull(chunk.reconcileEmitters(), "a non-fuelled emitter contributes no drop deadline")
         assertTrue(indexOf(chunk).isEmpty())
@@ -85,7 +85,7 @@ class EmitterIndexTests {
     @Test
     fun `putting then removing a single source clears it from the index`() {
         val chunk = chunk()
-        EmitterIndex.onBlockChanged(chunk, inChunk, air, campfire)
+        EmitterIndex.onBlockChanged(chunk, inChunk, air, lava)
         assertTrue(indexOf(chunk).containsKey(inChunk.asLong()))
         EmitterIndex.remove(chunk, inChunk)
         assertFalse(indexOf(chunk).containsKey(inChunk.asLong()))
@@ -108,8 +108,8 @@ class EmitterIndexTests {
     @Test
     fun `updating one heat source to another leaves one entry`() {
         val chunk = chunk()
-        EmitterIndex.onBlockChanged(chunk, inChunk, air, campfire)
-        EmitterIndex.onBlockChanged(chunk, inChunk, campfire, furnace)
+        EmitterIndex.onBlockChanged(chunk, inChunk, air, lava)
+        EmitterIndex.onBlockChanged(chunk, inChunk, lava, furnace)
         val index = indexOf(chunk)
         assertEquals(1, index.size)
     }
@@ -117,8 +117,8 @@ class EmitterIndexTests {
     @Test
     fun `replacing a single source with air drops that blockpos from the index`() {
         val chunk = chunk()
-        EmitterIndex.onBlockChanged(chunk, inChunk, air, campfire)
-        EmitterIndex.onBlockChanged(chunk, inChunk, campfire, air)
+        EmitterIndex.onBlockChanged(chunk, inChunk, air, lava)
+        EmitterIndex.onBlockChanged(chunk, inChunk, lava, air)
         assertFalse(indexOf(chunk).containsKey(inChunk.asLong()))
     }
 

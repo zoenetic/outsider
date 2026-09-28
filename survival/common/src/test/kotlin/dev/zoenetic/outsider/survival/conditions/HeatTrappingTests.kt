@@ -85,7 +85,7 @@ class HeatTrappingTests {
                 fireAt.x and 15,
                 fireAt.y and 15,
                 fireAt.z and 15,
-                Blocks.CAMPFIRE.defaultBlockState()
+                Blocks.LAVA.defaultBlockState()
             )
         val _ = chunk.reconcileEmitters()
 

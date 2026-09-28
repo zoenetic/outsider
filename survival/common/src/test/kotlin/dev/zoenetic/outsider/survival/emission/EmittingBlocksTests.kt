@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 class EmittingBlocksTests {
 
-    private val campfire = Blocks.CAMPFIRE.defaultBlockState()
+    private val furnace = Blocks.FURNACE.defaultBlockState()
     private val stone = Blocks.STONE.defaultBlockState()
 
     @Test
@@ -22,9 +22,10 @@ class EmittingBlocksTests {
     }
 
     @Test
-    fun `campfires can be unlit`() {
-        assertTrue(campfire.block.emitterOrNull() != null)
-        assertTrue(campfire.getValue(BlockStateProperties.LIT))
+    fun `an emitter with a lit property can be unlit`() {
+        assertTrue(furnace.block.emitterOrNull() != null)
+        assertTrue(furnace.setValue(BlockStateProperties.LIT, true).isLit())
+        assertFalse(furnace.setValue(BlockStateProperties.LIT, false).isLit())
     }
 
     @Test

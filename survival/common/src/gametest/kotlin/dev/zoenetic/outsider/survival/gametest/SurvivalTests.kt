@@ -4,6 +4,7 @@ import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.climate.getHumidity
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
+import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
 import dev.zoenetic.outsider.survival.vitals.COMFORT_HIGH
@@ -13,6 +14,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import kotlin.math.abs
 
 data class SurvivalTest(
@@ -36,6 +39,9 @@ object SurvivalTests {
         player.snapTo(absolute.x + 0.5, absolute.y.toDouble(), absolute.z + 0.5)
         return player
     }
+
+    private fun litCampfire(): BlockState =
+        OutsiderBlocks.CAMPFIRE.defaultBlockState().setValue(BlockStateProperties.LIT, true)
 
     fun aRealServerLevelIsAvailable(helper: GameTestHelper) {
         check(!helper.level.isClientSide) { "expected a server level" }
@@ -129,7 +135,7 @@ object SurvivalTests {
 
     fun placingACampfireRegistersAHeatSource(helper: GameTestHelper) {
         val relative = BlockPos(1, 1, 1)
-        helper.setBlock(relative, Blocks.CAMPFIRE)
+        helper.setBlock(relative, litCampfire())
 
         val absolute = helper.absolutePos(relative)
         val index = Survival.platform.emitters.get(helper.level.getChunkAt(absolute))
@@ -146,7 +152,7 @@ object SurvivalTests {
 
     fun breakingACampfireDeregistersTheHeatSource(helper: GameTestHelper) {
         val relative = BlockPos(1, 1, 1)
-        helper.setBlock(relative, Blocks.CAMPFIRE)
+        helper.setBlock(relative, litCampfire())
         helper.setBlock(relative, Blocks.AIR)
 
         val absolute = helper.absolutePos(relative)
@@ -159,7 +165,7 @@ object SurvivalTests {
 
     fun aNearbyCampfireIsFoundAsAHeatSource(helper: GameTestHelper) {
         val campfire = BlockPos(1, 1, 1)
-        helper.setBlock(campfire, Blocks.CAMPFIRE)
+        helper.setBlock(campfire, litCampfire())
         val player = helper.playerAt(BlockPos(2, 2, 1))
 
         val absolute = helper.absolutePos(campfire)

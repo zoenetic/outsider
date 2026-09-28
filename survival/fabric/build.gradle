@@ -79,6 +79,7 @@ loom {
         gametest {
             server()
             setConfigName('Fabric Game Test')
+            source(sourceSets.gametest)
             ideConfigGenerated(true)
             runDir('runs/gametest')
             vmArg('-Dfabric-api.gametest')

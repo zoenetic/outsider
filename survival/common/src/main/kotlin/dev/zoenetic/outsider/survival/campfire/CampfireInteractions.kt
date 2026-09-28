@@ -4,6 +4,7 @@ import dev.zoenetic.outsider.survival.ServerState
 import dev.zoenetic.outsider.survival.campfire.client.ClientFireAttempt
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelValues
+import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import net.minecraft.core.BlockPos
@@ -63,8 +64,8 @@ public object CampfireInteractions {
     ): InteractionResult {
         val fuelValueOfItem = FuelValues.get(itemStack.item)
         if (fuelValueOfItem == Fuel.EMPTY) return InteractionResult.PASS
+        val maxFuel = state.block.fuelledOrNull()?.fuelCapacity ?: return InteractionResult.PASS
         val currentFuel = Fuel(state.getValue(FUEL_LEVEL))
-        val maxFuel = Fuel.MAX
         if (currentFuel >= maxFuel) return InteractionResult.CONSUME
         if (level.isClientSide) return InteractionResult.CONSUME
         val newFuel = (currentFuel + fuelValueOfItem).coerceAtMost(maxFuel)
