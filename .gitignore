@@ -27,3 +27,4 @@ out/
 # Logs
 logs/
 survival/*/logs/
+fx/*/logs/

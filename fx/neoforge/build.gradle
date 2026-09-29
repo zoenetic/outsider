@@ -1,0 +1,59 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
+}
+
+repositories {
+    maven {
+        name = 'nyon'
+        url = uri('https://repo.nyon.dev/releases')
+        content { includeGroup('dev.nyon') }
+    }
+}
+
+dependencies {
+    implementation("dev.nyon:KotlinLangForge:${klf_version}")
+}
+
+neoForge {
+    version = neoforge_version
+
+    def at = common_project.file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+
+    runs {
+        configureEach {
+            ideName = "NeoForge ${it.name.capitalize()}"
+        }
+        client {
+            client()
+            gameDirectory = this.mkdir(this.file('runs/client'))
+        }
+        server {
+            server()
+            gameDirectory = this.mkdir(this.file('runs/server'))
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations.named(variant) {
+        attributes { attribute(loaderAttribute, 'neoforge') }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant ->
+        configurations.named(variant) {
+            attributes { attribute(loaderAttribute, 'neoforge') }
+        }
+    }
+}
