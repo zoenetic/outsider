@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.outsider.survival.emission.EmittingBlock
 import dev.zoenetic.outsider.survival.emission.LightTable
+import dev.zoenetic.outsider.survival.fire.FireInteractions
 import dev.zoenetic.outsider.survival.fuel.Burnout
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock
@@ -96,7 +97,14 @@ public open class OutsiderCampfireBlock(
         player: Player,
         hand: InteractionHand,
         hitResult: BlockHitResult
-    ): InteractionResult = CampfireInteractions.maybeRefuel(state, itemStack, level, pos, player)
+    ): InteractionResult {
+        val refuel = FireInteractions.maybeRefuel(state, itemStack, level, pos, player)
+        if (refuel != InteractionResult.PASS) return refuel
+        val lightTorch =
+            FireInteractions.maybeLightFromLitBlock(state, itemStack, level, pos, player)
+        if (lightTorch != InteractionResult.PASS) return lightTorch
+        return FireInteractions.maybeLightWithLitItem(state, itemStack, level, pos, player)
+    }
 
     override fun useWithoutItem(
         state: BlockState,
@@ -104,7 +112,7 @@ public open class OutsiderCampfireBlock(
         pos: BlockPos,
         player: Player,
         hitResult: BlockHitResult
-    ): InteractionResult = CampfireInteractions.maybeLight(state, level, pos, player)
+    ): InteractionResult = FireInteractions.maybeLightWithHandDrill(state, level, pos, player)
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val level = context.level

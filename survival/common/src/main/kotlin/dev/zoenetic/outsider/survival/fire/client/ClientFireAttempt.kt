@@ -1,6 +1,6 @@
-package dev.zoenetic.outsider.survival.campfire.client
+package dev.zoenetic.outsider.survival.fire.client
 
-import dev.zoenetic.outsider.survival.campfire.LIGHTING_FIRE_GRACE_PERIOD
+import dev.zoenetic.outsider.survival.fire.LIGHTING_FIRE_GRACE_PERIOD
 import net.minecraft.client.player.LocalPlayer
 
 // client only

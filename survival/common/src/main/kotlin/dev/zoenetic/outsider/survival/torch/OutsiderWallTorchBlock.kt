@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.torch
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
+import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.particles.SimpleParticleType
@@ -67,7 +68,11 @@ public class OutsiderWallTorchBlock(
     public override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         for (direction in context.nearestLookingDirections) {
             if (!direction.axis.isHorizontal) continue
-            val state = defaultBlockState().setValue(FACING, direction.opposite)
+            val state = defaultBlockState().setValue(FACING, direction.opposite).setValue(
+                LIT, context.itemInHand.has(
+                    OutsiderComponents.LIT
+                )
+            )
             if (state.canSurvive(context.level, context.clickedPos)) return state
         }
         return null

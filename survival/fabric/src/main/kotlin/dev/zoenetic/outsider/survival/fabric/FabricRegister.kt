@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry
+import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
+import java.util.function.Supplier
 
 public object FabricRegister : Register {
 
@@ -67,6 +69,22 @@ public object FabricRegister : Register {
             BlockItem(blockFactory(), properties.setId(key))
         )
         return holder.value().builtInRegistryHolder()
+    }
+
+    override fun <T : Any> component(
+        name: String,
+        builder: DataComponentType.Builder<T>
+    ): Supplier<DataComponentType<T>> {
+        val key = ResourceKey.create(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+        )
+        val type = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            key,
+            builder.build(),
+        )
+        return Supplier { type }
     }
 
     override fun sound(

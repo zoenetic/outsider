@@ -9,6 +9,7 @@ import dev.zoenetic.outsider.survival.vitals.Vitals
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 import net.minecraft.SharedConstants
 import net.minecraft.core.*
+import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.registries.VanillaRegistries
 import net.minecraft.resources.Identifier
@@ -44,6 +45,7 @@ import net.minecraft.world.level.levelgen.RandomState
 import net.minecraft.world.phys.AABB
 import org.mockito.Mockito.*
 import java.util.*
+import java.util.function.Supplier
 
 object TestRegistry : Register {
     private fun id(name: String) = Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
@@ -65,6 +67,11 @@ object TestRegistry : Register {
         properties: Item.Properties,
         blockFactory: () -> Block
     ): Holder<Item> = Holder.direct(mock(Item::class.java))
+
+    override fun <T : Any> component(
+        name: String,
+        builder: DataComponentType.Builder<T>
+    ): Supplier<DataComponentType<T>> = Supplier { mock<DataComponentType<T>>() }
 
     override fun sound(
         name: String,

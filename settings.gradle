@@ -27,7 +27,3 @@ includeBuild('build-logic')
 include('survival:common')
 include('survival:fabric')
 include('survival:neoforge')
-
-include('inventory:common')
-include('inventory:fabric')
-include('inventory:neoforge')

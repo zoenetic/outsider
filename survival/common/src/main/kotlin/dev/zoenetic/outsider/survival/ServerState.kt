@@ -1,6 +1,6 @@
 package dev.zoenetic.outsider.survival
 
-import dev.zoenetic.outsider.survival.campfire.FireAttempts
+import dev.zoenetic.outsider.survival.fire.FireAttempts
 import dev.zoenetic.outsider.survival.fuel.DropSchedule
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level

@@ -5,6 +5,7 @@ import dev.zoenetic.outsider.survival.platform.Register
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Holder
+import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
@@ -19,7 +20,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.attachment.AttachmentType
-import net.neoforged.neoforge.registries.*
+import net.neoforged.neoforge.registries.DeferredBlock
+import net.neoforged.neoforge.registries.DeferredHolder
+import net.neoforged.neoforge.registries.DeferredRegister
+import net.neoforged.neoforge.registries.NeoForgeRegistries
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -31,6 +35,8 @@ public object NeoForgeRegister : Register {
     private val blocks: DeferredRegister.Blocks = DeferredRegister.createBlocks(NAMESPACE)
     private val blockEntities: DeferredRegister<BlockEntityType<*>> =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, NAMESPACE)
+    private val components: DeferredRegister<DataComponentType<*>> =
+        DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, NAMESPACE)
     private val items: DeferredRegister.Items = DeferredRegister.createItems(NAMESPACE)
     private val sounds: DeferredRegister<SoundEvent> = DeferredRegister.create(
         BuiltInRegistries.SOUND_EVENT, NAMESPACE
@@ -58,7 +64,10 @@ public object NeoForgeRegister : Register {
     ): Holder<BlockEntityType<*>> {
         lateinit var holder: DeferredHolder<BlockEntityType<*>, BlockEntityType<*>>
         holder = blockEntities.register(name) { ->
-            BlockEntityType({ pos, state -> entityFactory(holder.value(), pos, state) }, blocksFactory())
+            BlockEntityType(
+                { pos, state -> entityFactory(holder.value(), pos, state) },
+                blocksFactory()
+            )
         }
         return holder
     }
@@ -71,6 +80,12 @@ public object NeoForgeRegister : Register {
         items.registerItem(name, { props ->
             BlockItem(blockFactory(), props)
         }, Supplier { properties })
+
+    override fun <T : Any> component(
+        name: String,
+        builder: DataComponentType.Builder<T>
+    ): DeferredHolder<DataComponentType<*>, DataComponentType<T>> =
+        components.register(name, Supplier { builder.build() })
 
     override fun sound(
         name: String,
@@ -93,6 +108,7 @@ public object NeoForgeRegister : Register {
         attachments.register(bus)
         blocks.register(bus)
         blockEntities.register(bus)
+        components.register(bus)
         items.register(bus)
         sounds.register(bus)
     }

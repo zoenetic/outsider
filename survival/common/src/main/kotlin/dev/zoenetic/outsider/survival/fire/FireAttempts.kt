@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.campfire
+package dev.zoenetic.outsider.survival.fire
 
 import net.minecraft.core.BlockPos
 import java.util.*

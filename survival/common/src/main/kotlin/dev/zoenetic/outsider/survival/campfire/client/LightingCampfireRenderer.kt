@@ -2,6 +2,7 @@ package dev.zoenetic.outsider.survival.campfire.client
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
+import dev.zoenetic.outsider.survival.fire.client.ClientFireAttempt
 import net.minecraft.client.model.geom.ModelPart
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState

@@ -3,7 +3,6 @@ package dev.zoenetic.outsider.survival.platform
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.vitals.Vitals
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 
 public interface Platform {
     public val name: String
