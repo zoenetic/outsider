@@ -21,6 +21,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
@@ -62,6 +63,17 @@ public open class OutsiderTorchBlock(
                 OutsiderComponents.LIT
             )
         )
+    }
+
+    override fun setPlacedBy(
+        level: Level,
+        pos: BlockPos,
+        state: BlockState,
+        by: LivingEntity?,
+        itemStack: ItemStack
+    ) {
+        itemStack.remove(OutsiderComponents.LIT)
+        super.setPlacedBy(level, pos, state, by, itemStack)
     }
 
     override fun useItemOn(
