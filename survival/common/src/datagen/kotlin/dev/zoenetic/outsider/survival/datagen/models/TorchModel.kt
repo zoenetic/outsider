@@ -1,20 +1,17 @@
 package dev.zoenetic.outsider.survival.datagen.models
 
+import dev.zoenetic.outsider.survival.Survival
+import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import net.minecraft.client.data.models.BlockModelGenerators
+import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
-import net.minecraft.client.data.models.model.ModelInstance
-import net.minecraft.client.data.models.model.ModelTemplates
-import net.minecraft.client.data.models.model.TextureMapping
-import net.minecraft.client.data.models.model.TextureSlot
-import net.minecraft.client.resources.model.sprite.Material
-import net.minecraft.core.Direction
+import net.minecraft.client.data.models.model.*
 import net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING
+import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
@@ -22,74 +19,85 @@ fun torchModel(
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,
-) {
-    val rotation = PropertyDispatch.modify(HORIZONTAL_FACING)
-        .select(Direction.EAST, BlockModelGenerators.NOP)
-        .select(Direction.SOUTH, BlockModelGenerators.Y_ROT_90)
-        .select(Direction.WEST, BlockModelGenerators.Y_ROT_180)
-        .select(Direction.NORTH, BlockModelGenerators.Y_ROT_270)
+): Identifier {
+    val block = OutsiderBlocks.TORCH
 
-    val particleMaterial = Material(Identifier.withDefaultNamespace("block/oak_log"))
+    fun template(lit: Boolean): Identifier =
+        Identifier.fromNamespaceAndPath(
+            Survival.NAMESPACE,
+            "block/template_torch_${if (lit) "lit" else "unlit"}"
+        )
 
-    val litMaterial = Material(Identifier.withDefaultNamespace("block/torch"))
-    val litTextures = TextureMapping().put(TextureSlot.TORCH, litMaterial)
-        .putForced(TextureSlot.PARTICLE, particleMaterial)
 
-    val unlitMaterial = Material(Identifier.withDefaultNamespace("block/torch"))
-    val unlitTextures = TextureMapping().put(TextureSlot.TORCH, unlitMaterial)
-        .putForced(TextureSlot.PARTICLE, particleMaterial)
+    val litModels: Map<Int, Identifier> = (0..15).associateWith { level ->
+        val texture =
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = true, level))
+        ModelTemplates.TORCH.createWithSuffix(
+            OutsiderBlocks.TORCH,
+            "_lit_fuel_$level",
+            texture,
+            modelOutput,
+        )
+    }
 
-    val groundModelLit =
-        plainVariant(ModelTemplates.TORCH.create(OutsiderBlocks.TORCH, litTextures, modelOutput))
+    val unlitModels: Map<Int, Identifier> = (0..15).associateWith { level ->
+        val texture =
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, level))
+        ModelTemplates.TORCH.createWithSuffix(
+            OutsiderBlocks.TORCH,
+            "_unlit_fuel_$level",
+            texture,
+            modelOutput,
+        )
+    }
 
-    val groundModelUnlit =
-        plainVariant(
-            ModelTemplates.TORCH.createWithSuffix(
-                OutsiderBlocks.TORCH,
-                "_unlit",
-                unlitTextures,
-                modelOutput
-            )
+    val deadModel =
+        ModelTemplate(
+            Optional.of(template(lit = false)),
+            Optional.empty(),
+            TextureSlot.TORCH
+        ).create(
+            ModelLocationUtils.getModelLocation(block, "_dead"),
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, 0)),
+            modelOutput
         )
 
     blockStateOutput.accept(
-        MultiVariantGenerator.dispatch(OutsiderBlocks.TORCH).with(
-            createBooleanModelDispatch(
-                BlockStateProperties.LIT,
-                groundModelLit,
-                groundModelUnlit,
+        MultiVariantGenerator.dispatch(block)
+            .with(
+                PropertyDispatch.initial(
+                    OutsiderBlockStateProperties.FUEL_LEVEL,
+                    BlockStateProperties.LIT
+                )
+                    .generate { level, isLit ->
+                        plainVariant((if (isLit) litModels else unlitModels).getValue(level))
+                    }
+
             )
+    )
+
+    val item = block.asItem()
+
+    val litItemModel = ModelTemplates.FLAT_ITEM.create(
+        ModelLocationUtils.getModelLocation(item, "_lit"),
+        TextureMapping.layer0(torchTexture(lit = true, 15)),
+        modelOutput
+    )
+
+    val unlitItemModel = ModelTemplates.FLAT_ITEM.create(
+        ModelLocationUtils.getModelLocation(item, "_unlit"),
+        TextureMapping.layer0(torchTexture(lit = false, 15)),
+        modelOutput
+    )
+
+    itemModelOutput.accept(
+        item,
+        ItemModelUtils.conditional(
+            ItemModelUtils.hasComponent(OutsiderComponents.LIT),
+            ItemModelUtils.plainModel(litItemModel),
+            ItemModelUtils.plainModel(unlitItemModel)
         )
     )
 
-    val wallModelOn =
-        plainVariant(
-            ModelTemplates.WALL_TORCH.create(
-                OutsiderBlocks.WALL_TORCH,
-                litTextures,
-                modelOutput
-            )
-        )
-
-    val wallModelOff =
-        plainVariant(
-            ModelTemplates.WALL_TORCH.createWithSuffix(
-                OutsiderBlocks.WALL_TORCH,
-                "_unlit",
-                unlitTextures,
-                modelOutput
-            )
-        )
-
-    blockStateOutput.accept(
-        MultiVariantGenerator.dispatch(OutsiderBlocks.WALL_TORCH).with(
-            createBooleanModelDispatch(
-                BlockStateProperties.LIT,
-                wallModelOn,
-                wallModelOff
-            )
-        ).with(rotation)
-    )
-
-    registerSimpleFlatItemModel(OutsiderBlocks.TORCH, itemModelOutput, modelOutput)
+    return deadModel
 }

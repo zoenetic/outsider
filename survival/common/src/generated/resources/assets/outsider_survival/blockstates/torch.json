@@ -1,10 +1,100 @@
 {
   "variants": {
-    "lit=false": {
-      "model": "outsider_survival:block/torch_unlit"
+    "fuel_level=0,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_0"
     },
-    "lit=true": {
-      "model": "outsider_survival:block/torch"
+    "fuel_level=0,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_0"
+    },
+    "fuel_level=1,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_1"
+    },
+    "fuel_level=1,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_1"
+    },
+    "fuel_level=10,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_10"
+    },
+    "fuel_level=10,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_10"
+    },
+    "fuel_level=11,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_11"
+    },
+    "fuel_level=11,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_11"
+    },
+    "fuel_level=12,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_12"
+    },
+    "fuel_level=12,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_12"
+    },
+    "fuel_level=13,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_13"
+    },
+    "fuel_level=13,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_13"
+    },
+    "fuel_level=14,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_14"
+    },
+    "fuel_level=14,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_14"
+    },
+    "fuel_level=15,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_15"
+    },
+    "fuel_level=15,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_15"
+    },
+    "fuel_level=2,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_2"
+    },
+    "fuel_level=2,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_2"
+    },
+    "fuel_level=3,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_3"
+    },
+    "fuel_level=3,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_3"
+    },
+    "fuel_level=4,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_4"
+    },
+    "fuel_level=4,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_4"
+    },
+    "fuel_level=5,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_5"
+    },
+    "fuel_level=5,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_5"
+    },
+    "fuel_level=6,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_6"
+    },
+    "fuel_level=6,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_6"
+    },
+    "fuel_level=7,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_7"
+    },
+    "fuel_level=7,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_7"
+    },
+    "fuel_level=8,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_8"
+    },
+    "fuel_level=8,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_8"
+    },
+    "fuel_level=9,lit=false": {
+      "model": "outsider_survival:block/torch_unlit_fuel_9"
+    },
+    "fuel_level=9,lit=true": {
+      "model": "outsider_survival:block/torch_lit_fuel_9"
     }
   }
 }

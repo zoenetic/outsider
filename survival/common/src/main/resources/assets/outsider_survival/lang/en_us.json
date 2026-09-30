@@ -1,4 +1,9 @@
 {
+  "block.outsider_survival.campfire": "Campfire",
+  "block.outsider_survival.dead_campfire": "Burnt Out Campfire",
+  "block.outsider_survival.dead_torch": "Burnt Out Torch",
+  "block.outsider_survival.firewood": "Firewood",
+  "block.outsider_survival.torch": "Torch",
   "subtitles.outsider_survival.breath": "Player breathes",
   "subtitles.outsider_survival.heartbeat": "Heart pounds",
   "subtitles.outsider_survival.fire_failure": "Striking a fire",

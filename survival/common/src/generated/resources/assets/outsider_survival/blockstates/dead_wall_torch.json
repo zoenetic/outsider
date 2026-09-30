@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "outsider_survival:block/wall_torch_dead"
+    },
+    "facing=north": {
+      "model": "outsider_survival:block/wall_torch_dead",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "outsider_survival:block/wall_torch_dead",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "outsider_survival:block/wall_torch_dead",
+      "y": 180
+    }
+  }
+}

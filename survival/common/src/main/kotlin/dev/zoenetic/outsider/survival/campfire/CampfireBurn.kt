@@ -10,7 +10,7 @@ public enum class CampfireStage(public val id: String) {
 }
 
 public object CampfireBurn {
-    public const val FRESH_STEP: Int = 15
+    public const val FULL_STEP: Int = 15
     public const val SUNK_AT_STEP: Int = 3
 
     private const val TOP_FRESH_AT = 15
@@ -29,7 +29,7 @@ public object CampfireBurn {
     }
 
     private fun step(level: Int, freshAt: Int, blackAt: Int): Int =
-        (FRESH_STEP * (level - blackAt).toDouble() / (freshAt - blackAt))
+        (FULL_STEP * (level - blackAt).toDouble() / (freshAt - blackAt))
             .roundToInt()
-            .coerceIn(0, FRESH_STEP)
+            .coerceIn(0, FULL_STEP)
 }

@@ -1,9 +1,6 @@
 package dev.zoenetic.outsider.survival.fabric.datagen
 
-import dev.zoenetic.outsider.survival.datagen.models.campfireModel
-import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
-import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
-import dev.zoenetic.outsider.survival.datagen.models.torchModel
+import dev.zoenetic.outsider.survival.datagen.models.*
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -36,10 +33,26 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             TextureSlot.create("billet")
         )
 
-        torchModel(
+        val torch0 = torchModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
             blocks.itemModelOutput,
+        )
+
+        deadTorchModel(
+            blocks.blockStateOutput,
+            torch0,
+        )
+
+        val wallTorch0 = wallTorchModel(
+            blocks.blockStateOutput,
+            blocks.modelOutput,
+            blocks.itemModelOutput,
+        )
+
+        deadWallTorchModel(
+            blocks.blockStateOutput,
+            wallTorch0,
         )
     }
 

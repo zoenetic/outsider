@@ -1,9 +1,6 @@
 package dev.zoenetic.outsider.survival.neoforge.datagen
 
-import dev.zoenetic.outsider.survival.datagen.models.campfireModel
-import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
-import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
-import dev.zoenetic.outsider.survival.datagen.models.torchModel
+import dev.zoenetic.outsider.survival.datagen.models.*
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderItems
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -60,10 +57,26 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             TextureSlot.create("billet")
         )
 
-        torchModel(
+        val torch0 = torchModel(
             blocks.blockStateOutput,
             items.modelOutput,
             items.itemModelOutput
+        )
+
+        val wallTorch0 = wallTorchModel(
+            blocks.blockStateOutput,
+            items.modelOutput,
+            items.itemModelOutput
+        )
+
+        deadTorchModel(
+            blocks.blockStateOutput,
+            torch0,
+        )
+
+        deadWallTorchModel(
+            blocks.blockStateOutput,
+            wallTorch0,
         )
     }
 }

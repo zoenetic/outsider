@@ -1,6 +1,5 @@
 package dev.zoenetic.outsider.survival.registry
 
-import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.PushReaction
@@ -35,5 +34,12 @@ public object OutsiderBlockBehaviour {
         public fun wallTorch(): BlockBehaviour.Properties = torch()
             .overrideLootTable(OutsiderBlocks.TORCH.lootTable)
             .overrideDescription(OutsiderBlocks.TORCH.descriptionId)
+
+        public fun deadTorch(): BlockBehaviour.Properties = torch()
+
+        public fun deadWallTorch(): BlockBehaviour.Properties =
+            torch().overrideLootTable(OutsiderBlocks.DEAD_TORCH.lootTable)
+                .overrideDescription(OutsiderBlocks.DEAD_TORCH.descriptionId)
+
     }
 }

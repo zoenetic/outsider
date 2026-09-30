@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "outsider_survival:block/torch_dead"
+    }
+  }
+}

@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.torch
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
+import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -58,6 +59,10 @@ public class OutsiderWallTorchBlock(
         builder.add(FACING)
     }
 
+    override fun exhausted(state: BlockState): BlockState =
+        OutsiderBlocks.DEAD_WALL_TORCH.defaultBlockState()
+            .setValue(FACING, state.getValue(FACING))
+
     public override fun getShape(
         state: BlockState,
         level: BlockGetter,
@@ -107,6 +112,6 @@ public class OutsiderWallTorchBlock(
                     Properties.CODEC.fieldOf("properties").forGetter { b -> b.props }
                 ).apply(i, ::OutsiderWallTorchBlock)
             }
-    }
 
+    }
 }

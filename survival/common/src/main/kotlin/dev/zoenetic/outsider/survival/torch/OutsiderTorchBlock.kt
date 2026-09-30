@@ -10,6 +10,7 @@ import dev.zoenetic.outsider.survival.fuel.Burnout
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
+import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
@@ -122,7 +123,8 @@ public open class OutsiderTorchBlock(
     override fun getBurnout(existingBurnout: Time?, now: Time, fuel: Fuel): Burnout =
         Burnout.forFuel(existingBurnout, now, fuel, fuelCapacity, burnRate)
 
-    override fun exhausted(state: BlockState): BlockState = state.setValue(LIT, false)
+    override fun exhausted(state: BlockState): BlockState =
+        OutsiderBlocks.DEAD_TORCH.defaultBlockState()
 
     public companion object {
         public val PARTICLE_OPTIONS_FIELD: MapCodec<SimpleParticleType> =

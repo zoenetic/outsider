@@ -1,9 +1,6 @@
 package dev.zoenetic.outsider.survival.datagen
 
-import dev.zoenetic.outsider.survival.datagen.loot.campfireLootTable
-import dev.zoenetic.outsider.survival.datagen.loot.deadCampfireLootTable
-import dev.zoenetic.outsider.survival.datagen.loot.firewoodLootTable
-import dev.zoenetic.outsider.survival.datagen.loot.torchLootTable
+import dev.zoenetic.outsider.survival.datagen.loot.*
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.DataProvider
@@ -37,6 +34,11 @@ class OutsiderLootTables : LootTableSubProvider {
         output.accept(
             OutsiderBlocks.TORCH.lootTable.orElseThrow(),
             torchLootTable()
+        )
+
+        output.accept(
+            OutsiderBlocks.DEAD_TORCH.lootTable.orElseThrow(),
+            deadTorchLootTable()
         )
     }
 

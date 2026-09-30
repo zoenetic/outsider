@@ -1,11 +1,13 @@
 package dev.zoenetic.outsider.survival.datagen.models
 
+import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import net.minecraft.client.data.models.BlockModelGenerators
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.MultiVariant
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
 import net.minecraft.client.data.models.model.*
 import net.minecraft.client.renderer.block.dispatch.Variant
+import net.minecraft.client.resources.model.sprite.Material
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.minecraft.util.random.Weighted
@@ -59,3 +61,14 @@ fun horizontalRotation() = PropertyDispatch.modify(HORIZONTAL_FACING)
     .select(Direction.EAST, BlockModelGenerators.Y_ROT_270)
     .select(Direction.SOUTH, BlockModelGenerators.NOP)
     .select(Direction.WEST, BlockModelGenerators.Y_ROT_90)
+
+fun reversedHorizontalRotation() = PropertyDispatch.modify(HORIZONTAL_FACING)
+    .select(Direction.EAST, BlockModelGenerators.NOP)
+    .select(Direction.SOUTH, BlockModelGenerators.Y_ROT_90)
+    .select(Direction.WEST, BlockModelGenerators.Y_ROT_180)
+    .select(Direction.NORTH, BlockModelGenerators.Y_ROT_270)
+
+fun torchTexture(lit: Boolean, level: Int): Material = TextureMapping.getBlockTexture(
+    OutsiderBlocks.TORCH,
+    "_${if (lit) "lit" else "unlit"}_${minOf(7, (level + 1) / 2)}",
+)
