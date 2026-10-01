@@ -63,6 +63,9 @@ public open class OutsiderTorchBlock(
             LIT, context.itemInHand.has(
                 OutsiderComponents.LIT
             )
+        )?.setValue(
+            FUEL_LEVEL,
+            context.itemInHand.getOrDefault(OutsiderComponents.FUEL_LEVEL, Fuel.MAX).level
         )
     }
 
@@ -94,10 +97,7 @@ public open class OutsiderTorchBlock(
 
     override val lightTable: LightTable = LightTable.IDENTITY
 
-    override val fuelCapacity: Fuel
-        get() = super.fuelCapacity
-
-    override val maxLight: Light get() = Light(lightTable[fuelCapacity.level])
+    override val maxLight: Light get() = Light(lightTable[Fuel.MAX.level])
 
     override val burnRate: Duration get() = Duration(200L)
 
@@ -116,12 +116,12 @@ public open class OutsiderTorchBlock(
     override fun getFuel(state: BlockState): Fuel = Fuel(state.getValue(FUEL_LEVEL))
 
     override fun setFuel(state: BlockState, fuel: Fuel): BlockState {
-        val newValue = fuel.coerceAtMost(fuelCapacity)
+        val newValue = fuel.coerceAtMost(Fuel.MAX)
         return state.setValue(FUEL_LEVEL, newValue.level)
     }
 
     override fun getBurnout(existingBurnout: Time?, now: Time, fuel: Fuel): Burnout =
-        Burnout.forFuel(existingBurnout, now, fuel, fuelCapacity, burnRate)
+        Burnout.forFuel(existingBurnout, now, fuel, Fuel.MAX, burnRate)
 
     override fun exhausted(state: BlockState): BlockState =
         OutsiderBlocks.DEAD_TORCH.defaultBlockState()

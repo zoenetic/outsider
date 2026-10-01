@@ -6,6 +6,7 @@ import dev.zoenetic.outsider.survival.ServerState
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.emission.EmittingBlock.Companion.emitterOrNull
 import dev.zoenetic.outsider.survival.fuel.Burnout
+import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
@@ -23,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraft.world.phys.Vec3
-import java.util.Arrays
+import java.util.*
 import java.util.stream.LongStream
 
 public object EmitterIndex {
@@ -161,7 +162,7 @@ public object EmitterIndex {
             }
             chunk.applyDrops(now)
             val index = Survival.platform.emitters.get(chunk)
-            schedule.reset(chunkPos, index?.let { chunk.earliestDeadline(it, now)} )
+            schedule.reset(chunkPos, index?.let { chunk.earliestDeadline(it, now) })
         }
     }
 
@@ -184,9 +185,9 @@ public object EmitterIndex {
     private fun dropDeadline(state: BlockState, burnout: Burnout?, now: Time): Time? {
         if (burnout == null || burnout == Burnout.NEVER) return null
         val fuelled = state.block.fuelledOrNull() ?: return null
-        val stateIsBehind = burnout.fuelAt(now, fuelled.fuelCapacity, fuelled.burnRate) < fuelled.getFuel(state)
+        val stateIsBehind = burnout.fuelAt(now, Fuel.MAX, fuelled.burnRate) < fuelled.getFuel(state)
         if (stateIsBehind) return now
-        return burnout.nextDropAt(now, fuelled.fuelCapacity, fuelled.burnRate)
+        return burnout.nextDropAt(now, Fuel.MAX, fuelled.burnRate)
     }
 
     private fun reconciledBurnout(state: BlockState, stored: Time?, now: Time): Burnout? {
@@ -247,7 +248,7 @@ public object EmitterIndex {
             val pos = BlockPos.of(key)
             val state = getBlockState(pos)
             val fuelled = state.block.fuelledOrNull() ?: continue
-            val wanted = Burnout(at).fuelAt(now, fuelled.fuelCapacity, fuelled.burnRate)
+            val wanted = Burnout(at).fuelAt(now, Fuel.MAX, fuelled.burnRate)
             if (wanted == fuelled.getFuel(state)) continue
             val drained = fuelled.setFuel(state, wanted)
             val next = if (wanted.level == 0) fuelled.exhausted(drained) else (drained)
@@ -261,7 +262,8 @@ public object EmitterIndex {
         while (keys.hasNext()) {
             val key = keys.nextLong()
             val at = index.burnoutAt(key) ?: continue
-            val deadline = dropDeadline(getBlockState(BlockPos.of(key)), Burnout(at), now) ?: continue
+            val deadline =
+                dropDeadline(getBlockState(BlockPos.of(key)), Burnout(at), now) ?: continue
             val current = earliest
             if (current == null || deadline < current) earliest = deadline
         }
@@ -298,7 +300,8 @@ public object EmitterIndex {
             for (localY in 0..15) {
                 for (localZ in 0..15) {
                     for (localX in 0..15) {
-                        val blockPos = BlockPos(originX + localX, originY + localY, originZ + localZ)
+                        val blockPos =
+                            BlockPos(originX + localX, originY + localY, originZ + localZ)
                         val state = section.getBlockState(localX, localY, localZ)
                         val key = blockPos.asLong()
                         val burnout = reconciledBurnout(state, index.burnoutAt(key), now)

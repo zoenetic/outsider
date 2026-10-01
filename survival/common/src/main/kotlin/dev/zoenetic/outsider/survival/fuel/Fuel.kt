@@ -1,8 +1,13 @@
 package dev.zoenetic.outsider.survival.fuel
 
+import com.mojang.serialization.Codec
+import io.netty.buffer.ByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
+
 public data class Fuel(public val level: Int) {
     init {
-        require(level in 0..31) { "fuel level out of range: $level" }
+        require(level in 0..15) { "fuel level out of range: $level" }
     }
 
     public operator fun plus(other: Fuel): Fuel =
@@ -17,5 +22,14 @@ public data class Fuel(public val level: Int) {
     public companion object {
         public val EMPTY: Fuel = Fuel(0)
         public val MAX: Fuel = Fuel(15)
+
+        public val CODEC: Codec<Fuel> = Codec.intRange(0, MAX.level).xmap(
+            ::Fuel,
+            Fuel::level,
+        )
+        public val STREAM_CODEC: StreamCodec<ByteBuf, Fuel> = ByteBufCodecs.VAR_INT.map(
+            ::Fuel,
+            Fuel::level
+        )
     }
 }

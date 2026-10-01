@@ -25,7 +25,7 @@ fun torchModel(
     fun template(lit: Boolean): Identifier =
         Identifier.fromNamespaceAndPath(
             Survival.NAMESPACE,
-            "block/template_torch_${if (lit) "lit" else "unlit"}"
+            "block/template_torch_${if (lit) "lit" else "unlit"}_dead"
         )
 
 

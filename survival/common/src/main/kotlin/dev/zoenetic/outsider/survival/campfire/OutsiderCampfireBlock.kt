@@ -48,20 +48,17 @@ public open class OutsiderCampfireBlock(
                 .setValue(SIGNAL_FIRE, false)
                 .setValue(WATERLOGGED, false)
                 .setValue(FACING, Direction.NORTH)
-                .setValue(FUEL_LEVEL, fuelCapacity.level)
+                .setValue(FUEL_LEVEL, Fuel.MAX.level)
         )
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun codec(): MapCodec<CampfireBlock> = CODEC as MapCodec<CampfireBlock>
 
-    override val fuelCapacity: Fuel
-        get() = Fuel.MAX
-
     override val maxHeat: Heat
         get() = Heat(20.0)
 
-    override val maxLight: Light get() = Light(lightTable[fuelCapacity.level])
+    override val maxLight: Light get() = Light(lightTable[Fuel.MAX.level])
 
     override val burnRate: Duration get() = Duration(800L)
 
@@ -77,12 +74,12 @@ public open class OutsiderCampfireBlock(
     override fun getFuel(state: BlockState): Fuel = Fuel(state.getValue(FUEL_LEVEL))
 
     override fun setFuel(state: BlockState, fuel: Fuel): BlockState {
-        val newValue = fuel.coerceAtMost(fuelCapacity)
+        val newValue = fuel.coerceAtMost(Fuel.MAX)
         return state.setValue(FUEL_LEVEL, newValue.level)
     }
 
     override fun getBurnout(existingBurnout: Time?, now: Time, fuel: Fuel): Burnout =
-        Burnout.forFuel(existingBurnout, now, fuel, fuelCapacity, burnRate)
+        Burnout.forFuel(existingBurnout, now, fuel, Fuel.MAX, burnRate)
 
     override fun exhausted(state: BlockState): BlockState =
         OutsiderBlocks.DEAD_CAMPFIRE.defaultBlockState()

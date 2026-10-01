@@ -3,7 +3,6 @@ package dev.zoenetic.outsider.survival.datagen.models
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.torch.TorchStage
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
@@ -22,12 +21,12 @@ fun wallTorchModel(
 ): Identifier {
     val block = OutsiderBlocks.WALL_TORCH
 
-    fun template(stage: TorchStage, lit: Boolean): Identifier =
+    fun template(lit: Boolean): Identifier =
         Identifier.fromNamespaceAndPath(
             Survival.NAMESPACE,
-            "block/template_wall_torch_${if (lit) "lit" else "unlit"}_${stage.id}"
+            "block/template_wall_torch_${if (lit) "lit" else "unlit"}_dead"
         )
-    
+
     val litModels: Map<Int, Identifier> = (0..15).associateWith { level ->
         val texture =
             TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = true, level))
@@ -52,7 +51,7 @@ fun wallTorchModel(
 
     val deadModel =
         ModelTemplate(
-            Optional.of(template(TorchStage.DEAD, lit = false)),
+            Optional.of(template(lit = false)),
             Optional.empty(),
             TextureSlot.TORCH
         ).create(

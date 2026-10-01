@@ -1,6 +1,7 @@
 package dev.zoenetic.outsider.survival.registry
 
 import dev.zoenetic.outsider.survival.Survival
+import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.platform.getValue
 import net.minecraft.core.Direction
 import net.minecraft.world.item.Item
@@ -12,7 +13,7 @@ public object OutsiderItems {
         Item.Properties(),
         OutsiderBlocks::CAMPFIRE,
     )
-    
+
     public val FIREWOOD: Item by Survival.platform.register.blockItem(
         "firewood",
         Item.Properties(),
@@ -25,6 +26,7 @@ public object OutsiderItems {
         OutsiderBlocks::WALL_TORCH,
         Direction.DOWN,
         Item.Properties()
+            .component(OutsiderComponents.FUEL_LEVEL, Fuel.MAX)
     )
 
     public fun init() {}

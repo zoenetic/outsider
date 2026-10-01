@@ -4,7 +4,6 @@ import dev.zoenetic.outsider.survival.ServerState
 import dev.zoenetic.outsider.survival.fire.client.ClientFireAttempt
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelValues
-import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import dev.zoenetic.outsider.survival.registry.OutsiderItems
@@ -102,11 +101,10 @@ public object FireInteractions {
     ): InteractionResult {
         val fuelValueOfItem = FuelValues.get(itemStack.item)
         if (fuelValueOfItem == Fuel.EMPTY) return InteractionResult.PASS
-        val maxFuel = state.block.fuelledOrNull()?.fuelCapacity ?: return InteractionResult.PASS
         val currentFuel = Fuel(state.getValue(FUEL_LEVEL))
-        if (currentFuel >= maxFuel) return InteractionResult.CONSUME
+        if (currentFuel >= Fuel.MAX) return InteractionResult.CONSUME
         if (level.isClientSide) return InteractionResult.CONSUME
-        val newFuel = (currentFuel + fuelValueOfItem).coerceAtMost(maxFuel)
+        val newFuel = (currentFuel + fuelValueOfItem).coerceAtMost(Fuel.MAX)
         level.setBlock(pos, state.setValue(FUEL_LEVEL, newFuel.level), 3)
         itemStack.consume(1, player)
         level.playSound(null, pos, OutsiderSounds.REFUEL_FIRE, SoundSource.BLOCKS, 1F, 1F)
