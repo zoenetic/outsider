@@ -1,0 +1,4 @@
+- maybeRefuel needs to go via burnout (`Burnout.refuel` exists, unused); writing FUEL_LEVEL directly resets the partial step
+- particle effect when a campfire burns out to the dead campfire
+- handle replacing vanilla light/heat sources in world gen or later
+- items with a fuel level (torches) show it as a durability-style bar (`isBarVisible` / `getBarWidth` / `getBarColor`); needs a torch item subclass, as the torch is currently a plain `StandingAndWallBlockItem`
