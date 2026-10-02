@@ -35,20 +35,26 @@ public interface Register {
 
     public fun blockEntity(
         name: String,
+        blocksFactory: () -> Set<Block>,
         entityFactory: (BlockEntityType<*>, BlockPos, BlockState) -> BlockEntity,
-        blocksFactory: () -> Set<Block>
     ): Holder<BlockEntityType<*>>
 
     public fun blockItem(
         name: String,
-        properties: Item.Properties = Item.Properties(),
         blockFactory: () -> Block,
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item>
 
     public fun <T : Any> component(
         name: String,
         builder: DataComponentType.Builder<T>,
     ): Supplier<DataComponentType<T>>
+
+    public fun item(
+        name: String,
+        itemFactory: (Item.Properties) -> Item,
+        propertiesFactory: () -> Item.Properties,
+    ): Holder<Item>
 
     public fun sound(
         name: String,
@@ -60,7 +66,7 @@ public interface Register {
         block: () -> Block,
         wallBlock: () -> Block,
         attachmentDirection: Direction,
-        properties: Item.Properties = Item.Properties()
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item>
 
 }

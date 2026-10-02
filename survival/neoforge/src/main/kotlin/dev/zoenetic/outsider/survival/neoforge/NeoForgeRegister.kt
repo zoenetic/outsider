@@ -59,8 +59,8 @@ public object NeoForgeRegister : Register {
 
     override fun blockEntity(
         name: String,
+        blocksFactory: () -> Set<Block>,
         entityFactory: (BlockEntityType<*>, BlockPos, BlockState) -> BlockEntity,
-        blocksFactory: () -> Set<Block>
     ): Holder<BlockEntityType<*>> {
         lateinit var holder: DeferredHolder<BlockEntityType<*>, BlockEntityType<*>>
         holder = blockEntities.register(name) { ->
@@ -74,18 +74,27 @@ public object NeoForgeRegister : Register {
 
     override fun blockItem(
         name: String,
-        properties: Item.Properties,
-        blockFactory: () -> Block
+        blockFactory: () -> Block,
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item> =
         items.registerItem(name, { props ->
             BlockItem(blockFactory(), props)
-        }, Supplier { properties })
+        }, Supplier { propertiesFactory() })
 
     override fun <T : Any> component(
         name: String,
         builder: DataComponentType.Builder<T>
     ): DeferredHolder<DataComponentType<*>, DataComponentType<T>> =
         components.register(name, Supplier { builder.build() })
+
+    override fun item(
+        name: String,
+        itemFactory: (Item.Properties) -> Item,
+        propertiesFactory: () -> Item.Properties,
+    ): Holder<Item> =
+        items.registerItem(name, { props ->
+            itemFactory(props)
+        }, Supplier { propertiesFactory() })
 
     override fun sound(
         name: String,
@@ -98,11 +107,11 @@ public object NeoForgeRegister : Register {
         block: () -> Block,
         wallBlock: () -> Block,
         attachmentDirection: Direction,
-        properties: Item.Properties
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item> =
         items.registerItem(name, { props ->
             StandingAndWallBlockItem(block(), wallBlock(), attachmentDirection, props)
-        }, Supplier { properties })
+        }, Supplier { propertiesFactory() })
 
     public fun init(bus: IEventBus) {
         attachments.register(bus)

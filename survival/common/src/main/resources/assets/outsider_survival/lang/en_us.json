@@ -4,6 +4,7 @@
   "block.outsider_survival.dead_torch": "Burnt Out Torch",
   "block.outsider_survival.firewood": "Firewood",
   "block.outsider_survival.torch": "Torch",
+  "item.outsider_survival.torch_superstack": "Torch",
   "subtitles.outsider_survival.breath": "Player breathes",
   "subtitles.outsider_survival.heartbeat": "Heart pounds",
   "subtitles.outsider_survival.fire_failure": "Striking a fire",

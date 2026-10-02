@@ -3,12 +3,250 @@
     "type": "minecraft:condition",
     "component": "outsider_survival:lit",
     "on_false": {
-      "type": "minecraft:model",
-      "model": "outsider_survival:item/torch_unlit"
+      "type": "minecraft:select",
+      "cases": [
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_0"
+          },
+          "when": 0
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_1"
+          },
+          "when": 1
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_2"
+          },
+          "when": 2
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_3"
+          },
+          "when": 3
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_4"
+          },
+          "when": 4
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_5"
+          },
+          "when": 5
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_6"
+          },
+          "when": 6
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_7"
+          },
+          "when": 7
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_8"
+          },
+          "when": 8
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_9"
+          },
+          "when": 9
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_10"
+          },
+          "when": 10
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_11"
+          },
+          "when": 11
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_12"
+          },
+          "when": 12
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_13"
+          },
+          "when": 13
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_14"
+          },
+          "when": 14
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_unlit_fuel_15"
+          },
+          "when": 15
+        }
+      ],
+      "component": "outsider_survival:fuel_level",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "outsider_survival:item/torch_unlit_fuel_15"
+      },
+      "property": "minecraft:component"
     },
     "on_true": {
-      "type": "minecraft:model",
-      "model": "outsider_survival:item/torch_lit"
+      "type": "minecraft:select",
+      "cases": [
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_0"
+          },
+          "when": 0
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_1"
+          },
+          "when": 1
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_2"
+          },
+          "when": 2
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_3"
+          },
+          "when": 3
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_4"
+          },
+          "when": 4
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_5"
+          },
+          "when": 5
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_6"
+          },
+          "when": 6
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_7"
+          },
+          "when": 7
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_8"
+          },
+          "when": 8
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_9"
+          },
+          "when": 9
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_10"
+          },
+          "when": 10
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_11"
+          },
+          "when": 11
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_12"
+          },
+          "when": 12
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_13"
+          },
+          "when": 13
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_14"
+          },
+          "when": 14
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "outsider_survival:item/torch_lit_fuel_15"
+          },
+          "when": 15
+        }
+      ],
+      "component": "outsider_survival:fuel_level",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "outsider_survival:item/torch_lit_fuel_15"
+      },
+      "property": "minecraft:component"
     },
     "property": "minecraft:has_component"
   }

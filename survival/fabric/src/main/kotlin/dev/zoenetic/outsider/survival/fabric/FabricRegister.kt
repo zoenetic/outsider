@@ -42,8 +42,8 @@ public object FabricRegister : Register {
 
     override fun blockEntity(
         name: String,
+        blocksFactory: () -> Set<Block>,
         entityFactory: (BlockEntityType<*>, BlockPos, BlockState) -> BlockEntity,
-        blocksFactory: () -> Set<Block>
     ): Holder<BlockEntityType<*>> {
         val key = ResourceKey.create(
             Registries.BLOCK_ENTITY_TYPE,
@@ -56,8 +56,8 @@ public object FabricRegister : Register {
 
     override fun blockItem(
         name: String,
-        properties: Item.Properties,
-        blockFactory: () -> Block
+        blockFactory: () -> Block,
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item> {
         val key = ResourceKey.create(
             Registries.ITEM,
@@ -66,7 +66,7 @@ public object FabricRegister : Register {
         val holder = Registry.registerForHolder(
             BuiltInRegistries.ITEM,
             key,
-            BlockItem(blockFactory(), properties.setId(key))
+            BlockItem(blockFactory(), propertiesFactory().setId(key))
         )
         return holder.value().builtInRegistryHolder()
     }
@@ -87,6 +87,23 @@ public object FabricRegister : Register {
         return Supplier { type }
     }
 
+    override fun item(
+        name: String,
+        itemFactory: (Item.Properties) -> Item,
+        propertiesFactory: () -> Item.Properties,
+    ): Holder<Item> {
+        val key = ResourceKey.create(
+            Registries.ITEM,
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+        )
+        val holder = Registry.registerForHolder(
+            BuiltInRegistries.ITEM,
+            key,
+            itemFactory(propertiesFactory().setId(key))
+        )
+        return holder.value().builtInRegistryHolder()
+    }
+
     override fun sound(
         name: String,
         factory: (Identifier) -> SoundEvent
@@ -105,7 +122,7 @@ public object FabricRegister : Register {
         block: () -> Block,
         wallBlock: () -> Block,
         attachmentDirection: Direction,
-        properties: Item.Properties
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item> {
         val key = ResourceKey.create(
             Registries.ITEM,
@@ -118,7 +135,7 @@ public object FabricRegister : Register {
                 block(),
                 wallBlock(),
                 attachmentDirection,
-                properties.setId(key)
+                propertiesFactory().setId(key)
             )
         )
         return holder.value().builtInRegistryHolder()

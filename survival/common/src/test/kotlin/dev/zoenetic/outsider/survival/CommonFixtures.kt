@@ -59,20 +59,26 @@ object TestRegistry : Register {
 
     override fun blockEntity(
         name: String,
+        blocksFactory: () -> Set<Block>,
         entityFactory: (BlockEntityType<*>, BlockPos, BlockState) -> BlockEntity,
-        blocksFactory: () -> Set<Block>
     ): Holder<BlockEntityType<*>> = Holder.direct(mock(BlockEntityType::class.java))
 
     override fun blockItem(
         name: String,
-        properties: Item.Properties,
-        blockFactory: () -> Block
+        blockFactory: () -> Block,
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item> = Holder.direct(mock(Item::class.java))
 
     override fun <T : Any> component(
         name: String,
         builder: DataComponentType.Builder<T>
     ): Supplier<DataComponentType<T>> = Supplier { mock<DataComponentType<T>>() }
+
+    override fun item(
+        name: String,
+        itemFactory: (Item.Properties) -> Item,
+        propertiesFactory: () -> Item.Properties,
+    ): Holder<Item> = Holder.direct(mock(Item::class.java))
 
     override fun sound(
         name: String,
@@ -85,7 +91,7 @@ object TestRegistry : Register {
         block: () -> Block,
         wallBlock: () -> Block,
         attachmentDirection: Direction,
-        properties: Item.Properties
+        propertiesFactory: () -> Item.Properties,
     ): Holder<Item> = Holder.direct(mock(Item::class.java))
 }
 

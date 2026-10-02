@@ -1,6 +1,7 @@
 package dev.zoenetic.outsider.survival.datagen.models
 
 import dev.zoenetic.outsider.survival.Survival
+import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
@@ -9,6 +10,8 @@ import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerato
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
 import net.minecraft.client.data.models.model.*
+import net.minecraft.client.renderer.item.ItemModel
+import net.minecraft.client.renderer.item.properties.select.ComponentContents
 import net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import java.util.*
@@ -28,28 +31,19 @@ fun torchModel(
             "block/template_torch_${if (lit) "lit" else "unlit"}_dead"
         )
 
-
-    val litModels: Map<Int, Identifier> = (0..15).associateWith { level ->
+    fun models(lit: Boolean): Map<Int, Identifier> = (0..15).associateWith { level ->
         val texture =
-            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = true, level))
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit, level))
         ModelTemplates.TORCH.createWithSuffix(
             OutsiderBlocks.TORCH,
-            "_lit_fuel_$level",
+            "_${if (lit) "lit" else "unlit"}_fuel_$level",
             texture,
             modelOutput,
         )
     }
 
-    val unlitModels: Map<Int, Identifier> = (0..15).associateWith { level ->
-        val texture =
-            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, level))
-        ModelTemplates.TORCH.createWithSuffix(
-            OutsiderBlocks.TORCH,
-            "_unlit_fuel_$level",
-            texture,
-            modelOutput,
-        )
-    }
+    val litModels = models(lit = true)
+    val unlitModels = models(lit = false)
 
     val deadModel =
         ModelTemplate(
@@ -70,7 +64,11 @@ fun torchModel(
                     BlockStateProperties.LIT
                 )
                     .generate { level, isLit ->
-                        plainVariant((if (isLit) litModels else unlitModels).getValue(level))
+                        plainVariant(
+                            (if (isLit) litModels else unlitModels).getValue(
+                                level
+                            )
+                        )
                     }
 
             )
@@ -78,24 +76,34 @@ fun torchModel(
 
     val item = block.asItem()
 
-    val litItemModel = ModelTemplates.FLAT_ITEM.create(
-        ModelLocationUtils.getModelLocation(item, "_lit"),
-        TextureMapping.layer0(torchTexture(lit = true, 15)),
-        modelOutput
-    )
+    fun itemModels(lit: Boolean) = (0..15).associateWith { level ->
+        ModelTemplates.FLAT_ITEM.create(
+            ModelLocationUtils.getModelLocation(
+                item,
+                "_${if (lit) "lit" else "unlit"}_fuel_$level"
+            ),
+            TextureMapping.layer0(torchTexture(lit, level)),
+            modelOutput
+        )
+    }
 
-    val unlitItemModel = ModelTemplates.FLAT_ITEM.create(
-        ModelLocationUtils.getModelLocation(item, "_unlit"),
-        TextureMapping.layer0(torchTexture(lit = false, 15)),
-        modelOutput
-    )
+    fun unbakedItemModel(lit: Boolean): ItemModel.Unbaked {
+        val itemModels = itemModels(lit)
+        return ItemModelUtils.select(
+            ComponentContents(OutsiderComponents.FUEL_LEVEL),
+            ItemModelUtils.plainModel(itemModels.getValue(15)),
+            itemModels.map { (level, model) ->
+                ItemModelUtils.`when`(Fuel(level), ItemModelUtils.plainModel(model))
+            }
+        )
+    }
 
     itemModelOutput.accept(
         item,
         ItemModelUtils.conditional(
             ItemModelUtils.hasComponent(OutsiderComponents.LIT),
-            ItemModelUtils.plainModel(litItemModel),
-            ItemModelUtils.plainModel(unlitItemModel)
+            unbakedItemModel(lit = true),
+            unbakedItemModel(lit = false)
         )
     )
 

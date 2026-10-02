@@ -56,5 +56,7 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
         )
     }
 
-    override fun generateItemModels(itemModelGenerators: ItemModelGenerators) {}
+    override fun generateItemModels(itemModelGenerators: ItemModelGenerators) {
+        torchSuperstackModel(itemModelGenerators.itemModelOutput)
+    }
 }

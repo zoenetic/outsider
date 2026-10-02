@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "component": "outsider_survival:lit",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "outsider_survival:item/torch_unlit_fuel_15"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "outsider_survival:item/torch_lit_fuel_15"
+    },
+    "property": "minecraft:has_component"
+  }
+}

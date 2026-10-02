@@ -31,6 +31,7 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.CAMPFIRE),
             BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.FIREWOOD),
             BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH),
+            BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH_SUPERSTACK),
         )
 
     override fun registerModels(blocks: BlockModelGenerators, items: ItemModelGenerators) {
@@ -78,5 +79,7 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             blocks.blockStateOutput,
             wallTorch0,
         )
+
+        torchSuperstackModel(items.itemModelOutput)
     }
 }

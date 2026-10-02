@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "outsider_survival:block/torch_unlit_1"
+  }
+}
