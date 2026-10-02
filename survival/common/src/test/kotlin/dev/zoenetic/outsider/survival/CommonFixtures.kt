@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 import net.minecraft.SharedConstants
 import net.minecraft.core.*
 import net.minecraft.core.component.DataComponentType
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.registries.VanillaRegistries
 import net.minecraft.resources.Identifier
@@ -157,6 +158,12 @@ object CommonFixtures {
     fun bootstrap() {
         // called to initialise the fixtures
     }
+
+    private val itemComponentsBound: Unit by lazy {
+        BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(lookup).forEach { it.apply() }
+    }
+
+    fun bindItemComponents(): Unit = itemComponentsBound
 
     const val MIN_Y = -64
     const val HEIGHT = 384
