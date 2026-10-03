@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemInstance
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.BundleContents
 import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -363,6 +364,20 @@ class SuperStackTests {
         assertFalse(container.view().patchActiveStack(named("lit")))
 
         assertEquals(0, container.view().count)
+    }
+
+    @Test
+    fun `refreshing repairs a mirror left stale by a write that bypassed the view`() {
+        val container = Container(Rules(sort = mostWornFirst), wearAndName)
+        container.fill(stick(wear = 1))
+        val worn = ItemStackTemplate.fromNonEmptyStack(stick(wear = 5, name = "worn"))
+        container.stack.set(DataComponents.BUNDLE_CONTENTS, BundleContents(listOf(worn)))
+        assertEquals(1, container.stack.get(DataComponents.REPAIR_COST))
+
+        container.view().refreshMirroredComponents()
+
+        assertEquals(5, container.stack.get(DataComponents.REPAIR_COST))
+        assertEquals("worn", nameOf(container.stack))
     }
 
     @Test

@@ -1,14 +1,17 @@
 package dev.zoenetic.outsider.survival.superstack
 
+import net.minecraft.core.component.DataComponentGetter
 import net.minecraft.core.component.DataComponentPatch
+import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents.BUNDLE_CONTENTS
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.component.BundleContents
 
 public class SuperStack internal constructor(
     private val stack: ItemStack,
-    private val type: SuperStackType,
+    public val type: SuperStackType,
 ) {
     public val active: ItemStackTemplate?
         get() {
@@ -69,17 +72,26 @@ public class SuperStack internal constructor(
         return true
     }
 
-    private fun set(contents: BundleContents) {
-        stack.set(BUNDLE_CONTENTS, contents)
-        updateMirroredComponents(contents)
+    internal fun refreshMirroredComponents() {
+        val source = active ?: stack.item.components()
+        stack.applyComponents(
+            DataComponentPatch.builder().apply {
+                type.mirroredComponents.forEach { copy(it, source) }
+            }.build(),
+        )
     }
 
-    private fun updateMirroredComponents(contents: BundleContents) {
-        val index = activeIndex(contents.items())
-        val source = if (index != null) contents.items()[index] else stack.item.components()
-        type.mirroredComponents.forEach { componentType ->
-            stack.copyFrom(componentType, source)
-        }
+    private fun set(contents: BundleContents) {
+        stack.set(BUNDLE_CONTENTS, contents)
+        refreshMirroredComponents()
+    }
+
+    private fun <T : Any> DataComponentPatch.Builder.copy(
+        type: DataComponentType<T>,
+        source: DataComponentGetter,
+    ) {
+        val value = source.get(type)
+        if (value != null) set(type, value) else remove(type)
     }
 
     private fun List<ItemStackTemplate>.reducedAt(
@@ -109,11 +121,36 @@ public class SuperStack internal constructor(
         set(BundleContents.EMPTY)
         return stacks
     }
+
+    public companion object {
+        @JvmStatic
+        public fun <T : Any> routeSet(
+            stack: ItemStack,
+            type: DataComponentType<T>,
+            value: T?,
+        ): Boolean {
+            val superStack = stack.asSuperStackOrNull() ?: return false
+            if (!superStack.type.mirroredComponents.contains(type)) return false
+            val patch = if (value == null) {
+                DataComponentPatch.builder().remove(type).build()
+            } else {
+                DataComponentPatch.builder().set(type, value).build()
+            }
+            val _ = superStack.patchActiveStack(patch)
+            return true
+        }
+    }
 }
 
 public fun ItemStack.asSuperStackOrNull(): SuperStack? {
     val type = (item as? SuperStackItem)?.type ?: return null
     return SuperStack(this, type)
+}
+
+public fun ItemStack.isOrContains(item: Item): Boolean {
+    if (`is`(item)) return true
+    val superStack = asSuperStackOrNull() ?: return false
+    return superStack.type.item == item && superStack.count > 0
 }
 
 public fun ItemStack.moveIntoSuperStack(): ItemStack? {
