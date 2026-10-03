@@ -23,7 +23,7 @@ import kotlin.math.pow
 
 public object FireInteractions {
 
-    //TODO: Fuel checks
+    // TODO: Fuel checks
 
     @JvmStatic
     public fun maybeLightInHand(
@@ -44,7 +44,11 @@ public object FireInteractions {
 
     @JvmStatic
     public fun maybeLightFromLitBlock(
-        state: BlockState, itemStack: ItemStack, level: Level, pos: BlockPos, player: Player,
+        state: BlockState,
+        itemStack: ItemStack,
+        level: Level,
+        pos: BlockPos,
+        player: Player,
     ): InteractionResult {
         if (!itemStack.`is`(OutsiderItems.TORCH)) return InteractionResult.PASS
         if (itemStack.has(OutsiderComponents.LIT)) return InteractionResult.PASS
@@ -56,13 +60,19 @@ public object FireInteractions {
 
     @JvmStatic
     public fun maybeLightWithHandDrill(
-        state: BlockState, level: Level, pos: BlockPos,
-        player: Player
+        state: BlockState,
+        level: Level,
+        pos: BlockPos,
+        player: Player,
     ): InteractionResult {
         val k = 4.0
         val l = 90.0
         fun chance(attempt: Int): Double = (k / l) * (attempt / l).pow(k - 1)
-        if (!state.hasProperty(BlockStateProperties.LIT) || state.getValue(BlockStateProperties.LIT)) return InteractionResult.PASS
+        if (!state.hasProperty(BlockStateProperties.LIT) ||
+            state.getValue(BlockStateProperties.LIT)
+        ) {
+            return InteractionResult.PASS
+        }
         if (!player.hasEmptyHands()) return InteractionResult.PASS
         val time = level.gameTime
         if (level.isClientSide) {
@@ -82,9 +92,17 @@ public object FireInteractions {
 
     @JvmStatic
     public fun maybeLightWithLitItem(
-        state: BlockState, itemStack: ItemStack, level: Level, pos: BlockPos, player: Player,
+        state: BlockState,
+        itemStack: ItemStack,
+        level: Level,
+        pos: BlockPos,
+        player: Player,
     ): InteractionResult {
-        if (!state.hasProperty(BlockStateProperties.LIT) || state.getValue(BlockStateProperties.LIT)) return InteractionResult.PASS
+        if (!state.hasProperty(BlockStateProperties.LIT) ||
+            state.getValue(BlockStateProperties.LIT)
+        ) {
+            return InteractionResult.PASS
+        }
         if (!itemStack.has(OutsiderComponents.LIT)) return InteractionResult.PASS
         if (level.isClientSide) return InteractionResult.CONSUME
         level.setBlock(pos, state.setValue(BlockStateProperties.LIT, true), 3)
@@ -97,7 +115,7 @@ public object FireInteractions {
         itemStack: ItemStack,
         level: Level,
         pos: BlockPos,
-        player: Player
+        player: Player,
     ): InteractionResult {
         val fuelValueOfItem = FuelValues.get(itemStack.item)
         if (fuelValueOfItem == Fuel.EMPTY) return InteractionResult.PASS
@@ -113,9 +131,8 @@ public object FireInteractions {
 
     private fun Player.hasEmptyHands(): Boolean =
         getItemInHand(InteractionHand.MAIN_HAND).isEmpty &&
-                getItemInHand(InteractionHand.OFF_HAND).isEmpty
+            getItemInHand(InteractionHand.OFF_HAND).isEmpty
 
     private fun lightingSound(lit: Boolean): SoundEvent =
         if (lit) OutsiderSounds.FIRE_SUCCESS else OutsiderSounds.FIRE_FAILURE
-
 }

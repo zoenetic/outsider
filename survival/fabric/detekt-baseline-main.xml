@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:FabricPlatform.kt:FabricPlatform$( AttachmentRegistry.create(id("vitals")) { it.initializer { Vitals.DEFAULT } .persistent(Vitals.CODEC) .syncWith(Vitals.STREAM_CODEC, AttachmentSyncPredicate.all()) })</ID>
+    <ID>ArgumentListWrapping:FabricPlatform.kt:FabricPlatform$(EmitterIndex.STREAM_CODEC )</ID>
+    <ID>ClassSignature:FabricStorage.kt:FabricPersistentSyncedChunkStore&lt;T : Any&gt; : ChunkStore</ID>
+    <ID>ClassSignature:FabricStorage.kt:FabricPersistentSyncedPlayerStore&lt;T : Any&gt; : SyncedPlayerStore</ID>
+    <ID>ClassSignature:FabricStorage.kt:FabricPlayerStore&lt;T : Any&gt; : PlayerStore</ID>
+    <ID>FinalNewline:FabricWidener.kt:dev.zoenetic.outsider.survival.fabric.FabricWidener.kt</ID>
+    <ID>FunctionSignature:FabricRegister.kt:FabricRegister$override fun sound: Holder&lt;SoundEvent&gt;</ID>
+    <ID>FunctionSignature:FabricWidener.kt:FabricWidener$override fun addValidBlocks</ID>
+    <ID>ImportOrdering:FabricPlatform.kt:import dev.zoenetic.outsider.survival.Survival.MOD_ID import dev.zoenetic.outsider.survival.conditions.PlayerConditions import dev.zoenetic.outsider.survival.emission.EmitterIndex import dev.zoenetic.outsider.survival.platform.ChunkStore import dev.zoenetic.outsider.survival.platform.Platform import dev.zoenetic.outsider.survival.platform.PlayerStore import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore import dev.zoenetic.outsider.survival.platform.Widener import dev.zoenetic.outsider.survival.emission.isSendable import dev.zoenetic.outsider.survival.vitals.Vitals import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate import net.fabricmc.loader.api.FabricLoader import net.minecraft.resources.Identifier import net.minecraft.world.level.chunk.LevelChunk</ID>
+    <ID>Indentation:FabricPlatform.kt:FabricPlatform$ </ID>
+    <ID>NoBlankLineBeforeRbrace:FabricPlatform.kt:FabricPlatform$ </ID>
+    <ID>NoWildcardImports:FabricSurvival.kt:import dev.zoenetic.outsider.survival.debug.*</ID>
+    <ID>SpacingAroundParens:FabricPlatform.kt:FabricPlatform$(</ID>
+    <ID>SpacingAroundParens:FabricPlatform.kt:FabricPlatform$)</ID>
+    <ID>TrailingCommaOnCallSite:FabricPlatform.kt:FabricPlatform$( AttachmentRegistry.create(id("chunk_emitters")) { it.initializer { EmitterIndex.create() } .persistent(EmitterIndex.CODEC) .syncWith(EmitterIndex.STREAM_CODEC ) { chunk, _ -&gt; chunk is LevelChunk &amp;&amp; chunk.isSendable() } } )</ID>
+    <ID>TrailingCommaOnCallSite:FabricPlatform.kt:FabricPlatform$( AttachmentRegistry.create(id("player_conditions")) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricPlatform.kt:FabricPlatform$(EmitterIndex.STREAM_CODEC )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( BuiltInRegistries.BLOCK, key, blockFactory(propertiesFactory().setId(key)) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( BuiltInRegistries.ITEM, key, BlockItem(blockFactory(), propertiesFactory().setId(key)) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( BuiltInRegistries.ITEM, key, StandingAndWallBlockItem( block(), wallBlock(), attachmentDirection, propertiesFactory().setId(key) ) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( BuiltInRegistries.ITEM, key, itemFactory(propertiesFactory().setId(key)) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( BuiltInRegistries.SOUND_EVENT, ResourceKey.create(Registries.SOUND_EVENT, id), factory(id) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( Registries.BLOCK, Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( Registries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( Registries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( Registries.ITEM, Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricRegister.kt:FabricRegister$( block(), wallBlock(), attachmentDirection, propertiesFactory().setId(key) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricSurvival.kt:FabricSurvival$( rootCommand.then( survivalCommand .then(setBodyTemperatureCommand) .then(watchCommand) ) )</ID>
+    <ID>TrailingCommaOnCallSite:FabricSurvival.kt:FabricSurvival$( survivalCommand .then(setBodyTemperatureCommand) .then(watchCommand) )</ID>
+    <ID>TrailingCommaOnDeclarationSite:FabricRegister.kt:FabricRegister$( name: String, builder: DataComponentType.Builder&lt;T&gt; )</ID>
+    <ID>TrailingCommaOnDeclarationSite:FabricRegister.kt:FabricRegister$( name: String, factory: (Identifier) -&gt; SoundEvent )</ID>
+    <ID>TrailingCommaOnDeclarationSite:FabricWidener.kt:FabricWidener$( type: BlockEntityType&lt;*&gt;, blocks: () -&gt; List&lt;Block&gt; )</ID>
+    <ID>Wrapping:FabricPlatform.kt:FabricPlatform$(</ID>
+  </CurrentIssues>
+</SmellBaseline>

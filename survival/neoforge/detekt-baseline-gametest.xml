@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>PropertyName:SurvivalGameTests.kt:SurvivalGameTests$private val DEFAULT_ENVIRONMENT: Holder&lt;TestEnvironmentDefinition&lt;*&gt;&gt; = Holder.direct&lt;TestEnvironmentDefinition&lt;*&gt;&gt;( TestEnvironmentDefinition.AllOf(emptyList&lt;Holder&lt;TestEnvironmentDefinition&lt;*&gt;&gt;&gt;()) )</ID>
+    <ID>PropertyName:SurvivalGameTests.kt:SurvivalGameTests$private val EMPTY_STRUCTURE: Identifier = Identifier.withDefaultNamespace("empty")</ID>
+    <ID>TrailingCommaOnCallSite:SurvivalGameTests.kt:SurvivalGameTests$( TestEnvironmentDefinition.AllOf(emptyList&lt;Holder&lt;TestEnvironmentDefinition&lt;*&gt;&gt;&gt;()) )</ID>
+    <ID>VariableNaming:SurvivalGameTests.kt:SurvivalGameTests$private val DEFAULT_ENVIRONMENT: Holder&lt;TestEnvironmentDefinition&lt;*&gt;&gt; = Holder.direct&lt;TestEnvironmentDefinition&lt;*&gt;&gt;( TestEnvironmentDefinition.AllOf(emptyList&lt;Holder&lt;TestEnvironmentDefinition&lt;*&gt;&gt;&gt;()) )</ID>
+    <ID>VariableNaming:SurvivalGameTests.kt:SurvivalGameTests$private val EMPTY_STRUCTURE: Identifier = Identifier.withDefaultNamespace("empty")</ID>
+  </CurrentIssues>
+</SmellBaseline>

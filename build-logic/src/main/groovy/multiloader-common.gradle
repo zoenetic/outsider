@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
+    id 'dev.detekt'
 }
 
 def modProject = project.parent
@@ -27,9 +28,32 @@ java {
 kotlin {
     compilerOptions {
         progressiveMode = true
-        freeCompilerArgs.addAll('-Xjvm-default=all', '-Xreturn-value-checker=full')
+        allWarningsAsErrors = true
+        jvmDefault = org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY
+        // Mojang's @Deprecated mostly means "internal: override, don't call", which modding code can't
+        // avoid, so deprecations stay visible as warnings without failing the build.
+        freeCompilerArgs.addAll('-Xreturn-value-checker=full', '-Xwarning-level=DEPRECATION:warning')
     }
     explicitApi()
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    parallel = true
+    config.setFrom(rootProject.file('config/detekt/detekt.yml'))
+    baseline = file('detekt-baseline.xml')
+}
+
+dependencies {
+    detektPlugins 'dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.6'
+}
+
+// `check` only runs the plain `detekt` task, which has no type resolution, so several rules can't run.
+// Run the per-source-set type-resolution tasks instead, and turn the plain one off so findings
+// aren't reported twice.
+tasks.named('detekt') { enabled = false }
+tasks.named('check') {
+    dependsOn tasks.matching { it.name ==~ /detekt(Main|Test|Gametest|Datagen)/ }
 }
 
 jar {

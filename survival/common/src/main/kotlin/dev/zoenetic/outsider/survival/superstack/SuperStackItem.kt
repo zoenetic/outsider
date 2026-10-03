@@ -18,7 +18,7 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
             context.clickLocation,
             context.clickedFace,
             context.clickedPos,
-            context.isInside
+            context.isInside,
         )
         val item = superStack.split(1)
         val newContext = BlockPlaceContext(player, hand, item, hitResult)
@@ -28,5 +28,4 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         }
         return result
     }
-
 }

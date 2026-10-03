@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>FinalNewline:OutsiderFabricModelProvider.kt:dev.zoenetic.outsider.survival.fabric.datagen.OutsiderFabricModelProvider.kt</ID>
+    <ID>NoEmptyFirstLineInMethodBlock:OutsiderFabricModelProvider.kt:OutsiderFabricModelProvider$ </ID>
+    <ID>NoWildcardImports:OutsiderFabricModelProvider.kt:import dev.zoenetic.outsider.survival.datagen.models.*</ID>
+    <ID>TrailingCommaOnCallSite:OutsiderFabricModelProvider.kt:OutsiderFabricModelProvider$( blocks.blockStateOutput, blocks.modelOutput, blocks.itemModelOutput, TextureSlot.create("billet") )</ID>
+  </CurrentIssues>
+</SmellBaseline>

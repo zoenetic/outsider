@@ -25,11 +25,10 @@ fun torchModel(
 ): Identifier {
     val block = OutsiderBlocks.TORCH
 
-    fun template(lit: Boolean): Identifier =
-        Identifier.fromNamespaceAndPath(
-            Survival.NAMESPACE,
-            "block/template_torch_${if (lit) "lit" else "unlit"}_dead"
-        )
+    fun template(lit: Boolean): Identifier = Identifier.fromNamespaceAndPath(
+        Survival.NAMESPACE,
+        "block/template_torch_${if (lit) "lit" else "unlit"}_dead",
+    )
 
     fun models(lit: Boolean): Map<Int, Identifier> = (0..15).associateWith { level ->
         val texture =
@@ -49,11 +48,11 @@ fun torchModel(
         ModelTemplate(
             Optional.of(template(lit = false)),
             Optional.empty(),
-            TextureSlot.TORCH
+            TextureSlot.TORCH,
         ).create(
             ModelLocationUtils.getModelLocation(block, "_dead"),
             TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, 0)),
-            modelOutput
+            modelOutput,
         )
 
     blockStateOutput.accept(
@@ -61,17 +60,17 @@ fun torchModel(
             .with(
                 PropertyDispatch.initial(
                     OutsiderBlockStateProperties.FUEL_LEVEL,
-                    BlockStateProperties.LIT
+                    BlockStateProperties.LIT,
                 )
                     .generate { level, isLit ->
                         plainVariant(
                             (if (isLit) litModels else unlitModels).getValue(
-                                level
-                            )
+                                level,
+                            ),
                         )
-                    }
+                    },
 
-            )
+            ),
     )
 
     val item = block.asItem()
@@ -80,10 +79,10 @@ fun torchModel(
         ModelTemplates.FLAT_ITEM.create(
             ModelLocationUtils.getModelLocation(
                 item,
-                "_${if (lit) "lit" else "unlit"}_fuel_$level"
+                "_${if (lit) "lit" else "unlit"}_fuel_$level",
             ),
             TextureMapping.layer0(torchTexture(lit, level)),
-            modelOutput
+            modelOutput,
         )
     }
 
@@ -94,7 +93,7 @@ fun torchModel(
             ItemModelUtils.plainModel(itemModels.getValue(15)),
             itemModels.map { (level, model) ->
                 ItemModelUtils.`when`(Fuel(level), ItemModelUtils.plainModel(model))
-            }
+            },
         )
     }
 
@@ -103,8 +102,8 @@ fun torchModel(
         ItemModelUtils.conditional(
             ItemModelUtils.hasComponent(OutsiderComponents.LIT),
             unbakedItemModel(lit = true),
-            unbakedItemModel(lit = false)
-        )
+            unbakedItemModel(lit = false),
+        ),
     )
 
     return deadModel

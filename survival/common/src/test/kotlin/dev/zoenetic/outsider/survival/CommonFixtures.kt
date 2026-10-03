@@ -54,7 +54,7 @@ object TestRegistry : Register {
     override fun block(
         name: String,
         blockFactory: (BlockBehaviour.Properties) -> Block,
-        propertiesFactory: () -> BlockBehaviour.Properties
+        propertiesFactory: () -> BlockBehaviour.Properties,
     ): Holder<Block> = Holder.direct(mock(Block::class.java))
 
     override fun blockEntity(
@@ -71,7 +71,7 @@ object TestRegistry : Register {
 
     override fun <T : Any> component(
         name: String,
-        builder: DataComponentType.Builder<T>
+        builder: DataComponentType.Builder<T>,
     ): Supplier<DataComponentType<T>> = Supplier { mock<DataComponentType<T>>() }
 
     override fun item(
@@ -80,10 +80,7 @@ object TestRegistry : Register {
         propertiesFactory: () -> Item.Properties,
     ): Holder<Item> = Holder.direct(mock(Item::class.java))
 
-    override fun sound(
-        name: String,
-        factory: (Identifier) -> SoundEvent
-    ): Holder<SoundEvent> =
+    override fun sound(name: String, factory: (Identifier) -> SoundEvent): Holder<SoundEvent> =
         Holder.direct(factory(id(name)))
 
     override fun standingAndWallBlockItem(
@@ -151,7 +148,6 @@ object TestPlatform : Platform {
                 byPlayer[player] = value
             }
         }
-
 }
 
 object CommonFixtures {
@@ -191,7 +187,7 @@ object CommonFixtures {
             PalettedContainer.codecRO(
                 RegistryFixedCodec.create(Registries.BIOME),
                 biomeStrategy,
-                plains
+                plains,
             ),
         )
     }
@@ -240,7 +236,7 @@ object CommonFixtures {
 
     private fun temperatureNoiseAt(pos: ChunkPos): Double =
         randomState.sampler().temperature().compute(
-            DensityFunction.SinglePointContext(pos.middleBlockX, SEA_LEVEL, pos.middleBlockZ)
+            DensityFunction.SinglePointContext(pos.middleBlockX, SEA_LEVEL, pos.middleBlockZ),
         )
 
     const val SCAN_RADIUS_CHUNKS: Int = 512
@@ -265,7 +261,7 @@ object CommonFixtures {
     private val biomeSource: MultiNoiseBiomeSource by lazy {
         MultiNoiseBiomeSource.createFromPreset(
             lookup.lookupOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST)
-                .getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD)
+                .getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD),
         )
     }
 
@@ -276,40 +272,35 @@ object CommonFixtures {
         randomState.sampler(),
     )
 
-    fun nearestSiteIn(vararg wanted: ResourceKey<Biome>): ClimateSite? =
-        climateScan
-            .sortedBy { it.pos.x * it.pos.x + it.pos.z * it.pos.z }
-            .firstOrNull { site -> wanted.any { biomeAt(site.pos).`is`(it) } }
+    fun nearestSiteIn(vararg wanted: ResourceKey<Biome>): ClimateSite? = climateScan
+        .sortedBy { it.pos.x * it.pos.x + it.pos.z * it.pos.z }
+        .firstOrNull { site -> wanted.any { biomeAt(site.pos).`is`(it) } }
 
-    class FakeWorld(
-        val level: ServerLevel,
-        val requestedChunks: MutableList<ChunkPos>,
-    ) {
+    class FakeWorld(val level: ServerLevel, val requestedChunks: MutableList<ChunkPos>) {
         fun playerAt(pos: BlockPos): ServerPlayer {
             val player = mock(ServerPlayer::class.java)
             doReturn(level).`when`(player).level()
             doReturn(pos).`when`(player).blockPosition()
             doReturn(net.minecraft.world.phys.Vec3(pos.x + 0.5, pos.y + 1.62, pos.z + 0.5)).`when`(
-                player
+                player,
             ).eyePosition
             doReturn(
                 AABB.ofSize(
                     net.minecraft.world.phys.Vec3(
                         pos.x + 0.5,
                         pos.y.toDouble(),
-                        pos.z + 0.5
-                    ), 0.6, 1.8, 0.6
-                )
+                        pos.z + 0.5,
+                    ),
+                    0.6,
+                    1.8,
+                    0.6,
+                ),
             ).`when`(player).boundingBox
             return player
         }
     }
 
-    fun fakeWorld(
-        skyBrightness: Int = 0,
-        gameTime: Long = 0L,
-        clockTime: Long = 0L,
-    ): FakeWorld {
+    fun fakeWorld(skyBrightness: Int = 0, gameTime: Long = 0L, clockTime: Long = 0L): FakeWorld {
         val level = climateLevel()
         val requested = mutableListOf<ChunkPos>()
         val chunks = HashMap<Long, LevelChunk>()

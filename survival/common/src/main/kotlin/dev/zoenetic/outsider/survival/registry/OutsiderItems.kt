@@ -5,7 +5,7 @@ import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.platform.getValue
 import dev.zoenetic.outsider.survival.superstack.SuperStackItem
 import dev.zoenetic.outsider.survival.superstack.SuperStackType
-import dev.zoenetic.outsider.survival.torch.torchRule
+import dev.zoenetic.outsider.survival.torch.TorchRules
 import net.minecraft.core.Direction
 import net.minecraft.core.component.DataComponents.BUNDLE_CONTENTS
 import net.minecraft.world.item.Item
@@ -27,7 +27,7 @@ public object OutsiderItems {
         "torch",
         OutsiderBlocks::TORCH,
         OutsiderBlocks::WALL_TORCH,
-        Direction.DOWN
+        Direction.DOWN,
     ) {
         Item.Properties()
             .component(OutsiderComponents.FUEL_LEVEL, Fuel.MAX)
@@ -39,16 +39,17 @@ public object OutsiderItems {
             SuperStackItem(
                 SuperStackType(
                     TORCH,
-                    torchRule,
+                    TorchRules,
+                    listOf(OutsiderComponents.FUEL_LEVEL, OutsiderComponents.LIT),
                 ),
-                properties
+                properties,
             )
         },
         {
             Item.Properties()
                 .component(BUNDLE_CONTENTS, BundleContents.EMPTY)
                 .stacksTo(1)
-        }
+        },
     )
 
     public fun init() {}

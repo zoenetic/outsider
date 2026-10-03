@@ -7,16 +7,14 @@ import net.minecraft.world.level.material.PushReaction
 public object OutsiderBlockBehaviour {
     public object Properties {
 
-        public fun campfire(): BlockBehaviour.Properties =
-            BlockBehaviour.Properties
-                .of()
-                .strength(2F)
-                .sound(SoundType.WOOD)
-                .ignitedByLava()
-                .noOcclusion()
+        public fun campfire(): BlockBehaviour.Properties = BlockBehaviour.Properties
+            .of()
+            .strength(2F)
+            .sound(SoundType.WOOD)
+            .ignitedByLava()
+            .noOcclusion()
 
-        public fun deadCampfire(): BlockBehaviour.Properties =
-            campfire().sound(SoundType.TUFF)
+        public fun deadCampfire(): BlockBehaviour.Properties = campfire().sound(SoundType.TUFF)
 
         public fun firewood(): BlockBehaviour.Properties = BlockBehaviour.Properties
             .of()
@@ -28,7 +26,7 @@ public object OutsiderBlockBehaviour {
             .instabreak()
             .sound(SoundType.WOOD)
             .pushReaction(
-                PushReaction.DESTROY
+                PushReaction.DESTROY,
             )
 
         public fun wallTorch(): BlockBehaviour.Properties = torch()
@@ -40,6 +38,5 @@ public object OutsiderBlockBehaviour {
         public fun deadWallTorch(): BlockBehaviour.Properties =
             torch().overrideLootTable(OutsiderBlocks.DEAD_TORCH.lootTable)
                 .overrideDescription(OutsiderBlocks.DEAD_TORCH.descriptionId)
-
     }
 }

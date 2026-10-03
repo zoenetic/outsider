@@ -34,16 +34,16 @@ import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT
 import net.minecraft.world.phys.BlockHitResult
 
-public open class OutsiderTorchBlock(
-    flameParticle: SimpleParticleType,
-    properties: Properties,
-) : TorchBlock(flameParticle, properties), EmittingBlock, FuelledBlock {
+public open class OutsiderTorchBlock(flameParticle: SimpleParticleType, properties: Properties) :
+    TorchBlock(flameParticle, properties),
+    EmittingBlock,
+    FuelledBlock {
 
     init {
         registerDefaultState(
             stateDefinition.any()
                 .setValue(LIT, false)
-                .setValue(FUEL_LEVEL, 15)
+                .setValue(FUEL_LEVEL, 15),
         )
     }
 
@@ -52,29 +52,31 @@ public open class OutsiderTorchBlock(
         super.animateTick(state, level, pos, random)
     }
 
-    protected override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
+    protected override fun createBlockStateDefinition(
+        builder: StateDefinition.Builder<Block, BlockState>,
+    ) {
         builder
             .add(LIT)
             .add(FUEL_LEVEL)
     }
 
-    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        return super.getStateForPlacement(context)?.setValue(
-            LIT, context.itemInHand.has(
-                OutsiderComponents.LIT
-            )
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? =
+        super.getStateForPlacement(context)?.setValue(
+            LIT,
+            context.itemInHand.has(
+                OutsiderComponents.LIT,
+            ),
         )?.setValue(
             FUEL_LEVEL,
-            context.itemInHand.getOrDefault(OutsiderComponents.FUEL_LEVEL, Fuel.MAX).level
+            context.itemInHand.getOrDefault(OutsiderComponents.FUEL_LEVEL, Fuel.MAX).level,
         )
-    }
 
     override fun setPlacedBy(
         level: Level,
         pos: BlockPos,
         state: BlockState,
         by: LivingEntity?,
-        itemStack: ItemStack
+        itemStack: ItemStack,
     ) {
         itemStack.remove(OutsiderComponents.LIT)
         super.setPlacedBy(level, pos, state, by, itemStack)
@@ -87,7 +89,7 @@ public open class OutsiderTorchBlock(
         pos: BlockPos,
         player: Player,
         hand: InteractionHand,
-        hitResult: BlockHitResult
+        hitResult: BlockHitResult,
     ): InteractionResult {
         val lightWithItem =
             FireInteractions.maybeLightWithLitItem(state, itemStack, level, pos, player)
@@ -104,7 +106,7 @@ public open class OutsiderTorchBlock(
     internal val props: Properties get() = properties
     internal val flame: SimpleParticleType get() = flameParticle
 
-    override val maxHeat: Heat = Heat(6.0) //TODO: fix
+    override val maxHeat: Heat = Heat(6.0) // TODO: fix
 
     override fun getHeat(state: BlockState): Heat = if (state.getValue(LIT)) maxHeat else Heat(0.0)
 
@@ -130,16 +132,20 @@ public open class OutsiderTorchBlock(
         public val PARTICLE_OPTIONS_FIELD: MapCodec<SimpleParticleType> =
             BuiltInRegistries.PARTICLE_TYPE.byNameCodec().comapFlatMap(
                 { type ->
-                    if (type is SimpleParticleType) DataResult.success(type)
-                    else DataResult.error { "Not a SimpleParticleType: $type" }
+                    if (type is SimpleParticleType) {
+                        DataResult.success(type)
+                    } else {
+                        DataResult.error { "Not a SimpleParticleType: $type" }
+                    }
                 },
-                { type -> type }).fieldOf("particle_options")
+                { type -> type },
+            ).fieldOf("particle_options")
 
         public val CODEC: MapCodec<OutsiderTorchBlock> =
             RecordCodecBuilder.mapCodec { i: RecordCodecBuilder.Instance<OutsiderTorchBlock> ->
                 i.group(
                     PARTICLE_OPTIONS_FIELD.forGetter { b -> b.flame },
-                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.props }
+                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.props },
                 ).apply(i, ::OutsiderTorchBlock)
             }
     }

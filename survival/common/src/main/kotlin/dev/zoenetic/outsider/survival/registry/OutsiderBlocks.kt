@@ -17,48 +17,53 @@ public object OutsiderBlocks {
     public val CAMPFIRE: Block by Survival.platform.register.block(
         "campfire",
         { props -> OutsiderCampfireBlock(true, 1, props) },
-        { OutsiderBlockBehaviour.Properties.campfire() }
+        { OutsiderBlockBehaviour.Properties.campfire() },
     )
 
     public val DEAD_CAMPFIRE: Block by Survival.platform.register.block(
         "dead_campfire",
         { props -> OutsiderDeadCampfireBlock(props) },
-        { OutsiderBlockBehaviour.Properties.deadCampfire() }
+        { OutsiderBlockBehaviour.Properties.deadCampfire() },
     )
 
     public val FIREWOOD: Block by Survival.platform.register.block(
         "firewood",
         { props -> FirewoodBlock(props) },
-        { OutsiderBlockBehaviour.Properties.firewood() }
+        { OutsiderBlockBehaviour.Properties.firewood() },
     )
 
     public val TORCH: Block by Survival.platform.register.block(
         "torch",
         { props -> OutsiderTorchBlock(ParticleTypes.FLAME, props) },
-        { OutsiderBlockBehaviour.Properties.torch() }
+        { OutsiderBlockBehaviour.Properties.torch() },
     )
 
     public val WALL_TORCH: Block by Survival.platform.register.block(
         "wall_torch",
         { props -> OutsiderWallTorchBlock(ParticleTypes.FLAME, props) },
-        { OutsiderBlockBehaviour.Properties.wallTorch() }
+        { OutsiderBlockBehaviour.Properties.wallTorch() },
     )
 
     public val DEAD_TORCH: Block by Survival.platform.register.block(
         "dead_torch",
         { props -> OutsiderDeadTorchBlock(props) },
-        { OutsiderBlockBehaviour.Properties.deadTorch() }
+        { OutsiderBlockBehaviour.Properties.deadTorch() },
     )
 
     public val DEAD_WALL_TORCH: Block by Survival.platform.register.block(
         "dead_wall_torch",
         { props -> OutsiderDeadWallTorchBlock(props) },
-        { OutsiderBlockBehaviour.Properties.deadWallTorch() }
+        { OutsiderBlockBehaviour.Properties.deadWallTorch() },
     )
 
     public val ALL: List<Block>
         get() = listOf(
-            CAMPFIRE, FIREWOOD, TORCH, WALL_TORCH, DEAD_TORCH, DEAD_WALL_TORCH,
+            CAMPFIRE,
+            FIREWOOD,
+            TORCH,
+            WALL_TORCH,
+            DEAD_TORCH,
+            DEAD_WALL_TORCH,
         )
 
     public fun init() {}
