@@ -6,6 +6,7 @@
   "mixins": [
     "AxeItemMixin",
     "BlockStateBaseMixin",
+    "InventoryMixin",
     "ItemStackMixin",
     "LevelChunkMixin",
     "LivingEntityMixin"

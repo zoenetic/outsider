@@ -121,25 +121,6 @@ public class SuperStack internal constructor(
         set(BundleContents.EMPTY)
         return stacks
     }
-
-    public companion object {
-        @JvmStatic
-        public fun <T : Any> routeSet(
-            stack: ItemStack,
-            type: DataComponentType<T>,
-            value: T?,
-        ): Boolean {
-            val superStack = stack.asSuperStackOrNull() ?: return false
-            if (!superStack.type.mirroredComponents.contains(type)) return false
-            val patch = if (value == null) {
-                DataComponentPatch.builder().remove(type).build()
-            } else {
-                DataComponentPatch.builder().set(type, value).build()
-            }
-            val _ = superStack.patchActiveStack(patch)
-            return true
-        }
-    }
 }
 
 public fun ItemStack.asSuperStackOrNull(): SuperStack? {

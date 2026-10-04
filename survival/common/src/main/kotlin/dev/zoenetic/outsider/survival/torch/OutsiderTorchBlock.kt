@@ -22,7 +22,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
@@ -71,17 +70,6 @@ public open class OutsiderTorchBlock(flameParticle: SimpleParticleType, properti
             context.itemInHand.getOrDefault(OutsiderComponents.FUEL_LEVEL, Fuel.MAX).level,
         )
 
-    override fun setPlacedBy(
-        level: Level,
-        pos: BlockPos,
-        state: BlockState,
-        by: LivingEntity?,
-        itemStack: ItemStack,
-    ) {
-        itemStack.remove(OutsiderComponents.LIT)
-        super.setPlacedBy(level, pos, state, by, itemStack)
-    }
-
     override fun useItemOn(
         itemStack: ItemStack,
         state: BlockState,
@@ -97,7 +85,7 @@ public open class OutsiderTorchBlock(flameParticle: SimpleParticleType, properti
         return FireInteractions.maybeLightFromLitBlock(state, itemStack, level, pos, player)
     }
 
-    override val lightTable: LightTable = LightTable.IDENTITY
+    override val lightTable: LightTable get() = LightTable.IDENTITY
 
     override val maxLight: Light get() = Light(lightTable[Fuel.MAX.level])
 
