@@ -25,4 +25,12 @@ class LooseStoneGameTests {
     @GameTest
     fun theFeaturesRunAfterVanillaVegetationInPlains(helper: GameTestHelper): Unit =
         LooseStoneTests.theFeaturesRunAfterVanillaVegetationInPlains(helper)
+
+    @GameTest
+    fun placingLooseStonesStacksUpToFour(helper: GameTestHelper): Unit =
+        LooseStoneTests.placingLooseStonesStacksUpToFour(helper)
+
+    @GameTest
+    fun breakingAClusterDropsOneStonePerStone(helper: GameTestHelper): Unit =
+        LooseStoneTests.breakingAClusterDropsOneStonePerStone(helper)
 }

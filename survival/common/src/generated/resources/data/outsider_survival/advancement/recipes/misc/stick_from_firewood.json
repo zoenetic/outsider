@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_firewood": {
+      "conditions": {
+        "items": [
+          {
+            "items": "outsider_survival:firewood"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "outsider_survival:stick_from_firewood"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_firewood"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "outsider_survival:stick_from_firewood"
+    ]
+  }
+}

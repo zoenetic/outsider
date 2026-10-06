@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_firewood": {
+    "has_loose_stone": {
       "conditions": {
         "items": [
           {
-            "items": "outsider_survival:firewood"
+            "items": "outsider_survival:loose_stone"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:stick"
+        "recipe": "outsider_survival:cobblestone_from_loose_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_firewood"
+      "has_loose_stone"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:stick"
+      "outsider_survival:cobblestone_from_loose_stone"
     ]
   }
 }

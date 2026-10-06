@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "s": "outsider_survival:loose_stone"
+  },
+  "pattern": [
+    "ss",
+    "ss"
+  ],
+  "result": {
+    "id": "minecraft:cobblestone"
+  }
+}

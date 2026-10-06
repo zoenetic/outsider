@@ -2,16 +2,23 @@ package dev.zoenetic.outsider.survival.gametest
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.MAX_STONES
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.forCount
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.STONES
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.WATERLOGGED
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.toShape
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
 import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.GameType
 import net.minecraft.world.level.biome.Biomes
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.material.Fluids
@@ -119,7 +126,59 @@ object LooseStoneTests {
         helper.succeed()
     }
 
+    fun placingLooseStonesStacksUpToFour(helper: GameTestHelper) {
+        helper.setBlock(STONES_POS.below(), Blocks.STONE)
+        val player = helper.makeMockPlayer(GameType.SURVIVAL)
+        val oneTooMany = MAX_STONES + 1
+        player.setItemInHand(
+            InteractionHand.MAIN_HAND,
+            ItemStack(OutsiderItems.LOOSE_STONE, oneTooMany),
+        )
+
+        // Clicking the ground's top face targets the space above it, where the cluster sits.
+        repeat(oneTooMany) {
+            helper.placeAt(player, player.mainHandItem, STONES_POS.below(), Direction.UP)
+        }
+
+        val stones = helper.getBlockState(STONES_POS).getValue(STONES)
+        if (stones != MAX_STONES) {
+            throw helper.assertionException("expected $MAX_STONES stones, found $stones")
+        }
+        helper.assertBlockNotPresent(OutsiderBlocks.LOOSE_STONE, STONES_POS.above())
+        if (player.mainHandItem.count != 1) {
+            throw helper.assertionException(
+                "the fifth stone should stay in hand, found ${player.mainHandItem}",
+            )
+        }
+        helper.succeed()
+    }
+
+    fun breakingAClusterDropsOneStonePerStone(helper: GameTestHelper) {
+        helper.setBlock(STONES_POS.below(), Blocks.STONE)
+        val pos = helper.absolutePos(STONES_POS)
+        for (stones in 1..MAX_STONES) {
+            val state = OutsiderBlocks.LOOSE_STONE.defaultBlockState().setValue(STONES, stones)
+            val dropped = Block.getDrops(state, helper.level, pos, null)
+                .filter { it.`is`(OutsiderItems.LOOSE_STONE) }
+                .sumOf { it.count }
+            if (dropped != stones) {
+                throw helper.assertionException("$stones stones dropped $dropped")
+            }
+        }
+        helper.succeed()
+    }
+
     val ALL: List<SurvivalTest> = listOf(
+        SurvivalTest(
+            "placing_loose_stones_stacks_up_to_four",
+            TEST_TICKS,
+            ::placingLooseStonesStacksUpToFour,
+        ),
+        SurvivalTest(
+            "breaking_a_cluster_drops_one_stone_per_stone",
+            TEST_TICKS,
+            ::breakingAClusterDropsOneStonePerStone,
+        ),
         SurvivalTest(
             "the_features_run_after_vanilla_vegetation_in_plains",
             TEST_TICKS,

@@ -20,7 +20,7 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
             .unlockedBy(
                 "has_firewood",
                 has(OutsiderItems.FIREWOOD),
-            ).save(output)
+            ).save(output, "outsider_survival:stick_from_firewood")
 
         shaped(RecipeCategory.MISC, OutsiderItems.CAMPFIRE, 1)
             .pattern("ff")
@@ -32,6 +32,16 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
 
             )
             .save(output)
+
+        shaped(RecipeCategory.BUILDING_BLOCKS, Items.COBBLESTONE, 1)
+            .pattern("ss")
+            .pattern("ss")
+            .define('s', OutsiderItems.LOOSE_STONE)
+            .unlockedBy(
+                "has_loose_stone",
+                has(OutsiderItems.LOOSE_STONE),
+            )
+            .save(output, "outsider_survival:cobblestone_from_loose_stone")
 
         shaped(RecipeCategory.MISC, OutsiderItems.TORCH, 1)
             .pattern("c")
