@@ -27,7 +27,9 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         owner: Entity,
         slot: EquipmentSlot?,
     ) {
-        itemStack.asSuperStackOrNull()?.refreshMirroredComponents()
+        val superStack = itemStack.asSuperStackOrNull() ?: return
+        superStack.refreshMirroredComponents()
+        superStack.discardIfEmpty()
     }
 
     override fun isBarVisible(stack: ItemStack): Boolean = false
@@ -39,26 +41,42 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         clickAction: ClickAction,
         player: Player,
         carriedItem: SlotAccess,
-    ): Boolean = accepts(other) && super.overrideOtherStackedOnMe(
-        self,
-        other,
-        slot,
-        clickAction,
-        player,
-        carriedItem,
-    )
+    ): Boolean {
+        val superStack = self.asSuperStackOrNull() ?: return false
+        if (accepts(other)) {
+            val result = super.overrideOtherStackedOnMe(
+                self,
+                other,
+                slot,
+                clickAction,
+                player,
+                carriedItem,
+            )
+            superStack.discardIfEmpty()
+            return result
+        }
+        return false
+    }
 
     override fun overrideStackedOnOther(
         self: ItemStack,
         slot: Slot,
         clickAction: ClickAction,
         player: Player,
-    ): Boolean = accepts(slot.item) && super.overrideStackedOnOther(
-        self,
-        slot,
-        clickAction,
-        player,
-    )
+    ): Boolean {
+        val superStack = self.asSuperStackOrNull() ?: return false
+        if (accepts(slot.item)) {
+            val result = super.overrideStackedOnOther(
+                self,
+                slot,
+                clickAction,
+                player,
+            )
+            superStack.discardIfEmpty()
+            return result
+        }
+        return false
+    }
 
     override fun use(level: Level, player: Player, hand: InteractionHand): InteractionResult =
         InteractionResult.PASS
@@ -80,6 +98,7 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         if (!item.isEmpty) {
             val _ = superStack.insert(item)
         }
+        superStack.discardIfEmpty()
         return result
     }
 }

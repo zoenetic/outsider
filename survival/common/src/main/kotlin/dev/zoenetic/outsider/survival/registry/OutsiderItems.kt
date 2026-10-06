@@ -5,6 +5,7 @@ import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.platform.getValue
 import dev.zoenetic.outsider.survival.superstack.SuperStackItem
 import dev.zoenetic.outsider.survival.superstack.SuperStackType
+import dev.zoenetic.outsider.survival.torch.OutsiderTorchItem
 import dev.zoenetic.outsider.survival.torch.TorchRules
 import net.minecraft.core.Direction
 import net.minecraft.core.component.DataComponents.BUNDLE_CONTENTS
@@ -23,15 +24,25 @@ public object OutsiderItems {
         OutsiderBlocks::FIREWOOD,
     ) { Item.Properties() }
 
-    public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(
+    public val LOOSE_STONE: Item by Survival.platform.register.blockItem(
+        "loose_stone",
+        OutsiderBlocks::LOOSE_STONE,
+    ) { Item.Properties() } // TODO: Correct properties...
+
+    public val TORCH: Item by Survival.platform.register.item(
         "torch",
-        OutsiderBlocks::TORCH,
-        OutsiderBlocks::WALL_TORCH,
-        Direction.DOWN,
-    ) {
-        Item.Properties()
-            .component(OutsiderComponents.FUEL_LEVEL, Fuel.MAX)
-    }
+        { properties ->
+            OutsiderTorchItem(
+                OutsiderBlocks.TORCH,
+                OutsiderBlocks.WALL_TORCH,
+                Direction.DOWN,
+                properties,
+            )
+        },
+        {
+            Item.Properties().component(OutsiderComponents.FUEL_LEVEL, Fuel.MAX)
+        },
+    )
 
     public val TORCH_SUPERSTACK: Item by Survival.platform.register.item(
         "torch_superstack",

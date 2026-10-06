@@ -1,6 +1,14 @@
 package dev.zoenetic.outsider.survival.neoforge.datagen
 
-import dev.zoenetic.outsider.survival.datagen.models.*
+import dev.zoenetic.outsider.survival.datagen.models.campfireModel
+import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
+import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
+import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.torchSuperstackModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.wallTorchModel
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderItems
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -17,25 +25,22 @@ import java.util.stream.Stream
 class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
     ModelProvider(output, modId) {
 
-    override fun getKnownBlocks(): Stream<out Holder<Block>> =
-        Stream.of(
-            BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.CAMPFIRE),
-            BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.DEAD_CAMPFIRE),
-            BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.FIREWOOD),
-            BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.TORCH),
-            BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.WALL_TORCH),
-        )
+    override fun getKnownBlocks(): Stream<out Holder<Block>> = Stream.of(
+        BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.CAMPFIRE),
+        BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.DEAD_CAMPFIRE),
+        BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.FIREWOOD),
+        BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.TORCH),
+        BuiltInRegistries.BLOCK.wrapAsHolder(OutsiderBlocks.WALL_TORCH),
+    )
 
-    override fun getKnownItems(): Stream<out Holder<Item>> =
-        Stream.of(
-            BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.CAMPFIRE),
-            BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.FIREWOOD),
-            BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH),
-            BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH_SUPERSTACK),
-        )
+    override fun getKnownItems(): Stream<out Holder<Item>> = Stream.of(
+        BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.CAMPFIRE),
+        BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.FIREWOOD),
+        BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH),
+        BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH_SUPERSTACK),
+    )
 
     override fun registerModels(blocks: BlockModelGenerators, items: ItemModelGenerators) {
-
         val campfire0 = campfireModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
@@ -55,19 +60,25 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             blocks.blockStateOutput,
             blocks.modelOutput,
             items.itemModelOutput,
-            TextureSlot.create("billet")
+            TextureSlot.create("billet"),
+        )
+
+        looseStoneModel(
+            blocks.blockStateOutput,
+            blocks.modelOutput,
+            items.itemModelOutput,
         )
 
         val torch0 = torchModel(
             blocks.blockStateOutput,
             items.modelOutput,
-            items.itemModelOutput
+            items.itemModelOutput,
         )
 
         val wallTorch0 = wallTorchModel(
             blocks.blockStateOutput,
             items.modelOutput,
-            items.itemModelOutput
+            items.itemModelOutput,
         )
 
         deadTorchModel(

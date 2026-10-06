@@ -1,6 +1,14 @@
 package dev.zoenetic.outsider.survival.fabric.datagen
 
-import dev.zoenetic.outsider.survival.datagen.models.*
+import dev.zoenetic.outsider.survival.datagen.models.campfireModel
+import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
+import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
+import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.torchSuperstackModel
+import dev.zoenetic.outsider.survival.datagen.models.torch.wallTorchModel
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -10,7 +18,6 @@ import net.minecraft.client.data.models.model.TextureSlot
 class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvider(output) {
 
     override fun generateBlockStateModels(blocks: BlockModelGenerators) {
-
         val campfire0 = campfireModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
@@ -30,7 +37,7 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             blocks.blockStateOutput,
             blocks.modelOutput,
             blocks.itemModelOutput,
-            TextureSlot.create("billet")
+            TextureSlot.create("billet"),
         )
 
         val torch0 = torchModel(
@@ -53,6 +60,12 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
         deadWallTorchModel(
             blocks.blockStateOutput,
             wallTorch0,
+        )
+
+        looseStoneModel(
+            blocks.blockStateOutput,
+            blocks.modelOutput,
+            blocks.itemModelOutput,
         )
     }
 

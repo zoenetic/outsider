@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class InventoryMixin {
 
     @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
-    public void outsider_survival$addSuperStackedItem(int slot, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
+    public void outsider_survival$routeInventoryAdd(int slot, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         Inventory inventory = (Inventory) (Object) this;
         if (SuperStackHooks.routeInventoryAdd(inventory, itemStack)) cir.setReturnValue(true);
     }

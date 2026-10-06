@@ -1,5 +1,6 @@
 package dev.zoenetic.outsider.survival.platform
 
+import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Holder
@@ -12,18 +13,14 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import java.util.function.Supplier
 import kotlin.reflect.KProperty
 
-public operator fun <T : Any> Holder<T>.getValue(
-    thisRef: Any?,
-    property: KProperty<*>
-): T = this.value()
+public operator fun <T : Any> Holder<T>.getValue(thisRef: Any?, property: KProperty<*>): T =
+    this.value()
 
-public operator fun <T : Any> Supplier<T>.getValue(
-    thisRef: Any?,
-    property: KProperty<*>
-): T = get()
+public operator fun <T : Any> Supplier<T>.getValue(thisRef: Any?, property: KProperty<*>): T = get()
 
 public interface Register {
 
@@ -56,10 +53,9 @@ public interface Register {
         propertiesFactory: () -> Item.Properties,
     ): Holder<Item>
 
-    public fun sound(
-        name: String,
-        factory: (Identifier) -> SoundEvent
-    ): Holder<SoundEvent>
+    public fun lootFunction(name: String, codec: MapCodec<out LootItemFunction>)
+
+    public fun sound(name: String, factory: (Identifier) -> SoundEvent): Holder<SoundEvent>
 
     public fun standingAndWallBlockItem(
         name: String,
@@ -68,5 +64,4 @@ public interface Register {
         attachmentDirection: Direction,
         propertiesFactory: () -> Item.Properties,
     ): Holder<Item>
-
 }

@@ -1,5 +1,6 @@
 package dev.zoenetic.outsider.survival.fabric
 
+import com.mojang.serialization.MapCodec
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.platform.Register
 import net.minecraft.core.BlockPos
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import java.util.function.Supplier
 
 public object FabricRegister : Register {
@@ -31,12 +33,12 @@ public object FabricRegister : Register {
     ): Holder<Block> {
         val key = ResourceKey.create(
             Registries.BLOCK,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
         )
         return Registry.registerForHolder(
             BuiltInRegistries.BLOCK,
             key,
-            blockFactory(propertiesFactory().setId(key))
+            blockFactory(propertiesFactory().setId(key)),
         )
     }
 
@@ -47,7 +49,7 @@ public object FabricRegister : Register {
     ): Holder<BlockEntityType<*>> {
         val key = ResourceKey.create(
             Registries.BLOCK_ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
         )
         lateinit var type: BlockEntityType<*>
         type = BlockEntityType({ pos, state -> entityFactory(type, pos, state) }, blocksFactory())
@@ -61,23 +63,23 @@ public object FabricRegister : Register {
     ): Holder<Item> {
         val key = ResourceKey.create(
             Registries.ITEM,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
         )
         val holder = Registry.registerForHolder(
             BuiltInRegistries.ITEM,
             key,
-            BlockItem(blockFactory(), propertiesFactory().setId(key))
+            BlockItem(blockFactory(), propertiesFactory().setId(key)),
         )
         return holder.value().builtInRegistryHolder()
     }
 
     override fun <T : Any> component(
         name: String,
-        builder: DataComponentType.Builder<T>
+        builder: DataComponentType.Builder<T>,
     ): Supplier<DataComponentType<T>> {
         val key = ResourceKey.create(
             Registries.DATA_COMPONENT_TYPE,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
         )
         val type = Registry.register(
             BuiltInRegistries.DATA_COMPONENT_TYPE,
@@ -94,25 +96,30 @@ public object FabricRegister : Register {
     ): Holder<Item> {
         val key = ResourceKey.create(
             Registries.ITEM,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
         )
         val holder = Registry.registerForHolder(
             BuiltInRegistries.ITEM,
             key,
-            itemFactory(propertiesFactory().setId(key))
+            itemFactory(propertiesFactory().setId(key)),
         )
         return holder.value().builtInRegistryHolder()
     }
 
-    override fun sound(
-        name: String,
-        factory: (Identifier) -> SoundEvent
-    ): Holder<SoundEvent> {
+    override fun lootFunction(name: String, codec: MapCodec<out LootItemFunction>) {
+        Registry.register(
+            BuiltInRegistries.LOOT_FUNCTION_TYPE,
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
+            codec,
+        )
+    }
+
+    override fun sound(name: String, factory: (Identifier) -> SoundEvent): Holder<SoundEvent> {
         val id = Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
         val holder = Registry.registerForHolder(
             BuiltInRegistries.SOUND_EVENT,
             ResourceKey.create(Registries.SOUND_EVENT, id),
-            factory(id)
+            factory(id),
         )
         return holder
     }
@@ -126,7 +133,7 @@ public object FabricRegister : Register {
     ): Holder<Item> {
         val key = ResourceKey.create(
             Registries.ITEM,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name)
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
         )
         val holder = Registry.registerForHolder(
             BuiltInRegistries.ITEM,
@@ -135,8 +142,8 @@ public object FabricRegister : Register {
                 block(),
                 wallBlock(),
                 attachmentDirection,
-                propertiesFactory().setId(key)
-            )
+                propertiesFactory().setId(key),
+            ),
         )
         return holder.value().builtInRegistryHolder()
     }

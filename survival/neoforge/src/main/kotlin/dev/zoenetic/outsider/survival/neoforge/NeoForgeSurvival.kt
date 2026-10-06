@@ -2,7 +2,10 @@ package dev.zoenetic.outsider.survival.neoforge
 
 import dev.zoenetic.outsider.survival.ServerState
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.debug.*
+import dev.zoenetic.outsider.survival.debug.WatcherRegistry
+import dev.zoenetic.outsider.survival.debug.rootCommand
+import dev.zoenetic.outsider.survival.debug.setBodyTemperatureCommand
+import dev.zoenetic.outsider.survival.debug.watchCommand
 import dev.zoenetic.outsider.survival.emission.EmitterIndex.reconcileEmitters
 import dev.zoenetic.outsider.survival.vitals.Exertion
 import net.minecraft.server.level.ServerLevel
@@ -29,11 +32,10 @@ public class NeoForgeSurvival(modBus: IEventBus) {
 
         eventBus.addListener(RegisterCommandsEvent::class.java) { event ->
             event.dispatcher.register(
-                rootCommand.then(
-                    survivalCommand
-                        .then(setBodyTemperatureCommand)
-                        .then(watchCommand)
-                )
+                rootCommand
+                    .then(setBodyTemperatureCommand)
+                    .then(watchCommand),
+
             )
         }
 

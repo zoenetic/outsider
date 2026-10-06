@@ -1,4 +1,5 @@
 - maybeRefuel needs to go via burnout (`Burnout.refuel` exists, unused); writing FUEL_LEVEL directly resets the partial step
 - particle effect when a campfire burns out to the dead campfire
 - handle replacing vanilla light/heat sources in world gen or later
-- items with a fuel level (torches) show it as a durability-style bar (`isBarVisible` / `getBarWidth` / `getBarColor`); needs a torch item subclass, as the torch is currently a plain `StandingAndWallBlockItem`
+- items with a fuel level (torches) show it as a durability-style bar (`isBarVisible` / `getBarWidth` / `getBarColor`), on `OutsiderTorchItem`
+- super stack merge doesn't pop the hotbar slot: the client only pops on a count increase (`ClientPacketListener.handleContainerSetSlot`) and a container is always count 1. Client mixin at the head of `handleContainerSetSlot`: pop when it's a hotbar slot of container 0 and the incoming super stack's total exceeds the slot's previous total.

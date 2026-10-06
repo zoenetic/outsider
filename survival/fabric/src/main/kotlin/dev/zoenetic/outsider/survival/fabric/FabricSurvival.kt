@@ -2,7 +2,10 @@ package dev.zoenetic.outsider.survival.fabric
 
 import dev.zoenetic.outsider.survival.ServerState
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.debug.*
+import dev.zoenetic.outsider.survival.debug.WatcherRegistry
+import dev.zoenetic.outsider.survival.debug.rootCommand
+import dev.zoenetic.outsider.survival.debug.setBodyTemperatureCommand
+import dev.zoenetic.outsider.survival.debug.watchCommand
 import dev.zoenetic.outsider.survival.emission.EmitterIndex.reconcileEmitters
 import dev.zoenetic.outsider.survival.vitals.Exertion
 import net.fabricmc.api.ModInitializer
@@ -17,13 +20,13 @@ public object FabricSurvival : ModInitializer {
     override fun onInitialize() {
         Survival.init(FabricPlatform)
 
+        FabricBiomeModifications.init()
+
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             dispatcher.register(
-                rootCommand.then(
-                    survivalCommand
-                        .then(setBodyTemperatureCommand)
-                        .then(watchCommand)
-                )
+                rootCommand
+                    .then(setBodyTemperatureCommand)
+                    .then(watchCommand),
             )
         }
 

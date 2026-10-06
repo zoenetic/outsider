@@ -1,14 +1,25 @@
 package dev.zoenetic.outsider.survival
 
+import com.mojang.serialization.MapCodec
 import dev.zoenetic.outsider.survival.climate.temperatureFromNoise
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
-import dev.zoenetic.outsider.survival.platform.*
+import dev.zoenetic.outsider.survival.platform.ChunkStore
+import dev.zoenetic.outsider.survival.platform.Platform
+import dev.zoenetic.outsider.survival.platform.PlayerStore
+import dev.zoenetic.outsider.survival.platform.Register
+import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore
+import dev.zoenetic.outsider.survival.platform.Widener
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.vitals.Vitals
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 import net.minecraft.SharedConstants
-import net.minecraft.core.*
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.core.Holder
+import net.minecraft.core.HolderLookup
+import net.minecraft.core.IdMapper
+import net.minecraft.core.QuartPos
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -43,9 +54,15 @@ import net.minecraft.world.level.chunk.Strategy
 import net.minecraft.world.level.levelgen.DensityFunction
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings
 import net.minecraft.world.level.levelgen.RandomState
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import net.minecraft.world.phys.AABB
-import org.mockito.Mockito.*
-import java.util.*
+import org.mockito.Mockito.CALLS_REAL_METHODS
+import org.mockito.Mockito.any
+import org.mockito.Mockito.anyInt
+import org.mockito.Mockito.doAnswer
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.mock
+import java.util.IdentityHashMap
 import java.util.function.Supplier
 
 object TestRegistry : Register {
@@ -79,6 +96,10 @@ object TestRegistry : Register {
         itemFactory: (Item.Properties) -> Item,
         propertiesFactory: () -> Item.Properties,
     ): Holder<Item> = Holder.direct(mock(Item::class.java))
+
+    override fun lootFunction(name: String, codec: MapCodec<out LootItemFunction>) {
+        Holder.direct(mock(LootItemFunction::class.java))
+    }
 
     override fun sound(name: String, factory: (Identifier) -> SoundEvent): Holder<SoundEvent> =
         Holder.direct(factory(id(name)))

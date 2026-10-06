@@ -7,15 +7,16 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
-import net.minecraft.tags.FluidTags.WATER
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
-import net.minecraft.world.item.context.UseOnContext
-import net.minecraft.world.level.*
+import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.LevelReader
+import net.minecraft.world.level.ScheduledTickAccess
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.SimpleWaterloggedBlock
 import net.minecraft.world.level.block.state.BlockState
@@ -32,13 +33,15 @@ import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 
-public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWaterloggedBlock {
+public class FirewoodBlock(properties: Properties) :
+    Block(properties),
+    SimpleWaterloggedBlock {
 
     init {
         registerDefaultState(
             stateDefinition.any()
                 .setValue(WATERLOGGED, false)
-                .setValue(FACING, Direction.NORTH)
+                .setValue(FACING, Direction.NORTH),
         )
     }
 
@@ -49,8 +52,11 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
     override fun codec(): MapCodec<FirewoodBlock> = CODEC
 
     override fun useWithoutItem(
-        state: BlockState, level: Level, pos: BlockPos,
-        player: Player, hit: BlockHitResult
+        state: BlockState,
+        level: Level,
+        pos: BlockPos,
+        player: Player,
+        hit: BlockHitResult,
     ): InteractionResult {
         if (player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty) {
             val billets = state.getValue(BILLETS)
@@ -60,7 +66,7 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
                 level.setBlock(
                     pos,
                     state.fluidState.createLegacyBlock(),
-                    3
+                    3,
                 )
                 level.gameEvent(player, GameEvent.BLOCK_DESTROY, pos)
             }
@@ -72,11 +78,11 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
         return InteractionResult.PASS
     }
 
-    override fun canBeReplaced(state: BlockState, context: BlockPlaceContext): Boolean {
-        return (!context.isSecondaryUseActive && context.itemInHand
-            .item == this.asItem()
-                && state.getValue(BILLETS) < 12) || super.canBeReplaced(state, context)
-    }
+    override fun canBeReplaced(state: BlockState, context: BlockPlaceContext): Boolean = (
+        !context.isSecondaryUseActive && context.itemInHand
+            .item == this.asItem() &&
+            state.getValue(BILLETS) < BILLETS.possibleValues.max()
+        ) || super.canBeReplaced(state, context)
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val state = context.level.getBlockState(context.clickedPos)
@@ -96,13 +102,15 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
         directionToNeighbour: Direction,
         neighbourPos: BlockPos,
         neighbourState: BlockState,
-        random: RandomSource
+        random: RandomSource,
     ): BlockState {
-        if (state.getValue(WATERLOGGED)) ticks.scheduleTick(
-            pos,
-            Fluids.WATER,
-            Fluids.WATER.getTickDelay(level)
-        )
+        if (state.getValue(WATERLOGGED)) {
+            ticks.scheduleTick(
+                pos,
+                Fluids.WATER,
+                Fluids.WATER.getTickDelay(level),
+            )
+        }
         return super.updateShape(
             state,
             level,
@@ -111,38 +119,22 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
             directionToNeighbour,
             neighbourPos,
             neighbourState,
-            random
+            random,
         )
     }
 
-    override fun getFluidState(state: BlockState): FluidState {
-        return if (state.getValue(WATERLOGGED)) Fluids.WATER.getSource(false)
-        else super.getFluidState(state)
+    override fun getFluidState(state: BlockState): FluidState = if (state.getValue(WATERLOGGED)) {
+        Fluids.WATER.getSource(false)
+    } else {
+        super.getFluidState(state)
     }
 
     override fun getShape(
         state: BlockState,
         level: BlockGetter,
         pos: BlockPos,
-        context: CollisionContext
-    ): VoxelShape {
-        return shapeFor(state.getValue(BILLETS), state.getValue(FACING))
-    }
-
-    override fun placeLiquid(
-        level: LevelAccessor,
-        pos: BlockPos,
-        state: BlockState,
-        fluidState: FluidState
-    ): Boolean {
-        if (!state.getValue(WATERLOGGED) && fluidState.`is`(WATER)) {
-            val newState = state.setValue(WATERLOGGED, true)
-            level.setBlock(pos, newState, 3)
-            level.scheduleTick(pos, fluidState.type, fluidState.type.getTickDelay(level))
-            return true
-        }
-        return false
-    }
+        context: CollisionContext,
+    ): VoxelShape = shapeFor(state.getValue(BILLETS), state.getValue(FACING))
 
     public companion object {
         public val CODEC: MapCodec<FirewoodBlock> = simpleCodec(::FirewoodBlock)
@@ -177,25 +169,5 @@ public class FirewoodBlock(properties: Properties) : Block(properties), SimpleWa
 
         public fun shapeFor(billets: Int, facing: Direction): VoxelShape =
             SHAPES[billets - MIN_BILLETS].getValue(facing)
-
-        @JvmStatic
-        public fun maybeSplit(context: UseOnContext): Boolean {
-            val level: Level = context.level
-            val pos: BlockPos = context.clickedPos
-            val player: Player = context.player ?: return false
-            val state = level.getBlockState(pos)
-            if (state.canBeSplit()) {
-                if (context.clickedFace.axis === state.getValue(BlockStateProperties.AXIS)) {
-                    if (level.isClientSide) return true
-                    level.destroyBlock(pos, false, player, 512)
-                    val firewood = ItemStack(OutsiderItems.FIREWOOD, 4)
-                    popResource(level, pos, firewood)
-                    val axe = context.itemInHand
-                    axe.hurtAndBreak(1, player, context.hand)
-                    return true
-                }
-            }
-            return false
-        }
     }
 }

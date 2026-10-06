@@ -20,6 +20,13 @@ public object OutsiderBlockBehaviour {
             .of()
             .strength(2F)
 
+        public fun looseStone(): BlockBehaviour.Properties = BlockBehaviour.Properties
+            .of()
+            .noCollision()
+            .instabreak()
+            .sound(SoundType.STONE)
+            .pushReaction(PushReaction.DESTROY)
+
         public fun torch(): BlockBehaviour.Properties = BlockBehaviour.Properties
             .of()
             .noCollision()

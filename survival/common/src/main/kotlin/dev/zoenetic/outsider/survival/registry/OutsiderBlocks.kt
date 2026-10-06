@@ -5,6 +5,7 @@ import dev.zoenetic.outsider.survival.campfire.OutsiderCampfireBlock
 import dev.zoenetic.outsider.survival.campfire.OutsiderDeadCampfireBlock
 import dev.zoenetic.outsider.survival.fuel.firewood.FirewoodBlock
 import dev.zoenetic.outsider.survival.platform.getValue
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock
 import dev.zoenetic.outsider.survival.torch.OutsiderDeadTorchBlock
 import dev.zoenetic.outsider.survival.torch.OutsiderDeadWallTorchBlock
 import dev.zoenetic.outsider.survival.torch.OutsiderTorchBlock
@@ -32,6 +33,12 @@ public object OutsiderBlocks {
         { OutsiderBlockBehaviour.Properties.firewood() },
     )
 
+    public val LOOSE_STONE: Block by Survival.platform.register.block(
+        "loose_stone",
+        { props -> LooseStoneBlock(props) },
+        { OutsiderBlockBehaviour.Properties.looseStone() },
+    )
+
     public val TORCH: Block by Survival.platform.register.block(
         "torch",
         { props -> OutsiderTorchBlock(ParticleTypes.FLAME, props) },
@@ -55,16 +62,6 @@ public object OutsiderBlocks {
         { props -> OutsiderDeadWallTorchBlock(props) },
         { OutsiderBlockBehaviour.Properties.deadWallTorch() },
     )
-
-    public val ALL: List<Block>
-        get() = listOf(
-            CAMPFIRE,
-            FIREWOOD,
-            TORCH,
-            WALL_TORCH,
-            DEAD_TORCH,
-            DEAD_WALL_TORCH,
-        )
 
     public fun init() {}
 }

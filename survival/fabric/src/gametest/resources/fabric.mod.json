@@ -6,7 +6,9 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "dev.zoenetic.outsider.survival.fabric.gametest.SurvivalGameTests"
+      "dev.zoenetic.outsider.survival.fabric.gametest.SurvivalGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.LooseStoneGameTests"
     ]
   },
   "depends": {

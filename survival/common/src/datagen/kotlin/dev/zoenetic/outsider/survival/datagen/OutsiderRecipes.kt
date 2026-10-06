@@ -19,7 +19,7 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
             .requires(OutsiderItems.FIREWOOD)
             .unlockedBy(
                 "has_firewood",
-                has(OutsiderItems.FIREWOOD)
+                has(OutsiderItems.FIREWOOD),
             ).save(output)
 
         shaped(RecipeCategory.MISC, OutsiderItems.CAMPFIRE, 1)
@@ -28,7 +28,7 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
             .define('f', OutsiderItems.FIREWOOD)
             .unlockedBy(
                 "has_firewood",
-                has(OutsiderItems.FIREWOOD)
+                has(OutsiderItems.FIREWOOD),
 
             )
             .save(output)
@@ -39,16 +39,16 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
             .define('c', ItemTags.COALS)
             .define('s', Items.STICK)
             .unlockedBy(
-                "has_stone_pickaxe", has(Items.STONE_PICKAXE)
+                "has_stone_pickaxe",
+                has(Items.STONE_PICKAXE),
             )
-            .save(output)
-
+            .save(output, "minecraft:torch")
     }
 
     private class Factory(
         packOutput: PackOutput,
         registries: CompletableFuture<HolderLookup.Provider>,
-    ) : RecipeProvider.Runner(packOutput, registries) {
+    ) : Runner(packOutput, registries) {
 
         override fun createRecipeProvider(
             registries: HolderLookup.Provider,

@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "outsider_survival:loose_stone_scatter",
+    "outsider_survival:loose_stone_near_plants",
+    "outsider_survival:loose_stone_underwater_scatter",
+    "outsider_survival:loose_stone_underwater_near_plants"
+  ],
+  "step": "vegetal_decoration"
+}

@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
 
 private fun campfirePool(
     item: Item,
-    count: (remaining: Float) -> NumberProvider
+    count: (remaining: Float) -> NumberProvider,
 ): LootPool.Builder {
     val pool = LootPool.lootPool()
         .setRolls(ConstantValue.exactly(1f))
@@ -29,12 +29,13 @@ private fun campfirePool(
             LootItem.lootTableItem(item)
                 .apply(SetItemCountFunction.setCount(count(level / Fuel.MAX.level.toFloat())))
                 .`when`(
-                    LootItemBlockStatePropertyCondition.hasBlockStateProperties(OutsiderBlocks.CAMPFIRE)
-                        .setProperties(
-                            StatePropertiesPredicate.Builder.properties()
-                                .hasProperty(FUEL_LEVEL, level)
-                        )
-                )
+                    LootItemBlockStatePropertyCondition.hasBlockStateProperties(
+                        OutsiderBlocks.CAMPFIRE,
+                    ).setProperties(
+                        StatePropertiesPredicate.Builder.properties()
+                            .hasProperty(FUEL_LEVEL, level),
+                    ),
+                ),
         )
     }
     return pool

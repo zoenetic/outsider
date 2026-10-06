@@ -12,6 +12,7 @@
     "LivingEntityMixin"
   ],
   "client": [
+    "GuiGraphicsExtractorMixin",
     "HumanoidModelMixin",
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",

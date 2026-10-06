@@ -10,6 +10,11 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "outsider_survival:copy_fuel_state"
+            }
+          ],
           "name": "outsider_survival:torch"
         }
       ],

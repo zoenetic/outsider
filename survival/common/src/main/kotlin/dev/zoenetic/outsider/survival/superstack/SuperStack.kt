@@ -86,25 +86,6 @@ public class SuperStack internal constructor(
         refreshMirroredComponents()
     }
 
-    private fun <T : Any> DataComponentPatch.Builder.copy(
-        type: DataComponentType<T>,
-        source: DataComponentGetter,
-    ) {
-        val value = source.get(type)
-        if (value != null) set(type, value) else remove(type)
-    }
-
-    private fun List<ItemStackTemplate>.reducedAt(
-        index: Int,
-        amount: Int,
-    ): List<ItemStackTemplate> = mapIndexedNotNull { i, group ->
-        when {
-            i != index -> group
-            group.count > amount -> group.withCount(group.count - amount)
-            else -> null
-        }
-    }
-
     public fun split(amount: Int): ItemStack {
         val groups = contents.items()
         val index = activeIndex(groups) ?: return ItemStack.EMPTY
@@ -114,6 +95,12 @@ public class SuperStack internal constructor(
         return active.withCount(amount).create()
     }
 
+    public fun discardIfEmpty() {
+        if (count == 0) {
+            stack.count = 0
+        }
+    }
+
     public fun drain(): List<ItemStack> {
         val stacks = contents.items().map { item ->
             item.create()
@@ -121,6 +108,14 @@ public class SuperStack internal constructor(
         set(BundleContents.EMPTY)
         return stacks
     }
+}
+
+private fun <T : Any> DataComponentPatch.Builder.copy(
+    type: DataComponentType<T>,
+    source: DataComponentGetter,
+) {
+    val value = source.get(type)
+    if (value != null) set(type, value) else remove(type)
 }
 
 public fun ItemStack.asSuperStackOrNull(): SuperStack? {
@@ -143,3 +138,12 @@ public fun ItemStack.moveIntoSuperStack(): ItemStack? {
     }
     return container.takeIf { superStack.insert(this) > 0 }
 }
+
+private fun List<ItemStackTemplate>.reducedAt(index: Int, amount: Int): List<ItemStackTemplate> =
+    mapIndexedNotNull { i, group ->
+        when {
+            i != index -> group
+            group.count > amount -> group.withCount(group.count - amount)
+            else -> null
+        }
+    }
