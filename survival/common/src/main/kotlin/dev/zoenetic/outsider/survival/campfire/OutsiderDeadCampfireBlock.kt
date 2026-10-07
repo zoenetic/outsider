@@ -1,8 +1,8 @@
 package dev.zoenetic.outsider.survival.campfire
 
-import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
@@ -19,13 +19,14 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.phys.BlockHitResult
 
-public class OutsiderDeadCampfireBlock(properties: Properties) : Block(properties),
+public class OutsiderDeadCampfireBlock(properties: Properties) :
+    Block(properties),
     SimpleWaterloggedBlock {
     init {
         registerDefaultState(
             stateDefinition.any()
                 .setValue(WATERLOGGED, false)
-                .setValue(FACING, Direction.NORTH)
+                .setValue(FACING, Direction.NORTH),
         )
     }
 
@@ -40,16 +41,16 @@ public class OutsiderDeadCampfireBlock(properties: Properties) : Block(propertie
         pos: BlockPos,
         player: Player,
         hand: InteractionHand,
-        hitResult: BlockHitResult
+        hitResult: BlockHitResult,
     ): InteractionResult {
         if (itemStack.`is`(Items.FLINT_AND_STEEL) && itemStack.damageValue < itemStack.maxDamage) {
             level.playSound(
                 null,
                 pos,
-                OutsiderSounds.FLINT_AND_STEEL_FAIL,
+                SoundEvents.FLINTANDSTEEL_USE,
                 SoundSource.BLOCKS,
                 1F,
-                1F
+                1F,
             )
             return InteractionResult.FAIL
         }

@@ -2,8 +2,8 @@ package dev.zoenetic.outsider.survival.torch
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import net.minecraft.core.BlockPos
+import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
@@ -18,11 +18,10 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
 
-public open class OutsiderDeadTorchBlock(properties: Properties) :
-    BaseTorchBlock(properties) {
+public open class OutsiderDeadTorchBlock(properties: Properties) : BaseTorchBlock(properties) {
     init {
         registerDefaultState(
-            stateDefinition.any()
+            stateDefinition.any(),
         )
     }
 
@@ -32,7 +31,7 @@ public open class OutsiderDeadTorchBlock(properties: Properties) :
         state: BlockState,
         level: BlockGetter,
         pos: BlockPos,
-        context: CollisionContext
+        context: CollisionContext,
     ): VoxelShape = SHAPE
 
     override fun useItemOn(
@@ -42,13 +41,13 @@ public open class OutsiderDeadTorchBlock(properties: Properties) :
         pos: BlockPos,
         player: Player,
         hand: InteractionHand,
-        hitResult: BlockHitResult
+        hitResult: BlockHitResult,
     ): InteractionResult {
         if (itemStack.`is`(Items.FLINT_AND_STEEL) && itemStack.damageValue < itemStack.maxDamage) {
             level.playSound(
                 null,
                 pos,
-                OutsiderSounds.FLINT_AND_STEEL_FAIL,
+                SoundEvents.FLINTANDSTEEL_USE,
                 SoundSource.BLOCKS,
                 1F,
                 1F,
@@ -62,7 +61,7 @@ public open class OutsiderDeadTorchBlock(properties: Properties) :
         public val CODEC: MapCodec<OutsiderDeadTorchBlock> =
             RecordCodecBuilder.mapCodec { i: RecordCodecBuilder.Instance<OutsiderDeadTorchBlock> ->
                 i.group(
-                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.properties }
+                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.properties },
                 ).apply(i, ::OutsiderDeadTorchBlock)
             }
 

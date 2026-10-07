@@ -1,22 +1,17 @@
 package dev.zoenetic.outsider.survival.gametest
 
-import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
 import dev.zoenetic.outsider.survival.superstack.asSuperStackOrNull
-import dev.zoenetic.outsider.survival.superstack.moveIntoSuperStack
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.component.DataComponents.BUNDLE_CONTENTS
 import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.util.Unit
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.ItemStackTemplate
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.component.BundleContents
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.block.Blocks
 
@@ -27,25 +22,9 @@ private const val PART_BURNT = 7
 private const val PLAIN_SLOT = 5
 private const val SUPER_STACK_SLOT = 3
 private const val TEST_TICKS = 20
-
-private fun torches(count: Int, fuel: Int = Fuel.MAX.level, lit: Boolean = false): ItemStack =
-    ItemStack(OutsiderItems.TORCH, count).apply {
-        val _ = set(OutsiderComponents.FUEL_LEVEL, Fuel(fuel))
-        if (lit) {
-            val _ = set(OutsiderComponents.LIT, Unit.INSTANCE)
-        }
-    }
-
-private fun GameTestHelper.superStackOf(plain: ItemStack): ItemStack = plain.moveIntoSuperStack()
-    ?: throw assertionException("expected $plain to wrap into a super stack")
-
-private fun ItemStack.groups(): List<ItemStackTemplate> = getOrDefault(
-    BUNDLE_CONTENTS,
-    BundleContents.EMPTY,
-).items()
-
-private fun GameTestHelper.totalIn(stack: ItemStack): Int = stack.asSuperStackOrNull()?.count
-    ?: throw assertionException("expected a super stack, found $stack")
+private const val NEARLY_FULL = 60
+private const val BUNDLE_CAPACITY = 64
+private const val CLICKED_SLOT = 9
 
 object SuperStackTests {
 
@@ -139,6 +118,20 @@ object SuperStackTests {
         helper.succeed()
     }
 
+    // Vanilla ticks the offhand through LivingEntity.aiStep -> EntityEquipment.tick, not
+    // Inventory.tick; this checks our wrap finds the offhand slot when that tick arrives.
+    fun aPlainTorchInTheOffhandIsWrappedInPlace(helper: GameTestHelper) {
+        val player = helper.makeMockPlayer(GameType.SURVIVAL)
+        player.setItemInHand(InteractionHand.OFF_HAND, torches(FEW))
+
+        player.offhandItem.inventoryTick(helper.level, player, EquipmentSlot.OFFHAND)
+
+        helper.ensure(player.offhandItem.asSuperStackOrNull()?.count == FEW) {
+            "expected $FEW torches wrapped in the offhand, found ${player.offhandItem}"
+        }
+        helper.succeed()
+    }
+
     fun placingTheLastTorchEmptiesTheHand(helper: GameTestHelper) {
         val ground = BlockPos(1, 1, 1)
         helper.setBlock(ground, Blocks.STONE)
@@ -152,6 +145,67 @@ object SuperStackTests {
             throw helper.assertionException(
                 "placing the last torch left ${player.mainHandItem} in hand",
             )
+        }
+        helper.succeed()
+    }
+
+    fun aLitTorchClickedIntoASuperStackIsSnuffed(helper: GameTestHelper) {
+        helper.withChestMenuOpen { player ->
+            player.inventory.setItem(CLICKED_SLOT, helper.superStackOf(torches(SOME)))
+            player.containerMenu.setCarried(torches(1, lit = true))
+
+            player.leftClickInventorySlot(CLICKED_SLOT)
+
+            val container = player.inventory.getItem(CLICKED_SLOT)
+            val carried = player.carried
+            if (!carried.isEmpty || helper.totalIn(container) != SOME + 1) {
+                throw helper.assertionException(
+                    "expected the torch to go in, carrying $carried, slot holds $container",
+                )
+            }
+            if (container.litCount() != 0) {
+                throw helper.assertionException("a lit torch clicked in should be snuffed")
+            }
+        }
+        helper.succeed()
+    }
+
+    fun aSuperStackClickedOntoLitTorchesTakesThemSnuffed(helper: GameTestHelper) {
+        helper.withChestMenuOpen { player ->
+            player.inventory.setItem(CLICKED_SLOT, torches(FEW, lit = true))
+            player.containerMenu.setCarried(helper.superStackOf(torches(SOME)))
+
+            player.leftClickInventorySlot(CLICKED_SLOT)
+
+            val carried = player.carried
+            val slot = player.inventory.getItem(CLICKED_SLOT)
+            if (!slot.isEmpty || helper.totalIn(carried) != SOME + FEW) {
+                throw helper.assertionException(
+                    "expected every torch taken, slot holds $slot, carrying $carried",
+                )
+            }
+            if (carried.litCount() != 0) {
+                throw helper.assertionException("lit torches taken in should be snuffed")
+            }
+        }
+        helper.succeed()
+    }
+
+    fun aNearlyFullSuperStackTakesOnlyWhatFits(helper: GameTestHelper) {
+        helper.withChestMenuOpen { player ->
+            player.inventory.setItem(CLICKED_SLOT, torches(MANY))
+            player.containerMenu.setCarried(helper.superStackOf(torches(NEARLY_FULL)))
+
+            player.leftClickInventorySlot(CLICKED_SLOT)
+
+            val carried = helper.totalIn(player.carried)
+            val left = player.inventory.getItem(CLICKED_SLOT).count
+            val fits = BUNDLE_CAPACITY - NEARLY_FULL
+            if (carried != BUNDLE_CAPACITY || left != MANY - fits) {
+                throw helper.assertionException(
+                    "expected $fits taken and ${MANY - fits} left, carrying $carried, left $left",
+                )
+            }
         }
         helper.succeed()
     }
@@ -188,9 +242,29 @@ object SuperStackTests {
             ::aPlainTorchInTheInventoryIsWrappedInPlace,
         ),
         SurvivalTest(
+            "a_plain_torch_in_the_offhand_is_wrapped_in_place",
+            TEST_TICKS,
+            ::aPlainTorchInTheOffhandIsWrappedInPlace,
+        ),
+        SurvivalTest(
             "placing_the_last_torch_empties_the_hand",
             TEST_TICKS,
             ::placingTheLastTorchEmptiesTheHand,
+        ),
+        SurvivalTest(
+            "a_lit_torch_clicked_into_a_super_stack_is_snuffed",
+            TEST_TICKS,
+            ::aLitTorchClickedIntoASuperStackIsSnuffed,
+        ),
+        SurvivalTest(
+            "a_super_stack_clicked_onto_lit_torches_takes_them_snuffed",
+            TEST_TICKS,
+            ::aSuperStackClickedOntoLitTorchesTakesThemSnuffed,
+        ),
+        SurvivalTest(
+            "a_nearly_full_super_stack_takes_only_what_fits",
+            TEST_TICKS,
+            ::aNearlyFullSuperStackTakesOnlyWhatFits,
         ),
     )
 }

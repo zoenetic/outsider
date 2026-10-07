@@ -29,18 +29,29 @@ public class SuperStack internal constructor(
 
     public fun insert(itemsToAdd: ItemStack): Int = insertWithPatch(itemsToAdd, type.rules::onEnter)
 
-    private fun reinsert(itemsToAdd: ItemStack): Int =
+    internal fun reinsert(itemsToAdd: ItemStack): Int =
         insertWithPatch(itemsToAdd) { DataComponentPatch.EMPTY }
+
+    public fun insertableCount(itemsToAdd: ItemStack): Int {
+        val entering = entering(itemsToAdd, type.rules::onEnter) ?: return 0
+        return BundleContents.Mutable(contents).tryInsert(entering)
+    }
+
+    private fun entering(
+        itemsToAdd: ItemStack,
+        patchFunction: (ItemStackTemplate) -> DataComponentPatch,
+    ): ItemStack? {
+        if (itemsToAdd.isEmpty || !type.isValid(itemsToAdd)) return null
+        val template = ItemStackTemplate.fromNonEmptyStack(itemsToAdd)
+        return template.create().apply { applyComponents(patchFunction(template)) }
+    }
 
     private fun insertWithPatch(
         itemsToAdd: ItemStack,
         patchFunction: (ItemStackTemplate) -> DataComponentPatch,
     ): Int {
-        if (itemsToAdd.isEmpty || !type.isValid(itemsToAdd)) return 0
-        val template = ItemStackTemplate.fromNonEmptyStack(itemsToAdd)
+        val entering = entering(itemsToAdd, patchFunction) ?: return 0
         val newContents = BundleContents.Mutable(contents)
-        val entering = template.create()
-        entering.applyComponents(patchFunction(template))
         val inserts = newContents.tryInsert(entering)
         if (inserts > 0) {
             itemsToAdd.shrink(inserts)
@@ -93,6 +104,18 @@ public class SuperStack internal constructor(
         if (amount < 1 || amount > active.count) return ItemStack.EMPTY
         set(BundleContents(groups.reducedAt(index, amount)))
         return active.withCount(amount).create()
+    }
+
+    public fun splitToNew(amount: Int): ItemStack {
+        val container = ItemStack(stack.item)
+        val target = checkNotNull(container.asSuperStackOrNull())
+        repeat(amount) {
+            val one = split(1)
+            if (!one.isEmpty) {
+                val _ = target.reinsert(one)
+            }
+        }
+        return if (target.count > 0) container else ItemStack.EMPTY
     }
 
     public fun discardIfEmpty() {

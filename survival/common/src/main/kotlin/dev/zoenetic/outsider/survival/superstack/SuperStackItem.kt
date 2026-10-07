@@ -43,19 +43,31 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         carriedItem: SlotAccess,
     ): Boolean {
         val superStack = self.asSuperStackOrNull() ?: return false
-        if (accepts(other)) {
-            val result = super.overrideOtherStackedOnMe(
-                self,
-                other,
-                slot,
-                clickAction,
-                player,
-                carriedItem,
-            )
-            superStack.discardIfEmpty()
-            return result
+        if (!accepts(other)) return false
+        val handled = when (clickAction) {
+            ClickAction.PRIMARY if !other.isEmpty -> {
+                if (slot.allowModification(player)) {
+                    val _ = superStack.insert(other)
+                }
+                true
+            }
+
+            ClickAction.SECONDARY if other.isEmpty -> {
+                if (slot.allowModification(player)) {
+                    val _ = carriedItem.set(superStack.splitToNew((superStack.count + 1) / 2))
+                }
+                true
+            }
+
+            else -> false
         }
-        return false
+        if (!handled) {
+            toggleSelectedItem(self, -1)
+            return false
+        }
+        superStack.discardIfEmpty()
+        player.broadcastInventoryChange()
+        return true
     }
 
     override fun overrideStackedOnOther(
@@ -65,17 +77,40 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         player: Player,
     ): Boolean {
         val superStack = self.asSuperStackOrNull() ?: return false
-        if (accepts(slot.item)) {
-            val result = super.overrideStackedOnOther(
-                self,
-                slot,
-                clickAction,
-                player,
-            )
-            superStack.discardIfEmpty()
-            return result
+        val other = slot.item
+        val target = other.takeIf { it.`is`(this) }?.asSuperStackOrNull()
+        val handled = when {
+            target != null -> {
+                if (slot.allowModification(player)) {
+                    if (clickAction == ClickAction.PRIMARY) {
+                        superStack.mergeInto(target)
+                    } else {
+                        superStack.placeOneInto(target)
+                    }
+                }
+                true
+            }
+
+            clickAction == ClickAction.PRIMARY && other.`is`(type.item) -> {
+                superStack.takeFrom(slot, player)
+                true
+            }
+
+            clickAction == ClickAction.SECONDARY && other.isEmpty -> {
+                superStack.placeOneInto(slot)
+                true
+            }
+
+            else -> false
         }
-        return false
+        if (!handled) return false
+        superStack.discardIfEmpty()
+        player.broadcastInventoryChange()
+        return true
+    }
+
+    private fun Player.broadcastInventoryChange() {
+        containerMenu.slotsChanged(inventory)
     }
 
     override fun use(level: Level, player: Player, hand: InteractionHand): InteractionResult =
@@ -96,7 +131,13 @@ public class SuperStackItem(public val type: SuperStackType, properties: Propert
         val newContext = BlockPlaceContext(player, hand, item, hitResult)
         val result = item.useOn(newContext)
         if (!item.isEmpty) {
-            val _ = superStack.insert(item)
+            val _ = if (result.consumesAction()) {
+                superStack.insert(
+                    item,
+                )
+            } else {
+                superStack.reinsert(item)
+            }
         }
         superStack.discardIfEmpty()
         return result

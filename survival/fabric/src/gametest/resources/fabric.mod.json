@@ -8,6 +8,12 @@
     "fabric-gametest": [
       "dev.zoenetic.outsider.survival.fabric.gametest.SurvivalGameTests",
       "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackClickGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackSplitGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackPlacementGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackDropGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.SuperStackCollectGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.TorchLightGameTests",
       "dev.zoenetic.outsider.survival.fabric.gametest.LooseStoneGameTests"
     ]
   },

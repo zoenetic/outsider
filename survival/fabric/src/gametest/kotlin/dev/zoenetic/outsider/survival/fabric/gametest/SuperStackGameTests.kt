@@ -42,4 +42,20 @@ class SuperStackGameTests {
     @GameTest
     fun placingTheLastTorchEmptiesTheHand(helper: GameTestHelper): Unit =
         SuperStackTests.placingTheLastTorchEmptiesTheHand(helper)
+
+    @GameTest
+    fun aLitTorchClickedIntoASuperStackIsSnuffed(helper: GameTestHelper): Unit =
+        SuperStackTests.aLitTorchClickedIntoASuperStackIsSnuffed(helper)
+
+    @GameTest
+    fun aSuperStackClickedOntoLitTorchesTakesThemSnuffed(helper: GameTestHelper): Unit =
+        SuperStackTests.aSuperStackClickedOntoLitTorchesTakesThemSnuffed(helper)
+
+    @GameTest
+    fun aNearlyFullSuperStackTakesOnlyWhatFits(helper: GameTestHelper): Unit =
+        SuperStackTests.aNearlyFullSuperStackTakesOnlyWhatFits(helper)
+
+    @GameTest
+    fun aPlainTorchInTheOffhandIsWrappedInPlace(helper: GameTestHelper): Unit =
+        SuperStackTests.aPlainTorchInTheOffhandIsWrappedInPlace(helper)
 }

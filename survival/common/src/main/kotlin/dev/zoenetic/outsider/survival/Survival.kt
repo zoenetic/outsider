@@ -38,8 +38,9 @@ public object Survival {
         OutsiderSounds.init()
         OutsiderWideners.init()
         LOGGER.info(
-            "Outsider: Survival (server) starting on {} (Minecraft 26.2)",
+            "Outsider: Survival (server) starting on {} (Minecraft {})",
             platform.name,
+            "26.2", // TODO: Make this pick up the real version
         )
     }
 

@@ -11,6 +11,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Inventory.class)
 public class InventoryMixin {
 
+    @Inject(method = "removeFromSelected", at = @At("HEAD"), cancellable = true)
+    public void outsider_survival$routeRemoveFromSelected(boolean all, CallbackInfoReturnable<ItemStack> cir) {
+        Inventory inventory = (Inventory) (Object) this;
+        ItemStack removed = SuperStackHooks.routeRemoveFromSelected(inventory, all);
+        if (removed != null) cir.setReturnValue(removed);
+    }
+
     @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     public void outsider_survival$routeInventoryAdd(int slot, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         Inventory inventory = (Inventory) (Object) this;

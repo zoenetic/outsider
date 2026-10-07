@@ -1,8 +1,4 @@
-# Applied on top of detekt's defaults (buildUponDefaultConfig). Only overrides go here.
-# Line length is 100 everywhere: here and .editorconfig (which the IDE and its ktlint plugin read).
-
 style:
-  # These duplicate a ktlint rule; keep the ktlint one.
   WildcardImport:
     active: false
   MaxLineLength:
@@ -12,13 +8,16 @@ style:
   ReturnCount:
     active: true
     excludeGuardClauses: true
-  # TODO: markers are allowed; FIXME: and STOPSHIP: still fail the build.
   ForbiddenComment:
     comments:
       - value: 'FIXME:'
         reason: 'Forbidden FIXME todo marker in comment, please fix the problem.'
       - value: 'STOPSHIP:'
         reason: 'Forbidden STOPSHIP todo marker in comment, please address the problem before shipping the code.'
+
+complexity:
+  TooManyFunctions:
+    ignorePrivate: true
 
 ktlint:
   MaximumLineLength:

@@ -212,5 +212,7 @@ object SurvivalTests {
             ::breakingACampfireDeregistersTheHeatSource
         ),
         SurvivalTest("a_nearby_campfire_is_found", 20, ::aNearbyCampfireIsFoundAsAHeatSource),
-    ) + TorchLootTests.ALL + SuperStackTests.ALL + LooseStoneTests.ALL
+    ) + TorchLootTests.ALL + SuperStackTests.ALL + SuperStackClickTests.ALL +
+        SuperStackSplitTests.ALL + SuperStackPlacementTests.ALL + SuperStackDropTests.ALL +
+        SuperStackCollectTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL
 }
