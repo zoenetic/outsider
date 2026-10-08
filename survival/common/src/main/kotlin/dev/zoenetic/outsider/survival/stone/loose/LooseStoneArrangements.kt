@@ -34,28 +34,29 @@ public object LooseStoneArrangements {
 
     public val MAX_STONES: Int = SHAPES.size
 
-    private val ARRANGEMENTS_BY_COUNT = (1..SHAPES.size).map { k ->
-        enumerate(k)
-    }
-
-    private fun enumerate(k: Int): List<List<Box>> {
-        val orders = slotOrders(k)
-        return shapeSets(k).flatMap { shapes ->
-            orders.map { order ->
-                shapes.zip(order) { shape, slot -> place(shape, SHAPES[slot]) }
-            }
+    private val LAYOUTS: List<List<Box>> = permutations(SHAPES.size).flatMap { shapes ->
+        permutations(SHAPES.size).map { slots ->
+            shapes.zip(slots) { shape, slot -> place(SHAPES[shape], SHAPES[slot]) }
         }
     }
 
-    public fun forCount(stones: Int): List<List<Box>> {
+    private val ARRANGEMENTS_BY_COUNT: List<List<Set<Box>>> = (1..MAX_STONES).map { k ->
+        LAYOUTS.map { it.take(k).toSet() }
+    }
+
+    public fun forCount(stones: Int): List<Set<Box>> {
         require(stones in 1..SHAPES.size) {
             "Stones should be between 1 and ${SHAPES.size}, got: $stones"
         }
         return ARRANGEMENTS_BY_COUNT[stones - 1]
     }
 
-    private fun shapeSets(k: Int) = (1..<(1 shl SHAPES.size)).filter { it.countOneBits() == k }
-        .map { mask -> SHAPES.filterIndexed { i, _ -> mask and (1 shl i) != 0 } }
+    private fun permutations(n: Int, picked: List<Int> = emptyList()): List<List<Int>> =
+        if (picked.size == n) {
+            listOf(picked)
+        } else {
+            (0..<n).filter { it !in picked }.flatMap { permutations(n, picked + it) }
+        }
 
     private fun slotOrders(k: Int, picked: List<Int> = emptyList()): List<List<Int>> =
         if (picked.size == k) {

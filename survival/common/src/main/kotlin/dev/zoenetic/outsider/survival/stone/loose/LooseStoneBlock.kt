@@ -111,17 +111,22 @@ public class LooseStoneBlock(properties: Properties) :
 
     public companion object {
         public val CODEC: MapCodec<LooseStoneBlock> = simpleCodec(::LooseStoneBlock)
+
         private val SHAPES_BY_COUNT: List<List<VoxelShape>> =
             (1..MAX_STONES).map { count ->
-                forCount(count).map { arrangement ->
+                val arrangements = forCount(count)
+                val shapes = arrangements.distinct().associateWith { arrangement ->
                     arrangement.map { it.toShape() }.reduce(Shapes::or)
                 }
+                arrangements.map(shapes::getValue)
             }
+
         public val STONES: IntegerProperty = IntegerProperty.create(
             "stones",
             1,
             MAX_STONES,
         )
+
         public val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED
 
         public fun LooseStoneArrangements.Box.toShape(): VoxelShape = Block.box(

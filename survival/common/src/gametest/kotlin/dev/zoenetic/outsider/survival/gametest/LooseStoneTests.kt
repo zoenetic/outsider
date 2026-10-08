@@ -69,25 +69,41 @@ object LooseStoneTests {
     }
 
     // Indices worked out outside Minecraft (Mth.getSeed, then java.util.Random.nextInt over the
-    // 16 / 72 / 96 / 24 arrangements), so any change to how getShape picks breaks this.
+    // 576 layouts), so any change to how getShape picks breaks this. Every count shares a list
+    // length, so a position picks the same layout index at every count.
     private val RENDERED_PICKS = mapOf(
-        BlockPos(0, 64, 0) to listOf(15, 62, 62, 14),
-        BlockPos(123, 64, -456) to listOf(0, 12, 12, 12),
-        BlockPos(-7, 70, 9) to listOf(2, 42, 66, 18),
-        BlockPos(1000, 80, 1000) to listOf(4, 43, 67, 19),
+        BlockPos(0, 64, 0) to 350,
+        BlockPos(123, 64, -456) to 12,
+        BlockPos(-7, 70, 9) to 258,
+        BlockPos(1000, 80, 1000) to 259,
     )
 
+    private fun outline(helper: GameTestHelper, pos: BlockPos, stones: Int) =
+        OutsiderBlocks.LOOSE_STONE.defaultBlockState().setValue(STONES, stones)
+            .getShape(helper.level, pos, CollisionContext.empty())
+
     fun theOutlineFollowsTheRenderedArrangement(helper: GameTestHelper) {
-        for ((pos, picks) in RENDERED_PICKS) {
-            for ((countIndex, pick) in picks.withIndex()) {
-                val stones = countIndex + 1
-                val state = OutsiderBlocks.LOOSE_STONE.defaultBlockState().setValue(STONES, stones)
-                val outline = state.getShape(helper.level, pos, CollisionContext.empty())
+        for ((pos, pick) in RENDERED_PICKS) {
+            for (stones in 1..MAX_STONES) {
                 val expected = forCount(stones)[pick].map { it.toShape() }.reduce(Shapes::or)
+                val outline = outline(helper, pos, stones)
                 if (Shapes.joinIsNotEmpty(outline, expected, BooleanOp.NOT_SAME)) {
                     throw helper.assertionException(
-                        "$stones stones at $pos should outline arrangement $pick",
+                        "$stones stones at $pos should outline layout $pick",
                     )
+                }
+            }
+        }
+        helper.succeed()
+    }
+
+    fun addingAStoneKeepsTheOthersInPlace(helper: GameTestHelper) {
+        for (pos in RENDERED_PICKS.keys) {
+            for (stones in 1..<MAX_STONES) {
+                val fewer = outline(helper, pos, stones)
+                val more = outline(helper, pos, stones + 1)
+                helper.ensure(!Shapes.joinIsNotEmpty(fewer, more, BooleanOp.ONLY_FIRST)) {
+                    "adding a stone at $pos moved the first $stones"
                 }
             }
         }
@@ -183,6 +199,11 @@ object LooseStoneTests {
             "the_features_run_after_vanilla_vegetation_in_plains",
             TEST_TICKS,
             ::theFeaturesRunAfterVanillaVegetationInPlains,
+        ),
+        SurvivalTest(
+            "adding_a_stone_keeps_the_others_in_place",
+            TEST_TICKS,
+            ::addingAStoneKeepsTheOthersInPlace,
         ),
         SurvivalTest(
             "the_outline_follows_the_rendered_arrangement",

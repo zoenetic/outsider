@@ -8,7 +8,6 @@ import dev.zoenetic.outsider.survival.registry.OutsiderItems
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.gametest.framework.GameTestHelper
-import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
@@ -30,13 +29,12 @@ object TorchLootTests {
         for (side in Direction.Plane.HORIZONTAL) setBlock(TORCH_POS.relative(side), Blocks.STONE)
     }
 
+    // Block.getDrops runs the block's loot table on its state, without spawning item entities
+    // (which aren't reliably visible on the tick they spawn).
     private fun GameTestHelper.breakAndCollect(state: BlockState): ItemStack {
         surroundWithStone()
         setBlock(TORCH_POS, state)
-        val _ = level.destroyBlock(absolutePos(TORCH_POS), true)
-        val entities = getEntities(EntityTypes.ITEM, TORCH_POS, 1.0)
-        val drops = entities.map { it.item }
-        entities.forEach { it.discard() }
+        val drops = Block.getDrops(state, level, absolutePos(TORCH_POS), null)
         ensure(drops.size == 1) { "expected one drop from $state, found $drops" }
         return drops.single()
     }

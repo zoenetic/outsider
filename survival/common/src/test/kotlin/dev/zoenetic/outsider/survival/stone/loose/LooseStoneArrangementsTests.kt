@@ -47,8 +47,21 @@ class LooseStoneArrangementsTests {
         a.minX < b.maxX && b.minX < a.maxX && a.minZ < b.maxZ && b.minZ < a.maxZ
 
     @Test
+    fun `every count has one arrangement per layout`() {
+        assertEquals(listOf(576, 576, 576, 576), (1..4).map { forCount(it).size })
+    }
+
+    @Test
     fun `each count has every placement of that many shapes`() {
-        assertEquals(listOf(16, 72, 96, 24), (1..4).map { forCount(it).size })
+        assertEquals(listOf(16, 72, 96, 24), (1..4).map { forCount(it).distinct().size })
+    }
+
+    @Test
+    fun `every distinct arrangement is equally likely`() {
+        for (count in 1..4) {
+            val frequencies = forCount(count).groupingBy { it }.eachCount().values.toSet()
+            assertEquals(1, frequencies.size, "count $count: $frequencies")
+        }
     }
 
     @Test
@@ -58,21 +71,34 @@ class LooseStoneArrangementsTests {
         }
     }
 
+    // The fix for clusters reshuffling: a position keeps its layout index at every count.
+    @Test
+    fun `adding a stone keeps the others in place`() {
+        for (count in 1..3) {
+            val fewer = forCount(count)
+            val more = forCount(count + 1)
+            for (i in fewer.indices) {
+                assertTrue(more[i].containsAll(fewer[i]), "layout $i, $count to ${count + 1}")
+            }
+        }
+    }
+
     @Test
     fun `a single stone covers every shape in every slot, shape by shape`() {
-        val singles = forCount(1).map { it.single() }
+        val singles = forCount(1).distinct().map { it.single() }
         assertEquals(grid.flatten(), singles)
     }
 
     @Test
     fun `stones in one arrangement never overlap`() {
         for (count in 2..4) {
-            for ((index, arrangement) in forCount(count).withIndex()) {
-                for (i in arrangement.indices) {
-                    for (j in i + 1 until arrangement.size) {
+            for (arrangement in forCount(count).distinct()) {
+                val stones = arrangement.toList()
+                for (i in stones.indices) {
+                    for (j in i + 1 until stones.size) {
                         assertTrue(
-                            !overlaps(arrangement[i], arrangement[j]),
-                            "count $count, arrangement $index: ${arrangement[i]} and ${arrangement[j]}",
+                            !overlaps(stones[i], stones[j]),
+                            "count $count, $arrangement: ${stones[i]} and ${stones[j]}",
                         )
                     }
                 }
@@ -81,27 +107,18 @@ class LooseStoneArrangementsTests {
     }
 
     @Test
-    fun `no arrangement repeats`() {
-        for (count in 1..4) {
-            val arrangements = forCount(count)
-            assertEquals(arrangements.size, arrangements.toSet().size, "count $count")
-        }
-    }
-
-    @Test
     fun `the first full arrangement is the hand-made layout`() {
-        assertEquals(home, forCount(4).first())
+        assertEquals(home, forCount(4).first().toList())
     }
 
-    // Pinned so any change to the enumeration order fails here: the variant list order in the
+    // Pinned so any change to the layout order fails here: the variant list order in the
     // blockstate and the outline lookup both depend on it.
     @Test
-    fun `the enumeration order is stable`() {
+    fun `the layout order is stable`() {
         fun at(shape: Int, slot: Int) = grid[shape][slot]
-        assertEquals(listOf(at(0, 0), at(2, 2)), forCount(2)[13])
-        assertEquals(listOf(at(2, 3), at(3, 2)), forCount(2)[71])
-        assertEquals(listOf(at(0, 0), at(2, 2), at(3, 1)), forCount(3)[50])
-        assertEquals(listOf(at(0, 3), at(1, 2), at(2, 1), at(3, 0)), forCount(4)[23])
+        assertEquals(setOf(at(0, 3), at(1, 2), at(2, 1), at(3, 0)), forCount(4)[23])
+        assertEquals(setOf(at(3, 3), at(2, 2)), forCount(2)[575])
+        assertEquals(setOf(at(0, 1), at(1, 0), at(3, 2)), forCount(3)[30])
     }
 
     @Test

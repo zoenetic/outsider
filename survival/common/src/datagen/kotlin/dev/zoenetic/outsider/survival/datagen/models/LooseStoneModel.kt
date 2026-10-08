@@ -26,7 +26,7 @@ import java.util.function.Consumer
 
 private const val STONE_SLOT = "stone"
 
-private fun modelForArrangement(arrangement: List<Box>, stone: Identifier): ModelInstance =
+private fun modelForArrangement(arrangement: Set<Box>, stone: Identifier): ModelInstance =
     ModelInstance {
         JsonObject().apply {
             addProperty("parent", "minecraft:block/block")
@@ -50,11 +50,13 @@ fun looseStoneModel(
     val texture = Identifier.withDefaultNamespace("block/stone")
     val modelsByCount: Map<Int, List<Identifier>> =
         (1..MAX_STONES).associateWith { count ->
-            forCount(count).mapIndexed { index, arrangement ->
+            val arrangements = forCount(count)
+            val models = arrangements.distinct().withIndex().associate { (index, arrangement) ->
                 val id = ModelLocationUtils.getModelLocation(block, "_${count}_$index")
                 modelOutput.accept(id, modelForArrangement(arrangement, texture))
-                id
+                arrangement to id
             }
+            arrangements.map(models::getValue)
         }
     blockStateOutput.accept(
         MultiVariantGenerator.dispatch(block).with(

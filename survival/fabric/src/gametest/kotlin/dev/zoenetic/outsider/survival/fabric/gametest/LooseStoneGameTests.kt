@@ -19,6 +19,10 @@ class LooseStoneGameTests {
         LooseStoneTests.waterloggedLooseStonesHoldWater(helper)
 
     @GameTest
+    fun addingAStoneKeepsTheOthersInPlace(helper: GameTestHelper): Unit =
+        LooseStoneTests.addingAStoneKeepsTheOthersInPlace(helper)
+
+    @GameTest
     fun theOutlineFollowsTheRenderedArrangement(helper: GameTestHelper): Unit =
         LooseStoneTests.theOutlineFollowsTheRenderedArrangement(helper)
 
