@@ -37,13 +37,12 @@ public object OutsiderBlockBehaviour {
             )
 
         public fun wallTorch(): BlockBehaviour.Properties = torch()
-            .overrideLootTable(OutsiderBlocks.TORCH.lootTable)
             .overrideDescription(OutsiderBlocks.TORCH.descriptionId)
 
         public fun deadTorch(): BlockBehaviour.Properties = torch()
 
-        public fun deadWallTorch(): BlockBehaviour.Properties =
-            torch().overrideLootTable(OutsiderBlocks.DEAD_TORCH.lootTable)
-                .overrideDescription(OutsiderBlocks.DEAD_TORCH.descriptionId)
+        public fun deadWallTorch(): BlockBehaviour.Properties = torch()
+            .overrideDescription(OutsiderBlocks.DEAD_TORCH.descriptionId)
+            .overrideLootTable(OutsiderBlocks.DEAD_TORCH.lootTable)
     }
 }

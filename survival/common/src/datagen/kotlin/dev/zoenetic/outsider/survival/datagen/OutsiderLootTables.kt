@@ -46,6 +46,11 @@ class OutsiderLootTables : LootTableSubProvider {
         )
 
         output.accept(
+            OutsiderBlocks.WALL_TORCH.lootTable.orElseThrow(),
+            torchLootTable(OutsiderBlocks.WALL_TORCH),
+        )
+
+        output.accept(
             OutsiderBlocks.DEAD_TORCH.lootTable.orElseThrow(),
             deadTorchLootTable(),
         )
