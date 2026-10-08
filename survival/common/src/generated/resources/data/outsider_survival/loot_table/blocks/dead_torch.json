@@ -10,7 +10,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:stick"
+          "name": "outsider_survival:dead_torch"
         }
       ],
       "rolls": 1.0

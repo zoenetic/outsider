@@ -7,7 +7,6 @@ import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
-import dev.zoenetic.outsider.survival.datagen.models.torch.torchSuperstackModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.wallTorchModel
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
@@ -48,13 +47,13 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
 
         deadTorchModel(
             blocks.blockStateOutput,
+            blocks.itemModelOutput,
             torch0,
         )
 
         val wallTorch0 = wallTorchModel(
             blocks.blockStateOutput,
             blocks.modelOutput,
-            blocks.itemModelOutput,
         )
 
         deadWallTorchModel(
@@ -69,7 +68,5 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
         )
     }
 
-    override fun generateItemModels(itemModelGenerators: ItemModelGenerators) {
-        torchSuperstackModel(itemModelGenerators.itemModelOutput)
-    }
+    override fun generateItemModels(itemModelGenerators: ItemModelGenerators) = Unit
 }

@@ -13,10 +13,6 @@
     <ID>ArgumentListWrapping:DeadTorchModel.kt:( OutsiderBlocks.DEAD_TORCH, plainVariant(model) )</ID>
     <ID>ArgumentListWrapping:DeadWallTorchModel.kt:( OutsiderBlocks.DEAD_WALL_TORCH, plainVariant(model) )</ID>
     <ID>ArgumentListWrapping:OutsiderRecipes.kt:OutsiderRecipes$( "has_stone_pickaxe", has(Items.STONE_PICKAXE) )</ID>
-    <ID>ArgumentListWrapping:TorchSuperstackModel.kt:(ModelLocationUtils.getModelLocation(OutsiderItems.TORCH, "_lit_fuel_15"))</ID>
-    <ID>ArgumentListWrapping:TorchSuperstackModel.kt:(ModelLocationUtils.getModelLocation(OutsiderItems.TORCH, "_unlit_fuel_15"))</ID>
-    <ID>ArgumentListWrapping:TorchSuperstackModel.kt:(OutsiderItems.TORCH, "_lit_fuel_15")</ID>
-    <ID>ArgumentListWrapping:TorchSuperstackModel.kt:(OutsiderItems.TORCH, "_unlit_fuel_15")</ID>
     <ID>FinalNewline:CampfireLootTable.kt:dev.zoenetic.outsider.survival.datagen.loot.CampfireLootTable.kt</ID>
     <ID>FinalNewline:DeadCampfireLootTable.kt:dev.zoenetic.outsider.survival.datagen.loot.DeadCampfireLootTable.kt</ID>
     <ID>FinalNewline:DeadCampfireModel.kt:dev.zoenetic.outsider.survival.datagen.models.DeadCampfireModel.kt</ID>
@@ -40,8 +36,6 @@
     <ID>MagicNumber:TorchModel.kt:15</ID>
     <ID>MaximumLineLength:CampfireLootTable.kt:)</ID>
     <ID>MaximumLineLength:CampfireModel.kt:)</ID>
-    <ID>MaximumLineLength:TorchSuperstackModel.kt:)</ID>
-    <ID>MaximumLineLength:TorchSuperstackModel.kt:,</ID>
     <ID>MultiLineIfElse:Helpers.kt:registerSimpleItemModel( block, createFlatItemModelWithBlockTexture(block, modelOutput), itemModelOutput, )</ID>
     <ID>NoBlankLineBeforeRbrace:OutsiderRecipes.kt:OutsiderRecipes$ </ID>
     <ID>NoConsecutiveBlankLines:OutsiderLootTables.kt:OutsiderLootTables$ </ID>
@@ -107,8 +101,6 @@
     <ID>TrailingCommaOnCallSite:TorchModel.kt:( item, "_${if (lit) "lit" else "unlit"}_fuel_$level" )</ID>
     <ID>TrailingCommaOnCallSite:TorchModel.kt:( item, ItemModelUtils.conditional( ItemModelUtils.hasComponent(OutsiderComponents.LIT), unbakedItemModel(lit = true), unbakedItemModel(lit = false) ) )</ID>
     <ID>TrailingCommaOnCallSite:TorchModel.kt:( level )</ID>
-    <ID>TrailingCommaOnCallSite:TorchSuperstackModel.kt:( ItemModelUtils.hasComponent(OutsiderComponents.LIT), ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(OutsiderItems.TORCH, "_lit_fuel_15")), ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(OutsiderItems.TORCH, "_unlit_fuel_15")) )</ID>
-    <ID>TrailingCommaOnCallSite:TorchSuperstackModel.kt:( OutsiderItems.TORCH_SUPERSTACK, ItemModelUtils.conditional( ItemModelUtils.hasComponent(OutsiderComponents.LIT), ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(OutsiderItems.TORCH, "_lit_fuel_15")), ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(OutsiderItems.TORCH, "_unlit_fuel_15")) ) )</ID>
     <ID>TrailingCommaOnCallSite:WallTorchModel.kt:( ModelLocationUtils.getModelLocation(block, "_dead"), TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, 0)), modelOutput )</ID>
     <ID>TrailingCommaOnCallSite:WallTorchModel.kt:( MultiVariantGenerator.dispatch(block) .with( PropertyDispatch.initial( OutsiderBlockStateProperties.FUEL_LEVEL, BlockStateProperties.LIT ) .generate { level, isLit -&gt; plainVariant((if (isLit) litModels else unlitModels).getValue(level)) } ).with(reversedHorizontalRotation()) )</ID>
     <ID>TrailingCommaOnCallSite:WallTorchModel.kt:( Optional.of(template(lit = false)), Optional.empty(), TextureSlot.TORCH )</ID>

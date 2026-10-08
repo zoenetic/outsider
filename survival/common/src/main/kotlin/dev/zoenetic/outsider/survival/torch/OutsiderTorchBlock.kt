@@ -65,9 +65,6 @@ public open class OutsiderTorchBlock(flameParticle: SimpleParticleType, properti
             context.itemInHand.has(
                 OutsiderComponents.LIT,
             ),
-        )?.setValue(
-            FUEL_LEVEL,
-            context.itemInHand.getOrDefault(OutsiderComponents.FUEL_LEVEL, Fuel.MAX).level,
         )
 
     override fun useItemOn(

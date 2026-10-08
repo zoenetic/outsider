@@ -7,7 +7,6 @@ import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
-import dev.zoenetic.outsider.survival.datagen.models.torch.torchSuperstackModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.wallTorchModel
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderItems
@@ -37,7 +36,6 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
         BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.CAMPFIRE),
         BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.FIREWOOD),
         BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH),
-        BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH_SUPERSTACK),
     )
 
     override fun registerModels(blocks: BlockModelGenerators, items: ItemModelGenerators) {
@@ -78,11 +76,11 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
         val wallTorch0 = wallTorchModel(
             blocks.blockStateOutput,
             items.modelOutput,
-            items.itemModelOutput,
         )
 
         deadTorchModel(
             blocks.blockStateOutput,
+            items.itemModelOutput,
             torch0,
         )
 
@@ -90,7 +88,5 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             blocks.blockStateOutput,
             wallTorch0,
         )
-
-        torchSuperstackModel(items.itemModelOutput)
     }
 }

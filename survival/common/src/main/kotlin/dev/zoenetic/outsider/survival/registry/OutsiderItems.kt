@@ -1,22 +1,20 @@
 package dev.zoenetic.outsider.survival.registry
 
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.platform.getValue
-import dev.zoenetic.outsider.survival.superstack.SuperStackItem
-import dev.zoenetic.outsider.survival.superstack.SuperStackType
-import dev.zoenetic.outsider.survival.torch.OutsiderTorchItem
-import dev.zoenetic.outsider.survival.torch.TorchRules
 import net.minecraft.core.Direction
-import net.minecraft.core.component.DataComponents.BUNDLE_CONTENTS
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.component.BundleContents
 
 public object OutsiderItems {
 
     public val CAMPFIRE: Item by Survival.platform.register.blockItem(
         "campfire",
         OutsiderBlocks::CAMPFIRE,
+    ) { Item.Properties() }
+
+    public val DEAD_TORCH: Item by Survival.platform.register.blockItem(
+        "dead_torch",
+        OutsiderBlocks::DEAD_TORCH,
     ) { Item.Properties() }
 
     public val FIREWOOD: Item by Survival.platform.register.blockItem(
@@ -29,39 +27,12 @@ public object OutsiderItems {
         OutsiderBlocks::LOOSE_STONE,
     ) { Item.Properties() } // TODO: Correct properties...
 
-    public val TORCH: Item by Survival.platform.register.item(
+    public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(
         "torch",
-        { properties ->
-            OutsiderTorchItem(
-                OutsiderBlocks.TORCH,
-                OutsiderBlocks.WALL_TORCH,
-                Direction.DOWN,
-                properties,
-            )
-        },
-        {
-            Item.Properties().component(OutsiderComponents.FUEL_LEVEL, Fuel.MAX)
-        },
-    )
-
-    public val TORCH_SUPERSTACK: Item by Survival.platform.register.item(
-        "torch_superstack",
-        { properties ->
-            SuperStackItem(
-                SuperStackType(
-                    TORCH,
-                    TorchRules,
-                    listOf(OutsiderComponents.FUEL_LEVEL, OutsiderComponents.LIT),
-                ),
-                properties,
-            )
-        },
-        {
-            Item.Properties()
-                .component(BUNDLE_CONTENTS, BundleContents.EMPTY)
-                .stacksTo(1)
-        },
-    )
+        OutsiderBlocks::TORCH,
+        OutsiderBlocks::WALL_TORCH,
+        Direction.DOWN,
+    ) { Item.Properties() }
 
     public fun init() {}
 }

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "outsider_survival:block/torch_dead"
+  }
+}

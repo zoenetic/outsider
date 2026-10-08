@@ -93,7 +93,7 @@ public object NeoForgeRegister : Register {
         { props ->
             BlockItem(blockFactory(), props)
         },
-        Supplier { propertiesFactory() },
+        Supplier { propertiesFactory().useBlockDescriptionPrefix() },
     )
 
     override fun <T : Any> component(
@@ -133,7 +133,12 @@ public object NeoForgeRegister : Register {
     ): Holder<Item> = items.registerItem(
         name,
         { props ->
-            StandingAndWallBlockItem(block(), wallBlock(), attachmentDirection, props)
+            StandingAndWallBlockItem(
+                block(),
+                wallBlock(),
+                attachmentDirection,
+                props.useBlockDescriptionPrefix(),
+            )
         },
         Supplier { propertiesFactory() },
     )

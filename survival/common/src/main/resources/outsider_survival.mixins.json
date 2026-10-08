@@ -4,18 +4,12 @@
   "package": "dev.zoenetic.outsider.survival.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "AbstractContainerMenuMixin",
     "AxeItemMixin",
     "BlockStateBaseMixin",
-    "InventoryMixin",
-    "ItemEntityAccessor",
-    "ItemEntityMixin",
-    "ItemStackMixin",
     "LevelChunkMixin",
     "LivingEntityMixin"
   ],
   "client": [
-    "GuiGraphicsExtractorMixin",
     "HumanoidModelMixin",
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",

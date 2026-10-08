@@ -8,7 +8,6 @@ import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import dev.zoenetic.outsider.survival.registry.OutsiderItems
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
-import dev.zoenetic.outsider.survival.superstack.isOrContains
 import net.minecraft.core.BlockPos
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
@@ -37,7 +36,7 @@ public object FireInteractions {
         val offHandHasLitItem = offHandItem.has(OutsiderComponents.LIT)
         if (mainHandHasLitItem == offHandHasLitItem) return InteractionResult.PASS
         val target = if (mainHandHasLitItem) offHandItem else mainHandItem
-        if (!target.isOrContains(OutsiderItems.TORCH)) return InteractionResult.PASS
+        if (!target.`is`(OutsiderItems.TORCH)) return InteractionResult.PASS
         if (level.isClientSide) return InteractionResult.CONSUME
         target.set(OutsiderComponents.LIT, Unit.INSTANCE)
         return InteractionResult.CONSUME
@@ -51,7 +50,7 @@ public object FireInteractions {
         pos: BlockPos,
         player: Player,
     ): InteractionResult {
-        if (!itemStack.isOrContains(OutsiderItems.TORCH)) return InteractionResult.PASS
+        if (!itemStack.`is`(OutsiderItems.TORCH)) return InteractionResult.PASS
         if (itemStack.has(OutsiderComponents.LIT)) return InteractionResult.PASS
         if (!state.getValueOrElse(BlockStateProperties.LIT, false)) return InteractionResult.PASS
         if (level.isClientSide) return InteractionResult.CONSUME

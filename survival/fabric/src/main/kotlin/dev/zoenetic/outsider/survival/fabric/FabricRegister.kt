@@ -68,7 +68,7 @@ public object FabricRegister : Register {
         val holder = Registry.registerForHolder(
             BuiltInRegistries.ITEM,
             key,
-            BlockItem(blockFactory(), propertiesFactory().setId(key)),
+            BlockItem(blockFactory(), propertiesFactory().setId(key).useBlockDescriptionPrefix()),
         )
         return holder.value().builtInRegistryHolder()
     }
@@ -142,7 +142,7 @@ public object FabricRegister : Register {
                 block(),
                 wallBlock(),
                 attachmentDirection,
-                propertiesFactory().setId(key),
+                propertiesFactory().setId(key).useBlockDescriptionPrefix(),
             ),
         )
         return holder.value().builtInRegistryHolder()

@@ -6,7 +6,6 @@ import dev.zoenetic.outsider.survival.platform.Platform
 import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.OutsiderComponents
 import dev.zoenetic.outsider.survival.registry.OutsiderItems
-import dev.zoenetic.outsider.survival.registry.OutsiderLootFunctions
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import dev.zoenetic.outsider.survival.registry.OutsiderWideners
 import dev.zoenetic.outsider.survival.vitals.BreathParticles
@@ -34,7 +33,6 @@ public object Survival {
         OutsiderBlocks.init()
         OutsiderComponents.init()
         OutsiderItems.init()
-        OutsiderLootFunctions.init()
         OutsiderSounds.init()
         OutsiderWideners.init()
         LOGGER.info(

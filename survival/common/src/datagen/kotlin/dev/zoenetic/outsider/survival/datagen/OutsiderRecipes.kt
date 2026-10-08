@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture
 class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
     RecipeProvider(registries, output) {
 
+    @Suppress("MagicNumber")
     override fun buildRecipes() {
         shapeless(RecipeCategory.MISC, Items.STICK)
             .requires(OutsiderItems.FIREWOOD)
@@ -43,7 +44,7 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
             )
             .save(output, "outsider_survival:cobblestone_from_loose_stone")
 
-        shaped(RecipeCategory.MISC, OutsiderItems.TORCH, 1)
+        shaped(RecipeCategory.MISC, OutsiderItems.TORCH, 4)
             .pattern("c")
             .pattern("s")
             .define('c', ItemTags.COALS)

@@ -25,17 +25,15 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
 
-public class OutsiderWallTorchBlock(
-    flameParticle: SimpleParticleType,
-    properties: Properties,
-) : OutsiderTorchBlock(flameParticle, properties) {
+public class OutsiderWallTorchBlock(flameParticle: SimpleParticleType, properties: Properties) :
+    OutsiderTorchBlock(flameParticle, properties) {
 
     init {
         registerDefaultState(
             stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(LIT, false)
-                .setValue(FUEL_LEVEL, Fuel.MAX.level)
+                .setValue(FUEL_LEVEL, Fuel.MAX.level),
         )
     }
 
@@ -43,17 +41,14 @@ public class OutsiderWallTorchBlock(
         state: BlockState,
         level: Level,
         pos: BlockPos,
-        random: RandomSource
+        random: RandomSource,
     ) {
         if (!state.getValue(LIT)) return
         Blocks.WALL_TORCH.animateTick(state, level, pos, random)
     }
 
-    public override fun canSurvive(
-        state: BlockState,
-        level: LevelReader,
-        pos: BlockPos
-    ): Boolean = WallTorchBlock.canSurvive(level, pos, state.getValue(FACING))
+    public override fun canSurvive(state: BlockState, level: LevelReader, pos: BlockPos): Boolean =
+        WallTorchBlock.canSurvive(level, pos, state.getValue(FACING))
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         super.createBlockStateDefinition(builder)
@@ -68,7 +63,7 @@ public class OutsiderWallTorchBlock(
         state: BlockState,
         level: BlockGetter,
         pos: BlockPos,
-        context: CollisionContext
+        context: CollisionContext,
     ): VoxelShape = WallTorchBlock.getShape(state)
 
     public override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
@@ -77,13 +72,10 @@ public class OutsiderWallTorchBlock(
             val state = defaultBlockState()
                 .setValue(FACING, direction.opposite)
                 .setValue(
-                    LIT, context.itemInHand.has(
-                        OutsiderComponents.LIT
-                    )
-                )
-                .setValue(
-                    FUEL_LEVEL,
-                    context.itemInHand.getOrDefault(OutsiderComponents.FUEL_LEVEL, Fuel.MAX).level
+                    LIT,
+                    context.itemInHand.has(
+                        OutsiderComponents.LIT,
+                    ),
                 )
             if (state.canSurvive(context.level, context.clickedPos)) return state
         }
@@ -98,27 +90,25 @@ public class OutsiderWallTorchBlock(
         directionToNeighbour: Direction,
         neighbourPos: BlockPos,
         neighbourState: BlockState,
-        random: RandomSource
-    ): BlockState {
-        return if (directionToNeighbour.opposite == state.getValue(FACING) && !state.canSurvive(
+        random: RandomSource,
+    ): BlockState =
+        if (directionToNeighbour.opposite == state.getValue(FACING) && !state.canSurvive(
                 level,
-                pos
+                pos,
             )
         ) {
             Blocks.AIR.defaultBlockState()
         } else {
             state
         }
-    }
 
     public companion object {
         public val CODEC: MapCodec<OutsiderWallTorchBlock> =
             RecordCodecBuilder.mapCodec { i: RecordCodecBuilder.Instance<OutsiderWallTorchBlock> ->
                 i.group(
                     PARTICLE_OPTIONS_FIELD.forGetter { b -> b.flame },
-                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.props }
+                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.props },
                 ).apply(i, ::OutsiderWallTorchBlock)
             }
-
     }
 }

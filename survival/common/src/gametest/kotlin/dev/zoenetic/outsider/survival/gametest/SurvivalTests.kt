@@ -18,11 +18,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import kotlin.math.abs
 
-data class SurvivalTest(
-    val name: String,
-    val maxTicks: Int,
-    val run: (GameTestHelper) -> Unit,
-)
+data class SurvivalTest(val name: String, val maxTicks: Int, val run: (GameTestHelper) -> Unit)
 
 object SurvivalTests {
 
@@ -61,7 +57,7 @@ object SurvivalTests {
         if (conditions.humidity != expected) {
             throw helper.assertionException(
                 "conditions read humidity ${conditions.humidity.value}, but the player's own " +
-                        "chunk ${ownChunk.pos} reads ${expected.value}"
+                    "chunk ${ownChunk.pos} reads ${expected.value}",
             )
         }
         helper.succeed()
@@ -72,7 +68,7 @@ object SurvivalTests {
         val conditions = helper.sample(player)
         if (conditions.time.value != helper.level.gameTime) {
             throw helper.assertionException(
-                "conditions recorded tick ${conditions.time.value}, level is at ${helper.level.gameTime}"
+                "conditions recorded tick ${conditions.time.value}, level is at ${helper.level.gameTime}",
             )
         }
         helper.succeed()
@@ -90,7 +86,7 @@ object SurvivalTests {
         if (stored.time.value != helper.level.gameTime) {
             throw helper.assertionException(
                 "after a level tick the player's stored conditions are at tick " +
-                        "${stored.time.value}, level is at ${helper.level.gameTime}"
+                    "${stored.time.value}, level is at ${helper.level.gameTime}",
             )
         }
         helper.succeed()
@@ -117,17 +113,23 @@ object SurvivalTests {
                 val drift = now - began
                 val where = "ambient ${outside.celsius}C, body $began -> $now (drift $drift)"
                 when {
-                    outside < COMFORT_LOW -> if (drift >= 0.0) throw helper.assertionException(
-                        "below the comfort band the body should cool: $where"
-                    )
+                    outside < COMFORT_LOW -> if (drift >= 0.0) {
+                        throw helper.assertionException(
+                            "below the comfort band the body should cool: $where",
+                        )
+                    }
 
-                    outside > COMFORT_HIGH -> if (drift <= 0.0) throw helper.assertionException(
-                        "above the comfort band the body should warm: $where"
-                    )
+                    outside > COMFORT_HIGH -> if (drift <= 0.0) {
+                        throw helper.assertionException(
+                            "above the comfort band the body should warm: $where",
+                        )
+                    }
 
-                    else -> if (abs(drift) > 1e-6) throw helper.assertionException(
-                        "inside the comfort band the body should hold steady: $where"
-                    )
+                    else -> if (abs(drift) > 1e-6) {
+                        throw helper.assertionException(
+                            "inside the comfort band the body should hold steady: $where",
+                        )
+                    }
                 }
             }
             .thenSucceed()
@@ -140,11 +142,11 @@ object SurvivalTests {
         val absolute = helper.absolutePos(relative)
         val index = Survival.platform.emitters.get(helper.level.getChunkAt(absolute))
             ?: throw helper.assertionException(
-                "chunk at $absolute has no heat index at all (LevelChunkMixin?)"
+                "chunk at $absolute has no heat index at all (LevelChunkMixin?)",
             )
         if (!index.containsKey(absolute.asLong())) {
             throw helper.assertionException(
-                "campfire at $absolute never reached the chunk's heat index (LevelChunkMixin?)"
+                "campfire at $absolute never reached the chunk's heat index (LevelChunkMixin?)",
             )
         }
         helper.succeed()
@@ -173,7 +175,7 @@ object SurvivalTests {
         if (sources.none { it == absolute }) {
             throw helper.assertionException(
                 "campfire at $absolute was not among the ${sources.size} sources found " +
-                        "around the player at ${player.blockPosition()}"
+                    "around the player at ${player.blockPosition()}",
             )
         }
         helper.succeed()
@@ -184,35 +186,33 @@ object SurvivalTests {
         SurvivalTest(
             "conditions_come_from_the_players_own_chunk",
             20,
-            ::conditionsComeFromThePlayersOwnChunk
+            ::conditionsComeFromThePlayersOwnChunk,
         ),
         SurvivalTest(
             "conditions_record_the_current_game_time",
             20,
-            ::conditionsRecordTheCurrentGameTime
+            ::conditionsRecordTheCurrentGameTime,
         ),
         SurvivalTest(
             "the_level_tick_stores_conditions",
             20,
-            ::theLevelTickStoresConditionsForPlayersInTheWorld
+            ::theLevelTickStoresConditionsForPlayersInTheWorld,
         ),
         SurvivalTest(
             "the_production_loop_drives_body_temperature",
             200,
-            ::theProductionLoopDrivesBodyTemperature
+            ::theProductionLoopDrivesBodyTemperature,
         ),
         SurvivalTest(
             "placing_a_campfire_registers_a_heat_source",
             20,
-            ::placingACampfireRegistersAHeatSource
+            ::placingACampfireRegistersAHeatSource,
         ),
         SurvivalTest(
             "breaking_a_campfire_deregisters_it",
             20,
-            ::breakingACampfireDeregistersTheHeatSource
+            ::breakingACampfireDeregistersTheHeatSource,
         ),
         SurvivalTest("a_nearby_campfire_is_found", 20, ::aNearbyCampfireIsFoundAsAHeatSource),
-    ) + TorchLootTests.ALL + SuperStackTests.ALL + SuperStackClickTests.ALL +
-        SuperStackSplitTests.ALL + SuperStackPlacementTests.ALL + SuperStackDropTests.ALL +
-        SuperStackCollectTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL
+    ) + TorchLootTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL
 }

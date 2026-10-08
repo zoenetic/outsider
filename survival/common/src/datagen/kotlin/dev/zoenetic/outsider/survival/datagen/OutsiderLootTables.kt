@@ -42,7 +42,7 @@ class OutsiderLootTables : LootTableSubProvider {
 
         output.accept(
             OutsiderBlocks.TORCH.lootTable.orElseThrow(),
-            torchLootTable(),
+            torchLootTable(OutsiderBlocks.TORCH),
         )
 
         output.accept(

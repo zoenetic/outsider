@@ -2,20 +2,45 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "functions": [
+          "type": "minecraft:alternatives",
+          "children": [
             {
-              "function": "outsider_survival:copy_fuel_state"
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "block": "outsider_survival:torch",
+                      "condition": "minecraft:block_state_property",
+                      "properties": {
+                        "fuel_level": "15"
+                      }
+                    },
+                    {
+                      "block": "outsider_survival:torch",
+                      "condition": "minecraft:block_state_property",
+                      "properties": {
+                        "fuel_level": "14"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "name": "outsider_survival:torch"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "outsider_survival:dead_torch"
             }
-          ],
-          "name": "outsider_survival:torch"
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:explosion_decay"
         }
       ],
       "rolls": 1.0
