@@ -1,6 +1,6 @@
 package dev.zoenetic.outsider.survival.fuel.firewood
 
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack

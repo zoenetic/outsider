@@ -9,7 +9,7 @@ public interface FuelledBlock {
     public val burnRate: Duration
     public fun getFuel(state: BlockState): Fuel
     public fun setFuel(state: BlockState, fuel: Fuel): BlockState
-    public fun getBurnout(existingBurnout: Time?, now: Time, fuel: Fuel): Burnout
+    public fun getBurnout(stored: Time?, now: Time, fuel: Fuel): Burnout
     public fun exhausted(state: BlockState): BlockState
 
     public companion object {

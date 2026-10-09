@@ -1,6 +1,7 @@
 package dev.zoenetic.outsider.survival.datagen
 
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.DataProvider
 import net.minecraft.data.PackOutput
@@ -37,10 +38,10 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
         shaped(RecipeCategory.BUILDING_BLOCKS, Items.COBBLESTONE, 1)
             .pattern("ss")
             .pattern("ss")
-            .define('s', OutsiderItems.LOOSE_STONE)
+            .define('s', OutsiderLooseStoneItems.STONE)
             .unlockedBy(
                 "has_loose_stone",
-                has(OutsiderItems.LOOSE_STONE),
+                has(OutsiderLooseStoneItems.STONE),
             )
             .save(output, "outsider_survival:cobblestone_from_loose_stone")
 

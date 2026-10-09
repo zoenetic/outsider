@@ -6,7 +6,9 @@ import dev.zoenetic.outsider.survival.datagen.loot.deadTorchLootTable
 import dev.zoenetic.outsider.survival.datagen.loot.firewoodLootTable
 import dev.zoenetic.outsider.survival.datagen.loot.looseStoneLootTable
 import dev.zoenetic.outsider.survival.datagen.loot.torchLootTable
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderLooseStoneBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.DataProvider
 import net.minecraft.data.PackOutput
@@ -34,10 +36,64 @@ class OutsiderLootTables : LootTableSubProvider {
             OutsiderBlocks.FIREWOOD.lootTable.orElseThrow(),
             firewoodLootTable(),
         )
+        output.accept(
+            OutsiderLooseStoneBlocks.ANDESITE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.ANDESITE),
+        )
 
         output.accept(
-            OutsiderBlocks.LOOSE_STONE.lootTable.orElseThrow(),
-            looseStoneLootTable(),
+            OutsiderLooseStoneBlocks.BASALT.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.BASALT),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.BLACKSTONE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.BLACKSTONE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.CALCITE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.CALCITE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.DIORITE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.DIORITE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.DEEPSLATE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.DEEPSLATE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.ENDSTONE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.ENDSTONE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.GRANITE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.GRANITE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.RED_SANDSTONE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.RED_SANDSTONE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.SANDSTONE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.SANDSTONE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.STONE.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.STONE),
+        )
+
+        output.accept(
+            OutsiderLooseStoneBlocks.TUFF.lootTable.orElseThrow(),
+            looseStoneLootTable(OutsiderLooseStoneItems.TUFF),
         )
 
         output.accept(

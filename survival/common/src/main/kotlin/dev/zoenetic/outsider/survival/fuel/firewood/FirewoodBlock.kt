@@ -2,7 +2,7 @@ package dev.zoenetic.outsider.survival.fuel.firewood
 
 import com.mojang.math.OctahedralGroup
 import com.mojang.serialization.MapCodec
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.sounds.SoundEvents

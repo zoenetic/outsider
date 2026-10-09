@@ -1,7 +1,8 @@
-package dev.zoenetic.outsider.survival.registry
+package dev.zoenetic.outsider.survival.registry.items
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.platform.getValue
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import net.minecraft.core.Direction
 import net.minecraft.world.item.Item
 
@@ -22,11 +23,6 @@ public object OutsiderItems {
         OutsiderBlocks::FIREWOOD,
     ) { Item.Properties() }
 
-    public val LOOSE_STONE: Item by Survival.platform.register.blockItem(
-        "loose_stone",
-        OutsiderBlocks::LOOSE_STONE,
-    ) { Item.Properties() } // TODO: Correct properties...
-
     public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(
         "torch",
         OutsiderBlocks::TORCH,
@@ -34,5 +30,7 @@ public object OutsiderItems {
         Direction.DOWN,
     ) { Item.Properties() }
 
-    public fun init() {}
+    public fun init() {
+        OutsiderLooseStoneItems.init()
+    }
 }

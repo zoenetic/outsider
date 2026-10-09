@@ -1,0 +1,72 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:loose_stone",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "stones": "1"
+                  }
+                }
+              ],
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:loose_stone",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "stones": "2"
+                  }
+                }
+              ],
+              "count": 2.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:loose_stone",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "stones": "3"
+                  }
+                }
+              ],
+              "count": 3.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "conditions": [
+                {
+                  "block": "outsider_survival:loose_stone",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "stones": "4"
+                  }
+                }
+              ],
+              "count": 4.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "function": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "outsider_survival:loose_tuff"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "outsider_survival:blocks/loose_tuff"
+}

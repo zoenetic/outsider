@@ -1,8 +1,8 @@
 package dev.zoenetic.outsider.survival.datagen.loot
 
 import dev.zoenetic.outsider.survival.fuel.firewood.FirewoodBlock.Companion.BILLETS
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.advancements.predicates.StatePropertiesPredicate
 import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
@@ -22,12 +22,12 @@ public fun firewoodLootTable() = LootTable.lootTable()
                         SetItemCountFunction.setCount(ConstantValue.exactly(n.toFloat()))
                             .`when`(
                                 LootItemBlockStatePropertyCondition.hasBlockStateProperties(
-                                    OutsiderBlocks.FIREWOOD
+                                    OutsiderBlocks.FIREWOOD,
                                 ).setProperties(
                                     StatePropertiesPredicate.Builder.properties()
-                                        .hasProperty(BILLETS, n)
-                                )
+                                        .hasProperty(BILLETS, n),
+                                ),
                             )
-                    }.apply(ApplyExplosionDecay.explosionDecay())
-            )
+                    }.apply(ApplyExplosionDecay.explosionDecay()),
+            ),
     )

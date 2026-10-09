@@ -1,13 +1,14 @@
 package dev.zoenetic.outsider.survival.gametest
 
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.MAX_STONES
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.forCount
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderLooseStoneBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.STONES
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.WATERLOGGED
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.toShape
+import dev.zoenetic.outsider.survival.stone.loose.MAX_STONES
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
@@ -33,7 +34,7 @@ object LooseStoneTests {
     private val STONES_POS = BlockPos(1, 2, 1)
 
     fun looseStonesNeedASturdyFloor(helper: GameTestHelper) {
-        val stones = OutsiderBlocks.LOOSE_STONE.defaultBlockState()
+        val stones = OutsiderLooseStoneBlocks.STONE.defaultBlockState()
         val pos = helper.absolutePos(STONES_POS)
 
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
@@ -49,9 +50,9 @@ object LooseStoneTests {
 
     fun looseStonesBreakWhenTheirSupportIsRemoved(helper: GameTestHelper) {
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
-        helper.setBlock(STONES_POS, OutsiderBlocks.LOOSE_STONE)
+        helper.setBlock(STONES_POS, OutsiderLooseStoneBlocks.STONE)
         helper.setBlock(STONES_POS.below(), Blocks.AIR)
-        helper.assertBlockNotPresent(OutsiderBlocks.LOOSE_STONE, STONES_POS)
+        helper.assertBlockNotPresent(OutsiderLooseStoneBlocks.STONE, STONES_POS)
         helper.succeed()
     }
 
@@ -59,7 +60,7 @@ object LooseStoneTests {
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
         helper.setBlock(
             STONES_POS,
-            OutsiderBlocks.LOOSE_STONE.defaultBlockState().setValue(WATERLOGGED, true),
+            OutsiderLooseStoneBlocks.STONE.defaultBlockState().setValue(WATERLOGGED, true),
         )
         val fluid = helper.getBlockState(STONES_POS).fluidState
         if (!fluid.`is`(Fluids.WATER)) {
@@ -78,19 +79,38 @@ object LooseStoneTests {
         BlockPos(1000, 80, 1000) to 259,
     )
 
-    private fun outline(helper: GameTestHelper, pos: BlockPos, stones: Int) =
-        OutsiderBlocks.LOOSE_STONE.defaultBlockState().setValue(STONES, stones)
+    // Every loose stone block with the arrangement it was registered with.
+    private val TYPES: List<Pair<Block, LooseStoneArrangement>> = listOf(
+        OutsiderLooseStoneBlocks.ANDESITE to LooseStoneArrangements.ANDESITE,
+        OutsiderLooseStoneBlocks.BASALT to LooseStoneArrangements.BASALT,
+        OutsiderLooseStoneBlocks.BLACKSTONE to LooseStoneArrangements.BLACKSTONE,
+        OutsiderLooseStoneBlocks.CALCITE to LooseStoneArrangements.CALCITE,
+        OutsiderLooseStoneBlocks.DEEPSLATE to LooseStoneArrangements.DEEPSLATE,
+        OutsiderLooseStoneBlocks.DIORITE to LooseStoneArrangements.DIORITE,
+        OutsiderLooseStoneBlocks.ENDSTONE to LooseStoneArrangements.ENDSTONE,
+        OutsiderLooseStoneBlocks.GRANITE to LooseStoneArrangements.GRANITE,
+        OutsiderLooseStoneBlocks.RED_SANDSTONE to LooseStoneArrangements.RED_SANDSTONE,
+        OutsiderLooseStoneBlocks.SANDSTONE to LooseStoneArrangements.SANDSTONE,
+        OutsiderLooseStoneBlocks.STONE to LooseStoneArrangements.STONE,
+        OutsiderLooseStoneBlocks.TUFF to LooseStoneArrangements.TUFF,
+    )
+
+    private fun outline(helper: GameTestHelper, block: Block, pos: BlockPos, stones: Int) =
+        block.defaultBlockState().setValue(STONES, stones)
             .getShape(helper.level, pos, CollisionContext.empty())
 
+    // Each block's outline must come from its own arrangement, not another type's.
     fun theOutlineFollowsTheRenderedArrangement(helper: GameTestHelper) {
-        for ((pos, pick) in RENDERED_PICKS) {
-            for (stones in 1..MAX_STONES) {
-                val expected = forCount(stones)[pick].map { it.toShape() }.reduce(Shapes::or)
-                val outline = outline(helper, pos, stones)
-                if (Shapes.joinIsNotEmpty(outline, expected, BooleanOp.NOT_SAME)) {
-                    throw helper.assertionException(
-                        "$stones stones at $pos should outline layout $pick",
-                    )
+        for ((block, arrangement) in TYPES) {
+            for ((pos, pick) in RENDERED_PICKS) {
+                for (stones in 1..MAX_STONES) {
+                    val expected = arrangement.forCount(stones)[pick]
+                        .map { it.toShape() }
+                        .reduce(Shapes::or)
+                    val outline = outline(helper, block, pos, stones)
+                    helper.ensure(!Shapes.joinIsNotEmpty(outline, expected, BooleanOp.NOT_SAME)) {
+                        "$stones of ${block.descriptionId} at $pos should outline layout $pick"
+                    }
                 }
             }
         }
@@ -98,12 +118,14 @@ object LooseStoneTests {
     }
 
     fun addingAStoneKeepsTheOthersInPlace(helper: GameTestHelper) {
-        for (pos in RENDERED_PICKS.keys) {
-            for (stones in 1..<MAX_STONES) {
-                val fewer = outline(helper, pos, stones)
-                val more = outline(helper, pos, stones + 1)
-                helper.ensure(!Shapes.joinIsNotEmpty(fewer, more, BooleanOp.ONLY_FIRST)) {
-                    "adding a stone at $pos moved the first $stones"
+        for ((block, _) in TYPES) {
+            for (pos in RENDERED_PICKS.keys) {
+                for (stones in 1..<MAX_STONES) {
+                    val fewer = outline(helper, block, pos, stones)
+                    val more = outline(helper, block, pos, stones + 1)
+                    helper.ensure(!Shapes.joinIsNotEmpty(fewer, more, BooleanOp.ONLY_FIRST)) {
+                        "adding a stone to ${block.descriptionId} at $pos moved the first $stones"
+                    }
                 }
             }
         }
@@ -148,7 +170,7 @@ object LooseStoneTests {
         val oneTooMany = MAX_STONES + 1
         player.setItemInHand(
             InteractionHand.MAIN_HAND,
-            ItemStack(OutsiderItems.LOOSE_STONE, oneTooMany),
+            ItemStack(OutsiderLooseStoneItems.STONE, oneTooMany),
         )
 
         // Clicking the ground's top face targets the space above it, where the cluster sits.
@@ -160,7 +182,7 @@ object LooseStoneTests {
         if (stones != MAX_STONES) {
             throw helper.assertionException("expected $MAX_STONES stones, found $stones")
         }
-        helper.assertBlockNotPresent(OutsiderBlocks.LOOSE_STONE, STONES_POS.above())
+        helper.assertBlockNotPresent(OutsiderLooseStoneBlocks.STONE, STONES_POS.above())
         if (player.mainHandItem.count != 1) {
             throw helper.assertionException(
                 "the fifth stone should stay in hand, found ${player.mainHandItem}",
@@ -173,9 +195,9 @@ object LooseStoneTests {
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
         val pos = helper.absolutePos(STONES_POS)
         for (stones in 1..MAX_STONES) {
-            val state = OutsiderBlocks.LOOSE_STONE.defaultBlockState().setValue(STONES, stones)
+            val state = OutsiderLooseStoneBlocks.STONE.defaultBlockState().setValue(STONES, stones)
             val dropped = Block.getDrops(state, helper.level, pos, null)
-                .filter { it.`is`(OutsiderItems.LOOSE_STONE) }
+                .filter { it.`is`(OutsiderLooseStoneItems.STONE) }
                 .sumOf { it.count }
             if (dropped != stones) {
                 throw helper.assertionException("$stones stones dropped $dropped")

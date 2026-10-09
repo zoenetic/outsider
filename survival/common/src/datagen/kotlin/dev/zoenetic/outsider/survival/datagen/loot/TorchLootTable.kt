@@ -1,9 +1,9 @@
 package dev.zoenetic.outsider.survival.datagen.loot
 
 import dev.zoenetic.outsider.survival.fuel.Fuel
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
-import dev.zoenetic.outsider.survival.registry.OutsiderComponents
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties.FUEL_LEVEL
+import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.advancements.predicates.StatePropertiesPredicate.Builder.properties
 import net.minecraft.util.Unit
 import net.minecraft.world.level.block.Block

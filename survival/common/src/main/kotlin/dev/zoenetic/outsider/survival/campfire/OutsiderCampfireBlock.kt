@@ -9,8 +9,8 @@ import dev.zoenetic.outsider.survival.fire.FireInteractions
 import dev.zoenetic.outsider.survival.fuel.Burnout
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Light
@@ -39,7 +39,9 @@ public open class OutsiderCampfireBlock(
     private val spawnParticles: Boolean,
     private val fireDamage: Int,
     properties: Properties,
-) : CampfireBlock(spawnParticles, fireDamage, properties), EmittingBlock, FuelledBlock {
+) : CampfireBlock(spawnParticles, fireDamage, properties),
+    EmittingBlock,
+    FuelledBlock {
 
     init {
         registerDefaultState(
@@ -48,7 +50,7 @@ public open class OutsiderCampfireBlock(
                 .setValue(SIGNAL_FIRE, false)
                 .setValue(WATERLOGGED, false)
                 .setValue(FACING, Direction.NORTH)
-                .setValue(FUEL_LEVEL, Fuel.MAX.level)
+                .setValue(FUEL_LEVEL, Fuel.MAX.level),
         )
     }
 
@@ -78,8 +80,8 @@ public open class OutsiderCampfireBlock(
         return state.setValue(FUEL_LEVEL, newValue.level)
     }
 
-    override fun getBurnout(existingBurnout: Time?, now: Time, fuel: Fuel): Burnout =
-        Burnout.forFuel(existingBurnout, now, fuel, Fuel.MAX, burnRate)
+    override fun getBurnout(stored: Time?, now: Time, fuel: Fuel): Burnout =
+        Burnout.forFuel(stored, now, fuel, burnRate)
 
     override fun exhausted(state: BlockState): BlockState =
         OutsiderBlocks.DEAD_CAMPFIRE.defaultBlockState()
@@ -93,7 +95,7 @@ public open class OutsiderCampfireBlock(
         pos: BlockPos,
         player: Player,
         hand: InteractionHand,
-        hitResult: BlockHitResult
+        hitResult: BlockHitResult,
     ): InteractionResult {
         val refuel = FireInteractions.maybeRefuel(state, itemStack, level, pos, player)
         if (refuel != InteractionResult.PASS) return refuel
@@ -108,7 +110,7 @@ public open class OutsiderCampfireBlock(
         level: Level,
         pos: BlockPos,
         player: Player,
-        hitResult: BlockHitResult
+        hitResult: BlockHitResult,
     ): InteractionResult = FireInteractions.maybeLightWithHandDrill(state, level, pos, player)
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
@@ -119,13 +121,15 @@ public open class OutsiderCampfireBlock(
             .setValue(WATERLOGGED, replacedWater)
             .setValue(
                 SIGNAL_FIRE,
-                isSmokeSource(level.getBlockState(pos.below()))
+                isSmokeSource(level.getBlockState(pos.below())),
             )
             .setValue(LIT, false)
             .setValue(FACING, context.horizontalDirection)
     }
 
-    public override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
+    public override fun createBlockStateDefinition(
+        builder: StateDefinition.Builder<Block, BlockState>,
+    ) {
         builder.add(LIT, SIGNAL_FIRE, WATERLOGGED, FACING, FUEL_LEVEL)
     }
 

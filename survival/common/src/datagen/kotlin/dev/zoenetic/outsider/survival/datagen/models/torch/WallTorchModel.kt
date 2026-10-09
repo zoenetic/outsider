@@ -3,8 +3,8 @@ package dev.zoenetic.outsider.survival.datagen.models.torch
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.datagen.models.plainVariant
 import dev.zoenetic.outsider.survival.datagen.models.reversedHorizontalRotation
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
 import net.minecraft.client.data.models.blockstates.PropertyDispatch

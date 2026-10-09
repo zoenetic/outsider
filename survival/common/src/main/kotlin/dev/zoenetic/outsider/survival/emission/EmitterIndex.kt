@@ -6,7 +6,6 @@ import dev.zoenetic.outsider.survival.ServerState
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.emission.EmittingBlock.Companion.emitterOrNull
 import dev.zoenetic.outsider.survival.fuel.Burnout
-import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
@@ -24,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraft.world.phys.Vec3
-import java.util.*
+import java.util.Arrays
 import java.util.stream.LongStream
 
 public object EmitterIndex {
@@ -100,9 +99,7 @@ public object EmitterIndex {
         return Heat(heat.celsius / (distanceSq + EMISSION_SOFTENING))
     }
 
-    public fun BlockState.isLit(): Boolean {
-        return getValueOrElse(BlockStateProperties.LIT, true)
-    }
+    public fun BlockState.isLit(): Boolean = getValueOrElse(BlockStateProperties.LIT, true)
 
     internal fun BlockState.heat(): Heat? {
         val block = block
@@ -127,28 +124,47 @@ public object EmitterIndex {
         update(chunk, blockPos, newState)
     }
 
-    public fun burnoutFor(state: BlockState, current: Time?, now: Time): Burnout? {
+    public fun burnoutAtPos(chunk: LevelChunk, pos: BlockPos): Burnout? {
+        val time = Survival.platform.emitters.get(chunk)?.burnoutAtPos(pos) ?: return null
+        return Burnout(time)
+    }
+
+    public fun burnoutForState(state: BlockState, stored: Time?, now: Time): Burnout? {
         val block = state.block
         val _ = block.emitterOrNull() ?: return null
         val fuelled = block.fuelledOrNull() ?: return Burnout.NEVER
         if (!state.isLit()) return null
         val fuel = fuelled.getFuel(state)
         if (fuel.level == 0) return null
-        return fuelled.getBurnout(current, now, fuel)
+        return fuelled.getBurnout(stored, now, fuel)
     }
 
-    private fun Long2LongOpenHashMap.burnoutAt(key: Long): Time? {
-        val existing = get(key)
+    private fun Long2LongOpenHashMap.burnoutAtPos(pos: BlockPos): Time? {
+        val existing = get(pos.asLong())
         return if (existing == ABSENT) null else Time(existing)
     }
 
-    private fun Long2LongOpenHashMap.write(key: Long, burnout: Burnout?): Boolean {
-        return if (burnout == null) remove(key) != ABSENT
-        else put(key, burnout.at.value) != burnout.at.value
+    private fun Long2LongOpenHashMap.write(pos: BlockPos, burnout: Burnout?): Boolean {
+        val key = pos.asLong()
+        return if (burnout == null) {
+            remove(key) != ABSENT
+        } else {
+            put(key, burnout.time.value) != burnout.time.value
+        }
     }
 
     public fun remove(chunk: LevelChunk, pos: BlockPos) {
         Survival.platform.emitters.get(chunk)?.remove(pos.asLong())
+    }
+
+    public fun set(chunk: LevelChunk, pos: BlockPos, burnout: Burnout) {
+        val level = chunk.level
+        val index = Survival.platform.emitters.get(chunk) ?: create()
+        if (!index.write(pos, burnout)) return
+        Survival.platform.emitters.set(chunk, index)
+        dropDeadline(chunk.getBlockState(pos), burnout, Time(level.gameTime))?.let {
+            ServerState.dropSchedule(level).notice(chunk.pos, it)
+        }
     }
 
     public fun tickDrops(level: ServerLevel) {
@@ -170,12 +186,11 @@ public object EmitterIndex {
         val level = chunk.level
         if (level.isClientSide) return
         val now = Time(level.gameTime)
-        val key = blockPos.asLong()
         val existing = Survival.platform.emitters.get(chunk)
-        val burnout = burnoutFor(state, existing?.burnoutAt(key), now)
+        val burnout = burnoutForState(state, existing?.burnoutAtPos(blockPos), now)
         if (existing == null && burnout == null) return
         val index = existing ?: create()
-        if (!index.write(key, burnout)) return
+        if (!index.write(blockPos, burnout)) return
         Survival.platform.emitters.set(chunk, index)
         dropDeadline(state, burnout, now)?.let {
             ServerState.dropSchedule(level).notice(chunk.pos, it)
@@ -185,13 +200,13 @@ public object EmitterIndex {
     private fun dropDeadline(state: BlockState, burnout: Burnout?, now: Time): Time? {
         if (burnout == null || burnout == Burnout.NEVER) return null
         val fuelled = state.block.fuelledOrNull() ?: return null
-        val stateIsBehind = burnout.fuelAt(now, Fuel.MAX, fuelled.burnRate) < fuelled.getFuel(state)
+        val stateIsBehind = burnout.fuelAt(now, fuelled.burnRate) < fuelled.getFuel(state)
         if (stateIsBehind) return now
-        return burnout.nextDropAt(now, Fuel.MAX, fuelled.burnRate)
+        return burnout.nextDropAt(now, fuelled.burnRate)
     }
 
     private fun reconciledBurnout(state: BlockState, stored: Time?, now: Time): Burnout? {
-        val derived = burnoutFor(state, stored, now) ?: return null
+        val derived = burnoutForState(state, stored, now) ?: return null
         if (derived == Burnout.NEVER || stored == null) return derived
         return Burnout(stored)
     }
@@ -210,7 +225,11 @@ public object EmitterIndex {
 
     public fun decode(stream: LongStream): DataResult<Long2LongOpenHashMap> {
         val flat = stream.toArray()
-        if (flat.size % 2 != 0) return DataResult.error { "Malformed emitter data, length is ${flat.size} but should be even" }
+        if (flat.size % 2 != 0) {
+            return DataResult.error {
+                "Malformed emitter data, length is ${flat.size} but should be even"
+            }
+        }
         val map = create(flat.size / 2)
         var i = 0
         while (i < flat.size) {
@@ -244,11 +263,11 @@ public object EmitterIndex {
     public fun LevelChunk.applyDrops(now: Time) {
         val index = Survival.platform.emitters.get(this) ?: return
         for (key in index.keys.toLongArray()) {
-            val at = index.burnoutAt(key) ?: continue
             val pos = BlockPos.of(key)
+            val at = index.burnoutAtPos(pos) ?: continue
             val state = getBlockState(pos)
             val fuelled = state.block.fuelledOrNull() ?: continue
-            val wanted = Burnout(at).fuelAt(now, Fuel.MAX, fuelled.burnRate)
+            val wanted = Burnout(at).fuelAt(now, fuelled.burnRate)
             if (wanted == fuelled.getFuel(state)) continue
             val drained = fuelled.setFuel(state, wanted)
             val next = if (wanted.level == 0) fuelled.exhausted(drained) else (drained)
@@ -260,10 +279,10 @@ public object EmitterIndex {
         var earliest: Time? = null
         val keys = index.keys.iterator()
         while (keys.hasNext()) {
-            val key = keys.nextLong()
-            val at = index.burnoutAt(key) ?: continue
+            val pos = BlockPos.of(keys.nextLong())
+            val at = index.burnoutAtPos(pos) ?: continue
             val deadline =
-                dropDeadline(getBlockState(BlockPos.of(key)), Burnout(at), now) ?: continue
+                dropDeadline(getBlockState(pos), Burnout(at), now) ?: continue
             val current = earliest
             if (current == null || deadline < current) earliest = deadline
         }
@@ -303,9 +322,8 @@ public object EmitterIndex {
                         val blockPos =
                             BlockPos(originX + localX, originY + localY, originZ + localZ)
                         val state = section.getBlockState(localX, localY, localZ)
-                        val key = blockPos.asLong()
-                        val burnout = reconciledBurnout(state, index.burnoutAt(key), now)
-                        val write = index.write(key, burnout)
+                        val burnout = reconciledBurnout(state, index.burnoutAtPos(blockPos), now)
+                        val write = index.write(blockPos, burnout)
                         didUpdate = didUpdate || write
                         val deadline = dropDeadline(state, burnout, now)
                         if (deadline != null) {
@@ -329,5 +347,4 @@ public object EmitterIndex {
 
     public val STREAM_CODEC: StreamCodec<ByteBuf, Long2LongOpenHashMap> =
         StreamCodec.of(::write, ::read)
-
 }

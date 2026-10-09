@@ -4,8 +4,8 @@ import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.fuel.firewood.FirewoodBlock.Companion.BILLETS
 import dev.zoenetic.outsider.survival.fuel.firewood.FirewoodBlock.Companion.MAX_BILLETS
 import dev.zoenetic.outsider.survival.fuel.firewood.FirewoodBlock.Companion.MIN_BILLETS
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator

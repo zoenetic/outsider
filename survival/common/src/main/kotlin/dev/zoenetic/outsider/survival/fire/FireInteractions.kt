@@ -1,13 +1,15 @@
 package dev.zoenetic.outsider.survival.fire
 
 import dev.zoenetic.outsider.survival.ServerState
+import dev.zoenetic.outsider.survival.emission.EmitterIndex
 import dev.zoenetic.outsider.survival.fire.client.ClientFireAttempt
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.fuel.FuelValues
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties.FUEL_LEVEL
-import dev.zoenetic.outsider.survival.registry.OutsiderComponents
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
+import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
+import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.core.BlockPos
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
@@ -117,13 +119,22 @@ public object FireInteractions {
         pos: BlockPos,
         player: Player,
     ): InteractionResult {
-        val fuelValueOfItem = FuelValues.get(itemStack.item)
-        if (fuelValueOfItem == Fuel.EMPTY) return InteractionResult.PASS
-        val currentFuel = Fuel(state.getValue(FUEL_LEVEL))
-        if (currentFuel >= Fuel.MAX) return InteractionResult.CONSUME
+        val added = FuelValues.get(itemStack.item)
+        if (added == Fuel.EMPTY) return InteractionResult.PASS
+        val fuelled = state.block.fuelledOrNull() ?: return InteractionResult.PASS
+        val current = fuelled.getFuel(state)
+        if (current >= Fuel.MAX) return InteractionResult.CONSUME
         if (level.isClientSide) return InteractionResult.CONSUME
-        val newFuel = (currentFuel + fuelValueOfItem).coerceAtMost(Fuel.MAX)
-        level.setBlock(pos, state.setValue(FUEL_LEVEL, newFuel.level), 3)
+        val chunk = level.getChunkAt(pos)
+        val stored = EmitterIndex.burnoutAtPos(chunk, pos)
+        if (stored == null) {
+            level.setBlock(pos, fuelled.setFuel(state, (current + added).coerceAtMost(Fuel.MAX)), 3)
+        } else {
+            val now = Time(level.gameTime)
+            val refuelled = stored.refuel(added, now, fuelled.burnRate)
+            level.setBlock(pos, fuelled.setFuel(state, refuelled.fuelAt(now, fuelled.burnRate)), 3)
+            EmitterIndex.set(chunk, pos, refuelled)
+        }
         itemStack.consume(1, player)
         level.playSound(null, pos, OutsiderSounds.REFUEL_FIRE, SoundSource.BLOCKS, 1F, 1F)
         return InteractionResult.CONSUME

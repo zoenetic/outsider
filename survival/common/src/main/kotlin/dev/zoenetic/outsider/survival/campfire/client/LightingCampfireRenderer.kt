@@ -12,7 +12,10 @@ import kotlin.math.PI
 import kotlin.math.sin
 
 public interface LightingCampfireState {
+    @Suppress("ktlint:standard:function-naming", "FunctionNaming")
     public fun `outsider_survival$getLightingCampfire`(): Boolean
+
+    @Suppress("ktlint:standard:function-naming", "FunctionNaming")
     public fun `outsider_survival$setLightingCampfire`(state: Boolean)
 }
 
@@ -65,7 +68,7 @@ public object LightingCampfireRenderer {
     public fun applyToModel(
         rightArm: ModelPart,
         leftArm: ModelPart,
-        state: LivingEntityRenderState
+        state: LivingEntityRenderState,
     ) {
         if (!(state as LightingCampfireState).`outsider_survival$getLightingCampfire`()) return
 

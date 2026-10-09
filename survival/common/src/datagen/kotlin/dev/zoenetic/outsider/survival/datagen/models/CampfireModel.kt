@@ -4,17 +4,21 @@ import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.campfire.CampfireBurn
 import dev.zoenetic.outsider.survival.campfire.CampfireStage
 import dev.zoenetic.outsider.survival.fuel.Fuel
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
 import net.minecraft.client.data.models.blockstates.PropertyDispatch
-import net.minecraft.client.data.models.model.*
+import net.minecraft.client.data.models.model.ModelInstance
+import net.minecraft.client.data.models.model.ModelLocationUtils
+import net.minecraft.client.data.models.model.ModelTemplate
+import net.minecraft.client.data.models.model.TextureMapping
 import net.minecraft.client.data.models.model.TextureMapping.getBlockTexture
+import net.minecraft.client.data.models.model.TextureSlot
 import net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import java.util.*
+import java.util.Optional
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
@@ -29,11 +33,10 @@ fun campfireModel(
 ): Identifier {
     val block = OutsiderBlocks.CAMPFIRE
 
-    fun template(stage: CampfireStage, lit: Boolean): Identifier =
-        Identifier.fromNamespaceAndPath(
-            Survival.NAMESPACE,
-            "block/template_campfire_${if (lit) "lit" else "unlit"}_${stage.id}"
-        )
+    fun template(stage: CampfireStage, lit: Boolean): Identifier = Identifier.fromNamespaceAndPath(
+        Survival.NAMESPACE,
+        "block/template_campfire_${if (lit) "lit" else "unlit"}_${stage.id}",
+    )
 
     fun logs(topStep: Int, bottomStep: Int): TextureMapping = TextureMapping()
         .put(topSlot, getBlockTexture(block, "_fuel_$topStep"))
@@ -53,7 +56,11 @@ fun campfireModel(
             bottomSlot,
             emberTopSlot,
             emberBottomSlot,
-        ).create(ModelLocationUtils.getModelLocation(block, "_lit_fuel_$level"), textures, modelOutput)
+        ).create(
+            ModelLocationUtils.getModelLocation(block, "_lit_fuel_$level"),
+            textures,
+            modelOutput,
+        )
     }
 
     val unlitModels: Map<Int, Identifier> = (0..15).associateWith { level ->
@@ -71,18 +78,26 @@ fun campfireModel(
     }
 
     val deadModel =
-        ModelTemplate(Optional.of(template(CampfireStage.SUNK, lit = false)), Optional.empty(), topSlot, bottomSlot)
+        ModelTemplate(
+            Optional.of(template(CampfireStage.SUNK, lit = false)),
+            Optional.empty(),
+            topSlot,
+            bottomSlot,
+        )
             .create(ModelLocationUtils.getModelLocation(block, "_dead"), logs(0, 0), modelOutput)
 
     blockStateOutput.accept(
         MultiVariantGenerator.dispatch(block)
             .with(
-                PropertyDispatch.initial(OutsiderBlockStateProperties.FUEL_LEVEL, BlockStateProperties.LIT)
+                PropertyDispatch.initial(
+                    OutsiderBlockStateProperties.FUEL_LEVEL,
+                    BlockStateProperties.LIT,
+                )
                     .generate { level, isLit ->
                         plainVariant((if (isLit) litModels else unlitModels).getValue(level))
-                    }
+                    },
             )
-            .with(horizontalRotation())
+            .with(horizontalRotation()),
     )
 
     registerSimpleItemModel(block, unlitModels.getValue(15), itemModelOutput)

@@ -2,9 +2,9 @@ package dev.zoenetic.outsider.survival.datagen.models.torch
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.datagen.models.plainVariant
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockStateProperties
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.registry.OutsiderComponents
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator

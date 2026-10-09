@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.registry
+package dev.zoenetic.outsider.survival.registry.items
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.platform.getValue

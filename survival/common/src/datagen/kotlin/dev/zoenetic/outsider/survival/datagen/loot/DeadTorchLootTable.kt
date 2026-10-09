@@ -1,6 +1,6 @@
 package dev.zoenetic.outsider.survival.datagen.loot
 
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem

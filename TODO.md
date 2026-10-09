@@ -1,4 +1,3 @@
-- maybeRefuel needs to go via burnout (`Burnout.refuel` exists, unused); writing FUEL_LEVEL directly resets the partial step
 - particle effect when a campfire burns out to the dead campfire
 - handle replacing vanilla light/heat sources in world gen or later
 - worldgen keeps placing vanilla `minecraft:torch` / `minecraft:wall_torch` and `minecraft:campfire` (decided 2026-10-08); only their drops change: vanilla torches drop `outsider_survival:torch`, and a vanilla campfire broken with silk touch drops `outsider_survival:campfire` (without silk touch it keeps vanilla's drop). Vanilla loot table overrides (`minecraft:blocks/torch`, `wall_torch`, `campfire`) on both loaders. Not decided: the dropped torch's fuel level and lit state, and whether `soul_torch` / `soul_campfire` get the same treatment

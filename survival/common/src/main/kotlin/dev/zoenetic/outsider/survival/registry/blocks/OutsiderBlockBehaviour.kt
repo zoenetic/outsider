@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.registry
+package dev.zoenetic.outsider.survival.registry.blocks
 
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour

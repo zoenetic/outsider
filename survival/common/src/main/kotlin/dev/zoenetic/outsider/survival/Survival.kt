@@ -3,11 +3,11 @@ package dev.zoenetic.outsider.survival
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
 import dev.zoenetic.outsider.survival.platform.Platform
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.registry.OutsiderComponents
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import dev.zoenetic.outsider.survival.registry.OutsiderWideners
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import dev.zoenetic.outsider.survival.vitals.BreathParticles
 import dev.zoenetic.outsider.survival.vitals.Exertion
 import dev.zoenetic.outsider.survival.vitals.SpeedPenalty

@@ -4,7 +4,7 @@ import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.climate.getHumidity
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
 import dev.zoenetic.outsider.survival.vitals.COMFORT_HIGH
@@ -214,5 +214,5 @@ object SurvivalTests {
             ::breakingACampfireDeregistersTheHeatSource,
         ),
         SurvivalTest("a_nearby_campfire_is_found", 20, ::aNearbyCampfireIsFoundAsAHeatSource),
-    ) + TorchLootTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL
+    ) + TorchLootTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL + RefuelTests.ALL
 }

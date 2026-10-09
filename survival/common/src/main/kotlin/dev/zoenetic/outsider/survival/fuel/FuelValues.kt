@@ -1,6 +1,6 @@
 package dev.zoenetic.outsider.survival.fuel
 
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 
@@ -14,5 +14,4 @@ public object FuelValues {
     )
 
     public fun get(item: Item): Fuel = map[item] ?: Fuel.EMPTY
-
 }

@@ -1,79 +1,90 @@
 package dev.zoenetic.outsider.survival.stone.loose
 
-import kotlin.math.roundToInt
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement.Box
 
 public object LooseStoneArrangements {
 
-    public data class Box(
-        public val minX: Int,
-        public val minZ: Int,
-        public val maxX: Int,
-        public val maxZ: Int,
-        public val height: Int,
-    ) {
-        init {
-            require(minX >= 0) { "minX must be >= 0, got: $minX" }
-            require(minZ >= 0) { "minZ must be >= 0, got: $minZ" }
-            require(minX < maxX) { "minX must be < maxX, got: $minX" }
-            require(minZ < maxZ) { "minZ must be < maxZ, got: $minZ" }
-            require(maxX <= BLOCK_PIXELS) { "maxX must be <= $BLOCK_PIXELS, got: $maxX" }
-            require(maxZ <= BLOCK_PIXELS) { "maxZ must be <= $BLOCK_PIXELS, got: $maxZ" }
-            require(height >= 1) { "height must be >= 1, got: $height" }
-            require(height <= BLOCK_PIXELS) { "height must be <= $BLOCK_PIXELS, got: $height" }
-        }
-    }
+    public val ANDESITE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 11, 7, 13, 1),
+        Box(3, 3, 6, 7, 2),
+        Box(10, 11, 12, 14, 2),
+        Box(9, 5, 11, 8, 1),
+    )
 
-    private const val BLOCK_PIXELS: Int = 16
+    public val BASALT: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 6, 12, 3),
+        Box(3, 3, 5, 5, 2),
+        Box(11, 11, 14, 13, 3),
+        Box(10, 5, 12, 8, 2),
+    )
 
-    private val SHAPE_A: Box = Box(4, 10, 6, 12, 1)
-    private val SHAPE_B: Box = Box(3, 3, 6, 7, 2)
-    private val SHAPE_C: Box = Box(11, 11, 14, 13, 2)
-    private val SHAPE_D: Box = Box(9, 5, 11, 8, 1)
+    public val BLACKSTONE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 7, 13, 2),
+        Box(3, 3, 6, 7, 2),
+        Box(11, 11, 14, 13, 1),
+        Box(9, 5, 11, 8, 2),
+    )
 
-    private val SHAPES: List<Box> = listOf(SHAPE_A, SHAPE_B, SHAPE_C, SHAPE_D)
+    public val CALCITE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 6, 12, 2),
+        Box(3, 3, 6, 6, 2),
+        Box(11, 11, 13, 13, 1),
+        Box(9, 5, 11, 8, 2),
+    )
 
-    public val MAX_STONES: Int = SHAPES.size
+    public val DEEPSLATE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(3, 10, 7, 12, 1),
+        Box(1, 2, 6, 5, 1),
+        Box(10, 10, 14, 13, 1),
+        Box(9, 5, 12, 7, 1),
+    )
 
-    private val LAYOUTS: List<List<Box>> = permutations(SHAPES.size).flatMap { shapes ->
-        permutations(SHAPES.size).map { slots ->
-            shapes.zip(slots) { shape, slot -> place(SHAPES[shape], SHAPES[slot]) }
-        }
-    }
+    public val DIORITE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 6, 12, 1),
+        Box(2, 3, 6, 6, 2),
+        Box(11, 11, 14, 14, 2),
+        Box(10, 4, 12, 7, 1),
+    )
 
-    private val ARRANGEMENTS_BY_COUNT: List<List<Set<Box>>> = (1..MAX_STONES).map { k ->
-        LAYOUTS.map { it.take(k).toSet() }
-    }
+    public val ENDSTONE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 7, 12, 2),
+        Box(3, 3, 6, 6, 2),
+        Box(11, 11, 13, 14, 2),
+        Box(9, 5, 11, 8, 1),
+    )
 
-    public fun forCount(stones: Int): List<Set<Box>> {
-        require(stones in 1..SHAPES.size) {
-            "Stones should be between 1 and ${SHAPES.size}, got: $stones"
-        }
-        return ARRANGEMENTS_BY_COUNT[stones - 1]
-    }
+    public val GRANITE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(3, 10, 6, 13, 2),
+        Box(3, 3, 6, 7, 2),
+        Box(11, 10, 15, 13, 1),
+        Box(9, 4, 11, 7, 2),
+    )
 
-    private fun permutations(n: Int, picked: List<Int> = emptyList()): List<List<Int>> =
-        if (picked.size == n) {
-            listOf(picked)
-        } else {
-            (0..<n).filter { it !in picked }.flatMap { permutations(n, picked + it) }
-        }
+    public val RED_SANDSTONE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(3, 10, 6, 12, 1),
+        Box(3, 3, 7, 5, 1),
+        Box(10, 11, 14, 14, 1),
+        Box(9, 5, 12, 8, 1),
+    )
 
-    private fun slotOrders(k: Int, picked: List<Int> = emptyList()): List<List<Int>> =
-        if (picked.size == k) {
-            listOf(picked)
-        } else {
-            SHAPES.indices.filter { it !in picked }.flatMap { slotOrders(k, picked + it) }
-        }
+    public val SANDSTONE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(3, 10, 7, 12, 1),
+        Box(2, 3, 6, 6, 1),
+        Box(10, 11, 13, 14, 1),
+        Box(9, 5, 12, 7, 1),
+    )
 
-    private fun place(shape: Box, slot: Box): Box {
-        val width = shape.maxX - shape.minX
-        val depth = shape.maxZ - shape.minZ
-        val centreX = (slot.minX + slot.maxX).toDouble() / 2.0
-        val centreZ = (slot.minZ + slot.maxZ).toDouble() / 2.0
-        val minX = (centreX - (width / 2.0)).roundToInt()
-        val minZ = (centreZ - (depth / 2.0)).roundToInt()
-        val maxX = minX + width
-        val maxZ = minZ + depth
-        return Box(minX, minZ, maxX, maxZ, shape.height)
-    }
+    public val STONE: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 6, 12, 1),
+        Box(3, 3, 6, 7, 2),
+        Box(11, 11, 14, 13, 2),
+        Box(9, 5, 11, 8, 1),
+    )
+
+    public val TUFF: LooseStoneArrangement = LooseStoneArrangement(
+        Box(4, 10, 6, 12, 1),
+        Box(3, 4, 6, 6, 1),
+        Box(11, 11, 14, 13, 2),
+        Box(9, 5, 11, 8, 1),
+    )
 }

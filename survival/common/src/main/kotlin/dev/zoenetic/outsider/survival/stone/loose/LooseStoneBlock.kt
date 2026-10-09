@@ -1,8 +1,7 @@
 package dev.zoenetic.outsider.survival.stone.loose
 
 import com.mojang.serialization.MapCodec
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.MAX_STONES
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.forCount
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.util.RandomSource
@@ -24,8 +23,10 @@ import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 
-public class LooseStoneBlock(properties: Properties) :
-    Block(properties),
+public class LooseStoneBlock(
+    private val arrangement: LooseStoneArrangement,
+    properties: Properties,
+) : Block(properties),
     SimpleWaterloggedBlock {
 
     init {
@@ -35,6 +36,15 @@ public class LooseStoneBlock(properties: Properties) :
                 .setValue(WATERLOGGED, false),
         )
     }
+
+    private val shapesByCount: List<List<VoxelShape>> =
+        (1..MAX_STONES).map { count ->
+            val arrangements = arrangement.forCount(count)
+            val shapes = arrangements.distinct().associateWith { stones ->
+                stones.map { it.toShape() }.reduce(Shapes::or)
+            }
+            arrangements.map(shapes::getValue)
+        }
 
     override fun canBeReplaced(state: BlockState, context: BlockPlaceContext): Boolean = (
         !context.isSecondaryUseActive && context.itemInHand
@@ -47,7 +57,7 @@ public class LooseStoneBlock(properties: Properties) :
         return level.getBlockState(belowPos).isFaceSturdy(level, belowPos, Direction.UP)
     }
 
-    override fun codec(): MapCodec<out Block> = CODEC
+    override fun codec(): MapCodec<out LooseStoneBlock> = CODEC
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(STONES).add(WATERLOGGED)
@@ -59,7 +69,7 @@ public class LooseStoneBlock(properties: Properties) :
         pos: BlockPos,
         context: CollisionContext,
     ): VoxelShape {
-        val shapes = SHAPES_BY_COUNT[state.getValue(STONES) - 1]
+        val shapes = shapesByCount[state.getValue(STONES) - 1]
         val index = RandomSource.createThreadLocalInstance(state.getSeed(pos)).nextInt(shapes.size)
         return shapes[index]
     }
@@ -110,16 +120,16 @@ public class LooseStoneBlock(properties: Properties) :
     }
 
     public companion object {
-        public val CODEC: MapCodec<LooseStoneBlock> = simpleCodec(::LooseStoneBlock)
+        public val CODEC: MapCodec<LooseStoneBlock> = RecordCodecBuilder.mapCodec { i ->
+            i.group(
+                LooseStoneArrangement.CODEC.fieldOf("arrangement").forGetter {
+                    it.arrangement
+                },
+                propertiesCodec(),
+            ).apply(i, ::LooseStoneBlock)
+        }
 
-        private val SHAPES_BY_COUNT: List<List<VoxelShape>> =
-            (1..MAX_STONES).map { count ->
-                val arrangements = forCount(count)
-                val shapes = arrangements.distinct().associateWith { arrangement ->
-                    arrangement.map { it.toShape() }.reduce(Shapes::or)
-                }
-                arrangements.map(shapes::getValue)
-            }
+        public const val STACK_SIZE: Int = 4
 
         public val STONES: IntegerProperty = IntegerProperty.create(
             "stones",
@@ -129,7 +139,7 @@ public class LooseStoneBlock(properties: Properties) :
 
         public val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED
 
-        public fun LooseStoneArrangements.Box.toShape(): VoxelShape = Block.box(
+        public fun LooseStoneArrangement.Box.toShape(): VoxelShape = Block.box(
             minX.toDouble(),
             0.0,
             minZ.toDouble(),

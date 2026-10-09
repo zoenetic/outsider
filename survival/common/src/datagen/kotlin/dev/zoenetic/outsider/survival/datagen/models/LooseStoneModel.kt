@@ -2,12 +2,12 @@ package dev.zoenetic.outsider.survival.datagen.models
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import dev.zoenetic.outsider.survival.registry.OutsiderBlocks
-import dev.zoenetic.outsider.survival.registry.OutsiderItems
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.Box
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.MAX_STONES
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements.forCount
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderLooseStoneBlocks
+import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement
+import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement.Box
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock
+import dev.zoenetic.outsider.survival.stone.loose.MAX_STONES
 import net.minecraft.client.data.models.ItemModelOutput
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator
@@ -26,31 +26,31 @@ import java.util.function.Consumer
 
 private const val STONE_SLOT = "stone"
 
-private fun modelForArrangement(arrangement: Set<Box>, stone: Identifier): ModelInstance =
-    ModelInstance {
-        JsonObject().apply {
-            addProperty("parent", "minecraft:block/block")
-            add(
-                "textures",
-                JsonObject().apply {
-                    addProperty("particle", stone.toString())
-                    addProperty(STONE_SLOT, stone.toString())
-                },
-            )
-            add("elements", JsonArray().apply { arrangement.forEach { add(element(it)) } })
-        }
+private fun modelForArrangement(set: Set<Box>, stone: Identifier): ModelInstance = ModelInstance {
+    JsonObject().apply {
+        addProperty("parent", "minecraft:block/block")
+        add(
+            "textures",
+            JsonObject().apply {
+                addProperty("particle", stone.toString())
+                addProperty(STONE_SLOT, stone.toString())
+            },
+        )
+        add("elements", JsonArray().apply { set.forEach { add(element(it)) } })
     }
+}
 
 fun looseStoneModel(
+    arrangement: LooseStoneArrangement,
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,
 ) {
-    val block = OutsiderBlocks.LOOSE_STONE
+    val block = OutsiderLooseStoneBlocks.STONE
     val texture = Identifier.withDefaultNamespace("block/stone")
     val modelsByCount: Map<Int, List<Identifier>> =
         (1..MAX_STONES).associateWith { count ->
-            val arrangements = forCount(count)
+            val arrangements = arrangement.forCount(count)
             val models = arrangements.distinct().withIndex().associate { (index, arrangement) ->
                 val id = ModelLocationUtils.getModelLocation(block, "_${count}_$index")
                 modelOutput.accept(id, modelForArrangement(arrangement, texture))
@@ -65,7 +65,7 @@ fun looseStoneModel(
             },
         ),
     )
-    val item = OutsiderItems.LOOSE_STONE.asItem()
+    val item = OutsiderLooseStoneItems.STONE.asItem()
     val itemModel = ModelTemplates.FLAT_ITEM.create(item, TextureMapping.layer0(item), modelOutput)
     itemModelOutput.accept(item, ItemModelUtils.plainModel(itemModel))
 }
