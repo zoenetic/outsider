@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.datagen.models.torch
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.datagen.models.plainVariant
 import dev.zoenetic.outsider.survival.datagen.models.reversedHorizontalRotation
+import dev.zoenetic.outsider.survival.datagen.models.torchTexture
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
@@ -31,32 +32,19 @@ fun wallTorchModel(
         "block/template_wall_torch_${if (lit) "lit" else "unlit"}_dead",
     )
 
-    fun texture(lit: Boolean) = TextureMapping.getBlockTexture(
-        OutsiderBlocks.TORCH,
-        "_${if (lit) "lit" else "unlit"}",
-    )
-
-    val litModels: Map<Int, Identifier> = (0..15).associateWith { level ->
+    fun models(lit: Boolean) = (0..15).associateWith { level ->
         val texture =
-            TextureMapping().put(TextureSlot.TORCH, texture(lit = true))
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit, level))
         ModelTemplates.WALL_TORCH.createWithSuffix(
             OutsiderBlocks.WALL_TORCH,
-            "_lit_fuel_$level",
+            "_${if (lit) "lit" else "unlit"}_fuel_$level",
             texture,
             modelOutput,
         )
     }
 
-    val unlitModels: Map<Int, Identifier> = (0..15).associateWith { level ->
-        val texture =
-            TextureMapping().put(TextureSlot.TORCH, texture(lit = false))
-        ModelTemplates.WALL_TORCH.createWithSuffix(
-            OutsiderBlocks.WALL_TORCH,
-            "_unlit_fuel_$level",
-            texture,
-            modelOutput,
-        )
-    }
+    val litModels = models(lit = true)
+    val unlitModels = models(lit = false)
 
     val deadModel =
         ModelTemplate(
@@ -65,7 +53,7 @@ fun wallTorchModel(
             TextureSlot.TORCH,
         ).create(
             ModelLocationUtils.getModelLocation(block, "_dead"),
-            TextureMapping().put(TextureSlot.TORCH, texture(lit = false)),
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, 0)),
             modelOutput,
         )
 

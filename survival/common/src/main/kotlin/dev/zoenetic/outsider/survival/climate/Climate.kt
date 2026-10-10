@@ -1,6 +1,11 @@
 package dev.zoenetic.outsider.survival.climate
 
-import dev.zoenetic.outsider.survival.units.*
+import dev.zoenetic.outsider.survival.units.Altitude
+import dev.zoenetic.outsider.survival.units.Heat
+import dev.zoenetic.outsider.survival.units.Humidity
+import dev.zoenetic.outsider.survival.units.Sky
+import dev.zoenetic.outsider.survival.units.Time
+import dev.zoenetic.outsider.survival.units.Wind
 import net.minecraft.SharedConstants
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.Mth
@@ -33,7 +38,7 @@ public fun LevelChunk.getHumidity(): Humidity {
     val level = level as ServerLevel
     val function = level.chunkSource.randomState().sampler().humidity
     return Humidity.fromNoise(
-        compute(function)
+        compute(function),
     )
 }
 
@@ -44,12 +49,9 @@ public fun LevelChunk.getTemperature(
     humidity: Humidity,
     sky: Sky,
     time: Time,
-): Heat {
-    return getBaseTemperature()
-        .adjustForAltitude(altitude)
-        .adjustForTimeOfDay(time, sky, humidity)
-
-}
+): Heat = getBaseTemperature()
+    .adjustForAltitude(altitude)
+    .adjustForTimeOfDay(time, sky, humidity)
 
 public fun LevelChunk.getWind(): Wind {
     val level = level as ServerLevel
@@ -80,9 +82,7 @@ internal fun temperatureFromNoise(noise: Double): Heat {
     return Heat(POLE_C + (EQUATOR_C - POLE_C) * cos(latitude).pow(LATITUDE_FALLOFF))
 }
 
-internal fun Heat.adjustForAltitude(
-    altitude: Altitude? = null,
-): Heat {
+internal fun Heat.adjustForAltitude(altitude: Altitude? = null): Heat {
     if (altitude == null) return this
     val t = if (altitude.value > 0) {
         celsius - (altitude.value * LAPSE_RATE_PER_BLOCK)
@@ -92,11 +92,7 @@ internal fun Heat.adjustForAltitude(
     return Heat(t)
 }
 
-internal fun Heat.adjustForTimeOfDay(
-    time: Time,
-    sky: Sky,
-    humidity: Humidity
-): Heat {
+internal fun Heat.adjustForTimeOfDay(time: Time, sky: Sky, humidity: Humidity): Heat {
     val dayFraction = (time.value - WARMEST_TICK).toDouble() / SharedConstants.TICKS_PER_GAME_DAY
     val swing = Mth.lerp(humidity.value, DIURNAL_SWING_DRY, DIURNAL_SWING_HUMID) * sky.value
     return Heat(celsius + swing * cos(2.0 * PI * dayFraction))

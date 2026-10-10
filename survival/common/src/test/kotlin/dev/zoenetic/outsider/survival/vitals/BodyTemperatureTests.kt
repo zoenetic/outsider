@@ -32,14 +32,24 @@ class BodyTemperatureTests {
     fun `one half-life closes exactly half the gap`() {
         val oneSecond = 1.0
         assertEquals(
-            28.5, approach(
-                h(30.0), h(27.0), d(20), oneSecond
-            ).celsius, 1e-9
+            28.5,
+            approach(
+                h(30.0),
+                h(27.0),
+                d(20),
+                oneSecond,
+            ).celsius,
+            1e-9,
         )
         assertEquals(
-            45.5, approach(
-                h(44.0), h(47.0), d(20), oneSecond
-            ).celsius, 1e-9
+            45.5,
+            approach(
+                h(44.0),
+                h(47.0),
+                d(20),
+                oneSecond,
+            ).celsius,
+            1e-9,
         )
     }
 
@@ -52,7 +62,7 @@ class BodyTemperatureTests {
                 val new = approach(current, target, d(elapsed), BODY_WARMS_AT)
                 assertTrue(
                     new in current..target,
-                    "gap $gap, elapsed $elapsed: got $new"
+                    "gap $gap, elapsed $elapsed: got $new",
                 )
             }
         }
@@ -67,7 +77,7 @@ class BodyTemperatureTests {
                 val new = approach(current, target, d(elapsed), BODY_COOLS_AT)
                 assertTrue(
                     new in target..current,
-                    "gap $gap, elapsed $elapsed: got $new"
+                    "gap $gap, elapsed $elapsed: got $new",
                 )
             }
         }
@@ -97,7 +107,7 @@ class BodyTemperatureTests {
         val after = approach(NORMAL_BODY_TEMPERATURE, target, d(1), BODY_COOLS_AT)
         assertTrue(
             after < NORMAL_BODY_TEMPERATURE,
-            "one tick in the cold should cool the body, got $after"
+            "one tick in the cold should cool the body, got $after",
         )
     }
 
@@ -162,12 +172,12 @@ class BodyTemperatureTests {
         assertEquals(
             target(COMFORT_LOW),
             target(h(COMFORT_LOW.celsius - epsilon)),
-            1e-3
+            1e-3,
         )
         assertEquals(
             target(COMFORT_HIGH),
             target(h(COMFORT_HIGH.celsius + epsilon)),
-            1e-3
+            1e-3,
         )
     }
 
@@ -192,7 +202,7 @@ class BodyTemperatureTests {
         assertEquals(
             BODY_COOLS_AT,
             halfLife(isWarming = false, wind = CALM.conductance),
-            1e-9
+            1e-9,
         )
     }
 
@@ -203,7 +213,7 @@ class BodyTemperatureTests {
         assertEquals(
             BODY_COOLS_AT / (1.0 + CHILL * 5.0),
             halfLife(isWarming = false, wind = fiveMetresPerSecond.conductance),
-            1e-9
+            1e-9,
         )
     }
 
@@ -227,7 +237,7 @@ class BodyTemperatureTests {
                 isWarming = false,
                 medium = water,
                 surface = metal,
-                wind = wind
+                wind = wind,
             ),
             1e-9,
         )
@@ -238,7 +248,7 @@ class BodyTemperatureTests {
         assertEquals(target(h(0.0)), target(h(0.0), Insulation.NONE))
         assertEquals(
             halfLife(isWarming = false),
-            halfLife(isWarming = false, insulation = Insulation.NONE)
+            halfLife(isWarming = false, insulation = Insulation.NONE),
         )
     }
 
@@ -266,12 +276,12 @@ class BodyTemperatureTests {
         assertEquals(
             BODY_COOLS_AT * 2.0,
             halfLife(isWarming = false, insulation = Insulation(2.0)),
-            1e-9
+            1e-9,
         )
         assertEquals(
             BODY_WARMS_AT * 2.0,
             halfLife(isWarming = true, insulation = Insulation(2.0)),
-            1e-9
+            1e-9,
         )
     }
 

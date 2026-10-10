@@ -27,8 +27,8 @@ class LooseStoneGameTests {
         LooseStoneTests.theOutlineFollowsTheRenderedArrangement(helper)
 
     @GameTest
-    fun theFeaturesRunAfterVanillaVegetationInPlains(helper: GameTestHelper): Unit =
-        LooseStoneTests.theFeaturesRunAfterVanillaVegetationInPlains(helper)
+    fun eachGroupsFeaturesRunAfterVanillaVegetation(helper: GameTestHelper): Unit =
+        LooseStoneTests.eachGroupsFeaturesRunAfterVanillaVegetation(helper)
 
     @GameTest
     fun placingLooseStonesStacksUpToFour(helper: GameTestHelper): Unit =

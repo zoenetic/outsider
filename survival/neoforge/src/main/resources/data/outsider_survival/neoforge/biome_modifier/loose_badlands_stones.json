@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#outsider_survival:has_loose_badlands_stones",
+  "features": [
+    "outsider_survival:loose_badlands_stones_scatter",
+    "outsider_survival:loose_badlands_stones_near_plants"
+  ],
+  "step": "vegetal_decoration"
+}

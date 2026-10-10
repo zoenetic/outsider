@@ -68,9 +68,7 @@ internal const val BOOTS_FRACTION = 0.15
 
 internal const val SHIELD_WEIGHT = 0.50
 
-public class Exertion(
-    private val accumulator: ArrayDeque<MET>,
-) {
+public class Exertion(private val accumulator: ArrayDeque<MET>) {
 
     internal fun trim() {
         while (accumulator.size > SharedConstants.TICKS_PER_SECOND) accumulator.removeFirst()
@@ -83,7 +81,6 @@ public class Exertion(
         internal fun average(uuid: UUID): MET? {
             val accumulator = cache[uuid]?.accumulator ?: return null
             return accumulator.average()
-
         }
 
         // TODO: Rest of inventory?
@@ -142,7 +139,8 @@ public class Exertion(
                     is AbstractNautilus,
                     is HappyGhast,
                     is Pig,
-                    is Strider -> true
+                    is Strider,
+                    -> true
 
                     else -> false
                 }
@@ -241,7 +239,7 @@ public class Exertion(
         public fun tick(player: ServerPlayer) {
             val exertion = cache.getOrPut(player.uuid) {
                 Exertion(
-                    ArrayDeque<MET>()
+                    ArrayDeque<MET>(),
                 )
             }
             val met = calculateMET(player)

@@ -2,6 +2,7 @@ package dev.zoenetic.outsider.survival.datagen.models.torch
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.datagen.models.plainVariant
+import dev.zoenetic.outsider.survival.datagen.models.torchTexture
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
@@ -34,14 +35,9 @@ fun torchModel(
         "block/template_torch_${if (lit) "lit" else "unlit"}_dead",
     )
 
-    fun texture(lit: Boolean) = TextureMapping.getBlockTexture(
-        OutsiderBlocks.TORCH,
-        "_${if (lit) "lit" else "unlit"}",
-    )
-
     fun models(lit: Boolean): Map<Int, Identifier> = (0..15).associateWith { level ->
         val texture =
-            TextureMapping().put(TextureSlot.TORCH, texture(lit = true))
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit, level))
         ModelTemplates.TORCH.createWithSuffix(
             OutsiderBlocks.TORCH,
             "_${if (lit) "lit" else "unlit"}_fuel_$level",
@@ -60,7 +56,7 @@ fun torchModel(
             TextureSlot.TORCH,
         ).create(
             ModelLocationUtils.getModelLocation(block, "_dead"),
-            TextureMapping().put(TextureSlot.TORCH, texture(lit = false)),
+            TextureMapping().put(TextureSlot.TORCH, torchTexture(lit = false, 0)),
             modelOutput,
         )
 
@@ -73,9 +69,7 @@ fun torchModel(
                 )
                     .generate { level, isLit ->
                         plainVariant(
-                            (if (isLit) litModels else unlitModels).getValue(
-                                level,
-                            ),
+                            (if (isLit) litModels else unlitModels).getValue(level),
                         )
                     },
 
@@ -87,7 +81,7 @@ fun torchModel(
     fun itemModel(lit: Boolean) = ItemModelUtils.plainModel(
         ModelTemplates.FLAT_ITEM.create(
             ModelLocationUtils.getModelLocation(block, "_${if (lit) "lit" else "unlit"}"),
-            TextureMapping.layer0(texture(lit)),
+            TextureMapping.layer0(torchTexture(lit, 15)),
             modelOutput,
         ),
     )

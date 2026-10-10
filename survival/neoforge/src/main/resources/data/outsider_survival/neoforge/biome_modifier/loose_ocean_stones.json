@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#outsider_survival:has_loose_ocean_stones",
+  "features": [
+    "outsider_survival:loose_ocean_stones_underwater_scatter",
+    "outsider_survival:loose_ocean_stones_underwater_near_plants"
+  ],
+  "step": "vegetal_decoration"
+}

@@ -26,29 +26,19 @@ internal const val BREATHING_FULL_VOLUME_THRESHOLD = 40.0
 internal const val BREATHING_VISIBLE_THRESHOLD = 8.0
 internal const val BREATHING_FULL_VISIBILITY_THRESHOLD = -5.0
 
-public data class Breath(
-    val interval: Duration,
-    val pitch: Float,
-    val volume: Float,
-)
+public data class Breath(val interval: Duration, val pitch: Float, val volume: Float)
 
-public data class BreathingRate(
-    val value: Double = RESTING_BREATHING_RATE,
-) {
-    public fun getNew(
-        bodyTemperature: Heat,
-        exertion: MET,
-        elapsed: Duration,
-    ): BreathingRate {
+public data class BreathingRate(val value: Double = RESTING_BREATHING_RATE) {
+    public fun getNew(bodyTemperature: Heat, exertion: MET, elapsed: Duration): BreathingRate {
         val current = value
         val chill =
             ((bodyTemperature - APNOEA_TEMPERATURE) / (SHIVER_CEASES - APNOEA_TEMPERATURE)).coerceIn(
                 Heat(0.0),
-                Heat(1.0)
+                Heat(1.0),
             )
         val fever =
             (bodyTemperature - NORMAL_BODY_TEMPERATURE).coerceAtLeast(
-                0.0
+                0.0,
             ) * BREATHS_PER_DEGREE_OF_FEVER
         val reserve = MAX_BREATHING_RATE - RESTING_BREATHING_RATE
         val exerted =
@@ -61,7 +51,7 @@ public data class BreathingRate(
             current,
             target,
             elapsed,
-            halfLife
+            halfLife,
         )
         return BreathingRate(new)
     }
@@ -72,7 +62,9 @@ public data class BreathingRate(
         val pitch = 1F
         val volume = volume()
         return Breath(
-            Duration(interval), pitch, volume
+            Duration(interval),
+            pitch,
+            volume,
         )
     }
 
@@ -86,9 +78,12 @@ public data class BreathingRate(
     public fun volume(): Float {
         val actual = value
         if (actual >= BREATHING_AUDIBLE_THRESHOLD) {
-            return ((actual - BREATHING_AUDIBLE_THRESHOLD) / (BREATHING_FULL_VOLUME_THRESHOLD - BREATHING_AUDIBLE_THRESHOLD)).coerceIn(
+            return (
+                (actual - BREATHING_AUDIBLE_THRESHOLD) /
+                    (BREATHING_FULL_VOLUME_THRESHOLD - BREATHING_AUDIBLE_THRESHOLD)
+                ).coerceIn(
                 0.0,
-                1.0
+                1.0,
             ).toFloat()
         }
         return 0F
@@ -96,11 +91,8 @@ public data class BreathingRate(
 
     public companion object {
 
-        internal fun halfLife(
-            isRising: Boolean,
-        ): Double {
-            return if (isRising) BREATHING_RATE_RISES_AT else BREATHING_RATE_FALLS_AT
-        }
+        internal fun halfLife(isRising: Boolean): Double =
+            if (isRising) BREATHING_RATE_RISES_AT else BREATHING_RATE_FALLS_AT
 
         internal fun approach(
             current: Double,
@@ -122,10 +114,9 @@ public data class BreathingRate(
         public val STREAM_CODEC: StreamCodec<ByteBuf, BreathingRate> =
             ByteBufCodecs.DOUBLE.map(
                 ::BreathingRate,
-                BreathingRate::value
+                BreathingRate::value,
             )
 
         public val DEFAULT: BreathingRate = BreathingRate(RESTING_BREATHING_RATE)
-
     }
 }

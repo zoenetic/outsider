@@ -1,0 +1,90 @@
+{
+  "type": "minecraft:simple_block",
+  "config": {
+    "to_place": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "outsider_survival:loose_red_sandstone",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 51
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_red_sandstone",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 85
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_red_sandstone",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 51
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_red_sandstone",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 17
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_sandstone",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 9
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_sandstone",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 15
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_sandstone",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 9
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_sandstone",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 3
+        }
+      ]
+    }
+  }
+}

@@ -19,7 +19,7 @@ class RealClimateTests {
         assertTrue(
             hottest.temperature.celsius > 25.0,
             "hottest column within ${CommonFixtures.SCAN_RADIUS_CHUNKS} chunks was " +
-                    "${hottest.pos} at ${hottest.temperature.celsius}°C"
+                "${hottest.pos} at ${hottest.temperature.celsius}°C",
         )
     }
 
@@ -29,7 +29,7 @@ class RealClimateTests {
         assertTrue(
             coldest.temperature.celsius < 5.0,
             "coldest column within ${CommonFixtures.SCAN_RADIUS_CHUNKS} chunks was " +
-                    "${coldest.pos} at ${coldest.temperature.celsius}°C"
+                "${coldest.pos} at ${coldest.temperature.celsius}°C",
         )
     }
 
@@ -58,7 +58,7 @@ class RealClimateTests {
         assertNotNull(desert, "no desert or badlands within the scan radius for this seed")
         assertTrue(
             desert.temperature.celsius > 20.0,
-            "vanilla calls ${desert.pos} a desert; the model reads ${desert.temperature.celsius}°C"
+            "vanilla calls ${desert.pos} a desert; the model reads ${desert.temperature.celsius}°C",
         )
     }
 
@@ -72,7 +72,7 @@ class RealClimateTests {
         assertNotNull(snowy, "no snowy biome within the scan radius for this seed")
         assertTrue(
             snowy.temperature.celsius < 15.0,
-            "vanilla calls ${snowy.pos} snowy; the model reads ${snowy.temperature.celsius}°C"
+            "vanilla calls ${snowy.pos} snowy; the model reads ${snowy.temperature.celsius}°C",
         )
     }
 
@@ -84,7 +84,7 @@ class RealClimateTests {
         assertNotNull(snowy)
         assertTrue(
             desert.temperature.celsius > snowy.temperature.celsius,
-            "desert ${desert.temperature.celsius}°C should beat snowy ${snowy.temperature.celsius}°C"
+            "desert ${desert.temperature.celsius}°C should beat snowy ${snowy.temperature.celsius}°C",
         )
     }
 

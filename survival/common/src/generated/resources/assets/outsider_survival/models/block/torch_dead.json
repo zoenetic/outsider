@@ -1,6 +1,6 @@
 {
   "parent": "outsider_survival:block/template_torch_unlit_dead",
   "textures": {
-    "torch": "outsider_survival:block/torch_unlit"
+    "torch": "outsider_survival:block/torch_unlit_0"
   }
 }

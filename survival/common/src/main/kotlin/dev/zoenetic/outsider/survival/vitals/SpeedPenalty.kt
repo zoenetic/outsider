@@ -23,7 +23,7 @@ internal val HEAT_FULL_PENALTY_AT = Heat(41.0)
 private val BODY_TEMPERATURE_SPEED_REDUCTION =
     Identifier.fromNamespaceAndPath(
         MOD_ID,
-        "body_temperature_speed_reduction"
+        "body_temperature_speed_reduction",
     )
 
 @JvmInline
@@ -41,7 +41,7 @@ public value class SpeedPenalty(public val value: Double) {
             val progress =
                 ((deviation - SPEED_PENALTY_DEAD_ZONE) / range).coerceIn(
                     0.0,
-                    1.0
+                    1.0,
                 )
             return SpeedPenalty(SPEED_PENALTY_MAX.value * progress)
         }
@@ -62,8 +62,8 @@ public value class SpeedPenalty(public val value: Double) {
                     AttributeModifier(
                         BODY_TEMPERATURE_SPEED_REDUCTION,
                         -penalty.value,
-                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                    )
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
+                    ),
                 )
             }
         }
@@ -71,13 +71,13 @@ public value class SpeedPenalty(public val value: Double) {
         public val CODEC: Codec<SpeedPenalty> =
             Codec.DOUBLE.xmap(
                 ::SpeedPenalty,
-                SpeedPenalty::value
+                SpeedPenalty::value,
             )
 
         public val STREAM_CODEC: StreamCodec<ByteBuf, SpeedPenalty> =
             ByteBufCodecs.DOUBLE.map(
                 ::SpeedPenalty,
-                SpeedPenalty::value
+                SpeedPenalty::value,
             )
 
         public val DEFAULT: SpeedPenalty = SpeedPenalty(0.0)

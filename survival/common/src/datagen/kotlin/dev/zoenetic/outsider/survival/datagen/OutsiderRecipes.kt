@@ -1,7 +1,7 @@
 package dev.zoenetic.outsider.survival.datagen
 
+import dev.zoenetic.outsider.survival.registry.OutsiderLooseStones
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
-import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.DataProvider
 import net.minecraft.data.PackOutput
@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture
 class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
     RecipeProvider(registries, output) {
 
-    @Suppress("MagicNumber")
     override fun buildRecipes() {
         shapeless(RecipeCategory.MISC, Items.STICK)
             .requires(OutsiderItems.FIREWOOD)
@@ -38,10 +37,10 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
         shaped(RecipeCategory.BUILDING_BLOCKS, Items.COBBLESTONE, 1)
             .pattern("ss")
             .pattern("ss")
-            .define('s', OutsiderLooseStoneItems.STONE)
+            .define('s', OutsiderLooseStones.STONE.item)
             .unlockedBy(
                 "has_loose_stone",
-                has(OutsiderLooseStoneItems.STONE),
+                has(OutsiderLooseStones.STONE.item),
             )
             .save(output, "outsider_survival:cobblestone_from_loose_stone")
 

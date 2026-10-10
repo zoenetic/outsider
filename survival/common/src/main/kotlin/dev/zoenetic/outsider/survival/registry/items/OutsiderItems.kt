@@ -30,7 +30,5 @@ public object OutsiderItems {
         Direction.DOWN,
     ) { Item.Properties() }
 
-    public fun init() {
-        OutsiderLooseStoneItems.init()
-    }
+    public fun init(): Unit = Unit
 }

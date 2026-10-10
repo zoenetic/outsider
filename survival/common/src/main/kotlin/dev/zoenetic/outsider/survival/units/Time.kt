@@ -17,13 +17,13 @@ public value class Time(public val value: Long) {
         public val CODEC: Codec<Time> =
             Codec.LONG.xmap(
                 ::Time,
-                Time::value
+                Time::value,
             )
 
         public val STREAM_CODEC: StreamCodec<ByteBuf, Time> =
             ByteBufCodecs.LONG.map(
                 ::Time,
-                Time::value
+                Time::value,
             )
     }
 }

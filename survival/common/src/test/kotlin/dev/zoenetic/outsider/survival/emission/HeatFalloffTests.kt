@@ -34,7 +34,7 @@ class HeatFalloffTests {
         assertEquals(
             power.celsius / EMISSION_SOFTENING,
             heatFrom(body, BlockPos(0, 0, 0), power).celsius,
-            1e-9
+            1e-9,
         )
     }
 
@@ -46,7 +46,7 @@ class HeatFalloffTests {
         for (i in 1 until heats.size) {
             assertTrue(
                 heats[i] > heats[i - 1],
-                "at ${distances[i]} (${heats[i]}) should exceed at ${distances[i - 1]} (${heats[i - 1]})"
+                "at ${distances[i]} (${heats[i]}) should exceed at ${distances[i - 1]} (${heats[i - 1]})",
             )
         }
     }
@@ -60,7 +60,7 @@ class HeatFalloffTests {
         val relativeError = abs(softened.celsius - inverseSquare) / inverseSquare
         assertTrue(
             relativeError < 0.005,
-            "at $distance blocks softening should be negligible; relative error $relativeError"
+            "at $distance blocks softening should be negligible; relative error $relativeError",
         )
     }
 }

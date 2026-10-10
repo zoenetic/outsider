@@ -9,7 +9,7 @@
             {
               "conditions": [
                 {
-                  "block": "outsider_survival:loose_stone",
+                  "block": "outsider_survival:loose_red_sandstone",
                   "condition": "minecraft:block_state_property",
                   "properties": {
                     "stones": "1"
@@ -22,7 +22,7 @@
             {
               "conditions": [
                 {
-                  "block": "outsider_survival:loose_stone",
+                  "block": "outsider_survival:loose_red_sandstone",
                   "condition": "minecraft:block_state_property",
                   "properties": {
                     "stones": "2"
@@ -35,7 +35,7 @@
             {
               "conditions": [
                 {
-                  "block": "outsider_survival:loose_stone",
+                  "block": "outsider_survival:loose_red_sandstone",
                   "condition": "minecraft:block_state_property",
                   "properties": {
                     "stones": "3"
@@ -48,7 +48,7 @@
             {
               "conditions": [
                 {
-                  "block": "outsider_survival:loose_stone",
+                  "block": "outsider_survival:loose_red_sandstone",
                   "condition": "minecraft:block_state_property",
                   "properties": {
                     "stones": "4"

@@ -39,7 +39,7 @@ class BreathingRateTests {
         val linear = resting + (max - resting) / 2.0
         assertTrue(
             rate > resting && rate < linear,
-            "rate $rate should sit between $resting and $linear"
+            "rate $rate should sit between $resting and $linear",
         )
         assertEquals(resting + (max - resting) * 0.5.pow(BREATHING_RATE_CURVE), rate, 1e-9)
     }
@@ -55,7 +55,7 @@ class BreathingRateTests {
         assertEquals(
             resting + 2.0 * BREATHS_PER_DEGREE_OF_FEVER,
             settled(core = normal + Heat(2.0)),
-            1e-9
+            1e-9,
         )
     }
 

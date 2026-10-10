@@ -2,9 +2,7 @@ package dev.zoenetic.outsider.survival.datagen.models
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import dev.zoenetic.outsider.survival.registry.blocks.OutsiderLooseStoneBlocks
-import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement
+import dev.zoenetic.outsider.survival.stone.loose.LooseStone
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement.Box
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock
 import dev.zoenetic.outsider.survival.stone.loose.MAX_STONES
@@ -41,19 +39,20 @@ private fun modelForArrangement(set: Set<Box>, stone: Identifier): ModelInstance
 }
 
 fun looseStoneModel(
-    arrangement: LooseStoneArrangement,
+    looseStone: LooseStone,
     blockStateOutput: Consumer<BlockModelDefinitionGenerator>,
     modelOutput: BiConsumer<Identifier, ModelInstance>,
     itemModelOutput: ItemModelOutput,
 ) {
-    val block = OutsiderLooseStoneBlocks.STONE
-    val texture = Identifier.withDefaultNamespace("block/stone")
+    val block = looseStone.block
+    val item = looseStone.item
+
     val modelsByCount: Map<Int, List<Identifier>> =
         (1..MAX_STONES).associateWith { count ->
-            val arrangements = arrangement.forCount(count)
+            val arrangements = looseStone.arrangement.forCount(count)
             val models = arrangements.distinct().withIndex().associate { (index, arrangement) ->
                 val id = ModelLocationUtils.getModelLocation(block, "_${count}_$index")
-                modelOutput.accept(id, modelForArrangement(arrangement, texture))
+                modelOutput.accept(id, modelForArrangement(arrangement, looseStone.texture))
                 arrangement to id
             }
             arrangements.map(models::getValue)
@@ -65,7 +64,6 @@ fun looseStoneModel(
             },
         ),
     )
-    val item = OutsiderLooseStoneItems.STONE.asItem()
     val itemModel = ModelTemplates.FLAT_ITEM.create(item, TextureMapping.layer0(item), modelOutput)
     itemModelOutput.accept(item, ItemModelUtils.plainModel(itemModel))
 }

@@ -12,10 +12,10 @@ import kotlin.math.PI
 import kotlin.math.sin
 
 public interface LightingCampfireState {
-    @Suppress("ktlint:standard:function-naming", "FunctionNaming")
+    @Suppress("ktlint:standard:function-naming")
     public fun `outsider_survival$getLightingCampfire`(): Boolean
 
-    @Suppress("ktlint:standard:function-naming", "FunctionNaming")
+    @Suppress("ktlint:standard:function-naming")
     public fun `outsider_survival$setLightingCampfire`(state: Boolean)
 }
 

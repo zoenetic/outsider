@@ -16,10 +16,7 @@ public data class Wind(public val vector: Vec3) {
     public val conductance: Conductance = Conductance(1.0 + CHILL * speed)
 
     public companion object {
-        public fun fromDensityFunction(
-            function: DensityFunction,
-            chunk: LevelChunk
-        ): Wind {
+        public fun fromDensityFunction(function: DensityFunction, chunk: LevelChunk): Wind {
             val gradient = function.horizontalGradient(
                 chunk.pos.middleBlockX,
                 chunk.level.seaLevel,
@@ -36,8 +33,8 @@ public data class Wind(public val vector: Vec3) {
 
 public fun DensityFunction.horizontalGradient(x: Int, y: Int, z: Int, h: Int): Vec3 {
     val dx = compute(DensityFunction.SinglePointContext(x + h, y, z)) -
-            compute(DensityFunction.SinglePointContext(x - h, y, z))
+        compute(DensityFunction.SinglePointContext(x - h, y, z))
     val dz = compute(DensityFunction.SinglePointContext(x, y, z + h)) -
-            compute(DensityFunction.SinglePointContext(x, y, z - h))
+        compute(DensityFunction.SinglePointContext(x, y, z - h))
     return Vec3(dx / (2.0 * h), 0.0, dz / (2.0 * h))
 }

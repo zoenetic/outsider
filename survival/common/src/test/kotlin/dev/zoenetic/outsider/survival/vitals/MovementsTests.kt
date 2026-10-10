@@ -7,8 +7,7 @@ import kotlin.test.assertTrue
 
 class MovementsTests {
 
-    private fun penalty(temperature: Heat): Double =
-        SpeedPenalty.forTemperature(temperature).value
+    private fun penalty(temperature: Heat): Double = SpeedPenalty.forTemperature(temperature).value
 
     private val normal = NORMAL_BODY_TEMPERATURE
 
@@ -45,7 +44,7 @@ class MovementsTests {
         assertEquals(
             lows.sorted().reversed(),
             lows,
-            "low temperature penalties should be sorted (in reverse)"
+            "low temperature penalties should be sorted (in reverse)",
         )
         val highs = (38..44).map { penalty(Heat(it.toDouble())) }
         assertEquals(highs.sorted(), highs, "high temperature penalties should be sorted")

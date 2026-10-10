@@ -1,0 +1,90 @@
+{
+  "type": "minecraft:simple_block",
+  "config": {
+    "to_place": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 27
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 45
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 27
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 9
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_calcite",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 6
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_calcite",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 10
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_calcite",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 6
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_calcite",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 2
+        }
+      ]
+    }
+  }
+}

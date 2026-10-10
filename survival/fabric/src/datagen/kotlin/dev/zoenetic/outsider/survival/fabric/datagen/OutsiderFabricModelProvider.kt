@@ -8,6 +8,7 @@ import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.wallTorchModel
+import dev.zoenetic.outsider.survival.registry.OutsiderLooseStones
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -61,11 +62,9 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             wallTorch0,
         )
 
-        looseStoneModel(
-            blocks.blockStateOutput,
-            blocks.modelOutput,
-            blocks.itemModelOutput,
-        )
+        OutsiderLooseStones.ALL.forEach {
+            looseStoneModel(it, blocks.blockStateOutput, blocks.modelOutput, blocks.itemModelOutput)
+        }
     }
 
     override fun generateItemModels(itemModelGenerators: ItemModelGenerators) = Unit

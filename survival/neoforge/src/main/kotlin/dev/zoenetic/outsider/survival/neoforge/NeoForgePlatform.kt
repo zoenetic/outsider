@@ -21,9 +21,8 @@ public object NeoForgePlatform : Platform {
     override val isDevelopmentEnvironment: Boolean
         get() = !FMLLoader.getCurrent().isProduction
 
-    override fun isModLoaded(modId: String): Boolean =
-        FMLLoader.getCurrent().getLoadingModList()
-            .getModFileById(modId) != null
+    override fun isModLoaded(modId: String): Boolean = FMLLoader.getCurrent().getLoadingModList()
+        .getModFileById(modId) != null
 
     override val register: NeoForgeRegister = NeoForgeRegister
     override val wideners: NeoForgeWidener = NeoForgeWidener
@@ -36,14 +35,14 @@ public object NeoForgePlatform : Platform {
                     chunk is LevelChunk && chunk.isSendable()
                 }, EmitterIndex.STREAM_CODEC)
                 .build()
-        }
+        },
     )
 
     override val playerConditions: PlayerStore<PlayerConditions> =
         NeoForgePlayerStore(
             register.attachment("player_conditions") {
                 AttachmentType.builder(Supplier { PlayerConditions.EMPTY }).build()
-            }
+            },
         )
 
     override val vitals: SyncedPlayerStore<Vitals> = NeoForgePersistentSyncedPlayerStore(
@@ -52,7 +51,7 @@ public object NeoForgePlatform : Platform {
                 .serialize(Vitals.CODEC.fieldOf("vitals"))
                 .sync(Vitals.STREAM_CODEC)
                 .build()
-        }
+        },
     )
 
     public fun init(bus: IEventBus) {

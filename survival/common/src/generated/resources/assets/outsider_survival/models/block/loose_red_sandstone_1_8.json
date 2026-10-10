@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#stone"
+        },
+        "east": {
+          "texture": "#stone"
+        },
+        "north": {
+          "texture": "#stone"
+        },
+        "south": {
+          "texture": "#stone"
+        },
+        "up": {
+          "texture": "#stone"
+        },
+        "west": {
+          "texture": "#stone"
+        }
+      },
+      "from": [
+        3,
+        0,
+        10
+      ],
+      "to": [
+        7,
+        1,
+        13
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "minecraft:block/red_sandstone",
+    "stone": "minecraft:block/red_sandstone"
+  }
+}

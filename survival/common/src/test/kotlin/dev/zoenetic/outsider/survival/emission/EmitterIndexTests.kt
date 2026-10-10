@@ -32,9 +32,8 @@ class EmitterIndexTests {
 
     private fun indexOf(chunk: LevelChunk): Long2LongOpenHashMap = assertNotNull(
         Survival.platform.emitters.get(chunk),
-        "no emitter index registered for chunk ${chunk.pos}"
+        "no emitter index registered for chunk ${chunk.pos}",
     )
-
 
     @Test
     fun `an empty chunk has no heat sources`() {

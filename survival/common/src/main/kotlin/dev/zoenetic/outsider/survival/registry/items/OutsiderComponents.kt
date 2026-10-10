@@ -16,5 +16,5 @@ public object OutsiderComponents {
                 .ignoreSwapAnimation(),
         )
 
-    public fun init() {}
+    public fun init(): kotlin.Unit = kotlin.Unit
 }

@@ -14,7 +14,12 @@ class OutsiderNeoForgeDataGen(modBus: IEventBus) {
             for (factory in SurvivalDataGen.providers) {
                 event.createProvider { output, registries -> factory(output, registries) }
             }
-            event.createProvider { output -> OutsiderNeoForgeModelProvider(output, Survival.NAMESPACE) }
+            event.createProvider { output ->
+                OutsiderNeoForgeModelProvider(
+                    output,
+                    Survival.NAMESPACE,
+                )
+            }
         }
     }
 }

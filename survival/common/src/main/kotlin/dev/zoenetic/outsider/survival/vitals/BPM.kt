@@ -17,12 +17,12 @@ public value class BPM(public val value: Double) {
         public val CODEC: Codec<BPM> =
             Codec.DOUBLE.xmap(
                 ::BPM,
-                BPM::value
+                BPM::value,
             )
         public val STREAM_CODEC: StreamCodec<ByteBuf, BPM> =
             ByteBufCodecs.DOUBLE.map(
                 ::BPM,
-                BPM::value
+                BPM::value,
             )
     }
 }

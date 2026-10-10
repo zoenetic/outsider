@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#minecraft:is_hill",
+    "minecraft:stony_shore",
+    {
+      "id": "#c:is_windswept",
+      "required": false
+    },
+    {
+      "id": "#c:is_stony_shores",
+      "required": false
+    }
+  ]
+}

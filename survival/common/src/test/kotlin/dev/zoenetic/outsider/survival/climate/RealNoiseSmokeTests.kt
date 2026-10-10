@@ -22,7 +22,7 @@ class RealNoiseSmokeTests {
         val humidities = sample.map { it.getHumidity().value }
         assertTrue(
             humidities.distinct().size >= humidities.size - 1,
-            "real noise should give a distinct humidity almost everywhere, got $humidities"
+            "real noise should give a distinct humidity almost everywhere, got $humidities",
         )
     }
 
@@ -31,7 +31,7 @@ class RealNoiseSmokeTests {
         val temperatures = sample.map { it.getBaseTemperature().celsius }
         assertTrue(
             temperatures.distinct().size >= temperatures.size - 1,
-            "real noise should give a distinct temperature almost everywhere, got $temperatures"
+            "real noise should give a distinct temperature almost everywhere, got $temperatures",
         )
     }
 
@@ -42,7 +42,7 @@ class RealNoiseSmokeTests {
         assertNotEquals(
             byHumidity,
             byTemperature,
-            "humidity and temperature rank identically, so they are reading one field"
+            "humidity and temperature rank identically, so they are reading one field",
         )
     }
 
@@ -51,7 +51,7 @@ class RealNoiseSmokeTests {
         assertEquals(
             at(7, -13).getClimate(),
             at(7, -13).getClimate(),
-            "the sampler must be deterministic for a given seed and position"
+            "the sampler must be deterministic for a given seed and position",
         )
     }
 
@@ -65,7 +65,7 @@ class RealNoiseSmokeTests {
         assertEquals(
             fromTemperature.vector,
             chunk.getWind().vector,
-            "wind no longer tracks the temperature field — if that was deliberate, update this"
+            "wind no longer tracks the temperature field — if that was deliberate, update this",
         )
     }
 

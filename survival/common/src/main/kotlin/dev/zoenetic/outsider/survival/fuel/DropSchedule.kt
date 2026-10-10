@@ -3,8 +3,6 @@ package dev.zoenetic.outsider.survival.fuel
 import dev.zoenetic.outsider.survival.units.Time
 import it.unimi.dsi.fastutil.longs.Long2LongMaps
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
-import it.unimi.dsi.fastutil.longs.LongArrayList
-import it.unimi.dsi.fastutil.longs.LongList
 import net.minecraft.world.level.ChunkPos
 
 /**

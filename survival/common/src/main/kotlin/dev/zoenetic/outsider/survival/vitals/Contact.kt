@@ -27,7 +27,7 @@ public fun Player.getConductanceOfMediumIn(): Conductance? {
 
 public val METAL: TagKey<Block> = TagKey.create(
     Registries.BLOCK,
-    Identifier.fromNamespaceAndPath(NAMESPACE, "metal")
+    Identifier.fromNamespaceAndPath(NAMESPACE, "metal"),
 )
 
 public enum class ConductiveSurface(public val conductance: Conductance) {

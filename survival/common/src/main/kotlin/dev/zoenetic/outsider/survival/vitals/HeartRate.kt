@@ -23,30 +23,20 @@ internal const val HIGH_BPM_FULL_VOLUME_THRESHOLD = 160.0
 internal const val HEART_RATE_RISES_AT = 20.0
 internal const val HEART_RATE_FALLS_AT = 60.0
 
-public data class Heartbeat(
-    val interval: Duration,
-    val pitch: Float,
-    val volume: Float,
-)
+public data class Heartbeat(val interval: Duration, val pitch: Float, val volume: Float)
 
-public data class HeartRate(
-    val bpm: BPM = BPM(75.0)
-) {
-    public fun getNew(
-        bodyTemperature: Heat,
-        exertion: MET,
-        elapsed: Duration
-    ): HeartRate {
+public data class HeartRate(val bpm: BPM = BPM(75.0)) {
+    public fun getNew(bodyTemperature: Heat, exertion: MET, elapsed: Duration): HeartRate {
         val current = bpm.value
         val chill =
             ((bodyTemperature - ASYSTOLE_TEMPERATURE) / (SHIVER_CEASES - ASYSTOLE_TEMPERATURE)).coerceIn(
                 Heat(0.0),
-                Heat(1.0)
+                Heat(1.0),
             )
         val heatDelta =
             10 * (bodyTemperature - NORMAL_BODY_TEMPERATURE).coerceIn(
                 Heat(0.0),
-                ARRHYTHMIA_TEMPERATURE - NORMAL_BODY_TEMPERATURE
+                ARRHYTHMIA_TEMPERATURE - NORMAL_BODY_TEMPERATURE,
             ).celsius.pow(1.3)
         val reserve = MAX_HEART_RATE - RESTING_HEART_RATE
         val exerted = RESTING_HEART_RATE + reserve * exertion.capacity(MET_MAX)
@@ -61,7 +51,7 @@ public data class HeartRate(
             halfLife,
         )
         return HeartRate(
-            BPM(new)
+            BPM(new),
         )
     }
 
@@ -71,7 +61,9 @@ public data class HeartRate(
         val pitch = 1F
         val volume = volume()
         return Heartbeat(
-            Duration(interval), pitch, volume
+            Duration(interval),
+            pitch,
+            volume,
         )
     }
 
@@ -80,11 +72,11 @@ public data class HeartRate(
         val ramp = when {
             actual < LOW_BPM_AUDIBLE_THRESHOLD ->
                 (LOW_BPM_AUDIBLE_THRESHOLD - actual) /
-                        (LOW_BPM_AUDIBLE_THRESHOLD - LOW_BPM_FULL_VOLUME_THRESHOLD)
+                    (LOW_BPM_AUDIBLE_THRESHOLD - LOW_BPM_FULL_VOLUME_THRESHOLD)
 
             actual > HIGH_BPM_AUDIBLE_THRESHOLD ->
                 (actual - HIGH_BPM_AUDIBLE_THRESHOLD) /
-                        (HIGH_BPM_FULL_VOLUME_THRESHOLD - HIGH_BPM_AUDIBLE_THRESHOLD)
+                    (HIGH_BPM_FULL_VOLUME_THRESHOLD - HIGH_BPM_AUDIBLE_THRESHOLD)
 
             else -> 0.0
         }
@@ -93,11 +85,8 @@ public data class HeartRate(
 
     public companion object {
 
-        internal fun halfLife(
-            isRising: Boolean
-        ): Double {
-            return if (isRising) HEART_RATE_RISES_AT else HEART_RATE_FALLS_AT
-        }
+        internal fun halfLife(isRising: Boolean): Double =
+            if (isRising) HEART_RATE_RISES_AT else HEART_RATE_FALLS_AT
 
         internal fun approach(
             current: Double,
@@ -113,13 +102,13 @@ public data class HeartRate(
         public val CODEC: Codec<HeartRate> =
             BPM.CODEC.xmap(
                 ::HeartRate,
-                HeartRate::bpm
+                HeartRate::bpm,
             )
 
         public val STREAM_CODEC: StreamCodec<ByteBuf, HeartRate> =
             BPM.STREAM_CODEC.map(
                 ::HeartRate,
-                HeartRate::bpm
+                HeartRate::bpm,
             )
 
         public val DEFAULT: HeartRate = HeartRate(RESTING_HEART_RATE)

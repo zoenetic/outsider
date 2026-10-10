@@ -1,0 +1,170 @@
+{
+  "type": "minecraft:simple_block",
+  "config": {
+    "to_place": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 27
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 45
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 27
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_stone",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 9
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_andesite",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 12
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_andesite",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 20
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_andesite",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 12
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_andesite",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 4
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_diorite",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 12
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_diorite",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 20
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_diorite",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 12
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_diorite",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 4
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_granite",
+            "Properties": {
+              "stones": "1",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 12
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_granite",
+            "Properties": {
+              "stones": "2",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 20
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_granite",
+            "Properties": {
+              "stones": "3",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 12
+        },
+        {
+          "data": {
+            "Name": "outsider_survival:loose_granite",
+            "Properties": {
+              "stones": "4",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 4
+        }
+      ]
+    }
+  }
+}

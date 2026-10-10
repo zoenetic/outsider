@@ -31,5 +31,5 @@ public object OutsiderSounds {
             SoundEvent.createVariableRangeEvent(it)
         }
 
-    public fun init() {}
+    public fun init(): Unit = Unit
 }

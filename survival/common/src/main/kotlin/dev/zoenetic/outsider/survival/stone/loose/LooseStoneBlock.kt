@@ -129,7 +129,7 @@ public class LooseStoneBlock(
             ).apply(i, ::LooseStoneBlock)
         }
 
-        public const val STACK_SIZE: Int = 4
+        public const val STACK_SIZE: Int = 16
 
         public val STONES: IntegerProperty = IntegerProperty.create(
             "stones",

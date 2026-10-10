@@ -8,9 +8,9 @@ import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.wallTorchModel
+import dev.zoenetic.outsider.survival.registry.OutsiderLooseStones
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
-import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements
 import net.minecraft.client.data.models.BlockModelGenerators
 import net.minecraft.client.data.models.ItemModelGenerators
 import net.minecraft.client.data.models.ModelProvider
@@ -62,12 +62,9 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             TextureSlot.create("billet"),
         )
 
-        looseStoneModel(
-            LooseStoneArrangements.STONE,
-            blocks.blockStateOutput,
-            blocks.modelOutput,
-            items.itemModelOutput,
-        )
+        OutsiderLooseStones.ALL.forEach {
+            looseStoneModel(it, blocks.blockStateOutput, blocks.modelOutput, blocks.itemModelOutput)
+        }
 
         val torch0 = torchModel(
             blocks.blockStateOutput,

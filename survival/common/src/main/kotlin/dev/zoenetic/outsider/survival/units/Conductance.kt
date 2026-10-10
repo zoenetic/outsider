@@ -11,7 +11,5 @@ public value class Conductance(public val value: Double) {
     public operator fun unaryMinus(): Conductance = Conductance(-value)
     public operator fun compareTo(o: Conductance): Int = value.compareTo(o.value)
 
-    public fun toDouble(): Double {
-        return value
-    }
+    public fun toDouble(): Double = value
 }

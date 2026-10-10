@@ -20,7 +20,8 @@ public value class LightTable(private val packed: Long) {
 
     public fun toIntArray(): IntArray = IntArray(16) { this[it] }
 
-    override fun toString(): String = toIntArray().joinToString(prefix = "LightTable[", postfix = "]")
+    override fun toString(): String =
+        toIntArray().joinToString(prefix = "LightTable[", postfix = "]")
 
     public companion object {
         public val IDENTITY: LightTable = LightTable(0xFEDCBA9876543210uL.toLong())

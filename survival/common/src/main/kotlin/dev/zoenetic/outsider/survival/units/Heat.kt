@@ -16,12 +16,15 @@ public value class Heat(public val celsius: Double) : Comparable<Heat> {
     override fun compareTo(other: Heat): Int = compareValues(celsius, other.celsius)
     override fun toString(): String = "$celsius°C"
 
-    public fun coerceAtLeast(minimum: Double): Heat {
-        return if (this.celsius < minimum) Heat(minimum) else this
-    }
+    public fun coerceAtLeast(minimum: Double): Heat =
+        if (this.celsius < minimum) Heat(minimum) else this
 
-    public fun coerceAtMost(maximum: Heat): Heat {
-        return if (this.celsius > maximum.celsius) Heat(maximum.celsius) else this
+    public fun coerceAtMost(maximum: Heat): Heat = if (this.celsius >
+        maximum.celsius
+    ) {
+        Heat(maximum.celsius)
+    } else {
+        this
     }
 
     public companion object {
@@ -35,7 +38,7 @@ public value class Heat(public val celsius: Double) : Comparable<Heat> {
         public val STREAM_CODEC: StreamCodec<ByteBuf, Heat> =
             ByteBufCodecs.DOUBLE.map(
                 ::Heat,
-                Heat::celsius
+                Heat::celsius,
             )
     }
 }

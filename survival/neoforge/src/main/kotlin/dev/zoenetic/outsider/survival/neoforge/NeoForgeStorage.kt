@@ -9,9 +9,8 @@ import net.minecraft.world.level.chunk.LevelChunk
 import net.neoforged.neoforge.attachment.AttachmentType
 import java.util.function.Supplier
 
-internal class NeoForgePersistentSyncedChunkStore<T : Any>(
-    val type: Supplier<AttachmentType<T>>,
-) : ChunkStore<T> {
+internal class NeoForgePersistentSyncedChunkStore<T : Any>(val type: Supplier<AttachmentType<T>>) :
+    ChunkStore<T> {
     override fun get(chunk: LevelChunk): T? = chunk.getExistingDataOrNull(type)
     override fun set(chunk: LevelChunk, value: T) {
         chunk.setData(type, value)
@@ -21,9 +20,8 @@ internal class NeoForgePersistentSyncedChunkStore<T : Any>(
     }
 }
 
-internal class NeoForgePlayerStore<T : Any>(
-    val type: Supplier<AttachmentType<T>>,
-) : PlayerStore<T> {
+internal class NeoForgePlayerStore<T : Any>(val type: Supplier<AttachmentType<T>>) :
+    PlayerStore<T> {
     override fun get(player: ServerPlayer): T? = player.getExistingDataOrNull(type)
     override fun set(player: ServerPlayer, value: T) {
         player.setData(type, value)

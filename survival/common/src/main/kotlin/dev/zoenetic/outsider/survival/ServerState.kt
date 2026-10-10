@@ -6,27 +6,23 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 
 public object ServerState {
-    private var FIRE_ATTEMPTS: FireAttempts? = null
-    private var DROP_SCHEDULES: MutableMap<ResourceKey<Level>, DropSchedule>? = null
+    private var fireAttempts: FireAttempts? = null
+    private val dropSchedules: MutableMap<ResourceKey<Level>, DropSchedule> = mutableMapOf()
 
     public fun onServerStarting() {
-        FIRE_ATTEMPTS = FireAttempts()
-        DROP_SCHEDULES = mutableMapOf()
+        fireAttempts = FireAttempts()
     }
 
     public fun onServerStopped() {
-        FIRE_ATTEMPTS = null
-        DROP_SCHEDULES = null
+        fireAttempts = null
+        dropSchedules.clear()
     }
 
     public fun fireAttempts(): FireAttempts =
-        FIRE_ATTEMPTS ?: error("accessed fire attempts state outside a running server")
+        fireAttempts ?: error("accessed fire attempts state outside a running server")
 
-    public fun dropSchedule(level: Level): DropSchedule =
-        (DROP_SCHEDULES ?: error("accessed drop schedule state outside a running server"))
-            .getOrPut(level.dimension()) { DropSchedule() }
+    public fun dropSchedule(level: Level): DropSchedule = dropSchedules
+        .getOrPut(level.dimension()) { DropSchedule() }
 
-
-    public fun init() {}
-
+    public fun init(): Unit = Unit
 }

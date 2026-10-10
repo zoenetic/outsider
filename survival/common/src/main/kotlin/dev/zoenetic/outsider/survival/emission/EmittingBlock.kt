@@ -24,7 +24,7 @@ public interface EmittingBlock {
             override val lightTable: LightTable = LightTable.from { it }
         }
 
-        public fun Block.emitterOrNull(): EmittingBlock? = VANILLA_EMITTERS[this] ?: this as? EmittingBlock
+        public fun Block.emitterOrNull(): EmittingBlock? =
+            VANILLA_EMITTERS[this] ?: this as? EmittingBlock
     }
 }
-

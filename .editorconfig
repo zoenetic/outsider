@@ -9,10 +9,10 @@ insert_final_newline = true
 indent_style = space
 indent_size = 4
 max_line_length = 100
-# IntelliJ formatter settings that match the ktlint rules detekt runs, so Reformat Code agrees with `check`.
+# IntelliJ formatter settings that match ktlint, so Reformat Code and the ktlint plugin agree.
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
 ij_kotlin_name_count_to_use_star_import = 2147483647
 ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
-# For the ktlint IntelliJ plugin; detekt (in `check`) sets its own in config/detekt/detekt.yml.
+# For the ktlint IntelliJ plugin.
 ktlint_code_style = intellij_idea

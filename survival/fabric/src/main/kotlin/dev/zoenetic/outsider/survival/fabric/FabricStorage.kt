@@ -8,9 +8,8 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.chunk.LevelChunk
 
-internal class FabricPersistentSyncedChunkStore<T : Any>(
-    private val type: AttachmentType<T>,
-) : ChunkStore<T> {
+internal class FabricPersistentSyncedChunkStore<T : Any>(private val type: AttachmentType<T>) :
+    ChunkStore<T> {
     override fun get(chunk: LevelChunk): T? = chunk.getAttached(type)
     override fun set(chunk: LevelChunk, value: T) {
         chunk.setAttached(type, value)
@@ -20,18 +19,15 @@ internal class FabricPersistentSyncedChunkStore<T : Any>(
     }
 }
 
-internal class FabricPlayerStore<T : Any>(
-    private val type: AttachmentType<T>,
-) : PlayerStore<T> {
+internal class FabricPlayerStore<T : Any>(private val type: AttachmentType<T>) : PlayerStore<T> {
     override fun get(player: ServerPlayer): T? = player.getAttached(type)
     override fun set(player: ServerPlayer, value: T) {
         player.setAttached(type, value)
     }
 }
 
-internal class FabricPersistentSyncedPlayerStore<T : Any>(
-    private val type: AttachmentType<T>,
-) : SyncedPlayerStore<T> {
+internal class FabricPersistentSyncedPlayerStore<T : Any>(private val type: AttachmentType<T>) :
+    SyncedPlayerStore<T> {
     override fun get(player: Player): T? = player.getAttached(type)
     override fun set(player: Player, value: T) {
         player.setAttached(type, value)

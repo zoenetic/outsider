@@ -22,7 +22,7 @@ public class OutsiderDeadWallTorchBlock(properties: Properties) :
     init {
         registerDefaultState(
             stateDefinition.any()
-                .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(HORIZONTAL_FACING, Direction.NORTH),
         )
     }
 
@@ -40,7 +40,7 @@ public class OutsiderDeadWallTorchBlock(properties: Properties) :
         state: BlockState,
         level: BlockGetter,
         pos: BlockPos,
-        context: CollisionContext
+        context: CollisionContext,
     ): VoxelShape = SHAPES.getValue(state.getValue(HORIZONTAL_FACING))
 
     public override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
@@ -67,26 +67,26 @@ public class OutsiderDeadWallTorchBlock(properties: Properties) :
         neighborPos: BlockPos,
         neighborState: BlockState,
         random: RandomSource,
-    ): BlockState {
-        return if (directionToNeighbor.opposite == state.getValue(HORIZONTAL_FACING) && !state.canSurvive(
-                level, pos
-            )
-        ) {
-            Blocks.AIR.defaultBlockState()
-        } else {
-            state
-        }
+    ): BlockState = if (directionToNeighbor.opposite == state.getValue(
+            HORIZONTAL_FACING,
+        ) && !state.canSurvive(
+            level,
+            pos,
+        )
+    ) {
+        Blocks.AIR.defaultBlockState()
+    } else {
+        state
     }
 
     public companion object {
         public val CODEC: MapCodec<OutsiderDeadWallTorchBlock> =
             RecordCodecBuilder.mapCodec { i: RecordCodecBuilder.Instance<OutsiderDeadWallTorchBlock> ->
                 i.group(
-                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.properties }
+                    Properties.CODEC.fieldOf("properties").forGetter { b -> b.properties },
                 ).apply(i, ::OutsiderDeadWallTorchBlock)
             }
 
         internal val SHAPES = Shapes.rotateHorizontal(Block.boxZ(5.0, 3.0, 12.0, 11.0, 16.0))
     }
-
 }

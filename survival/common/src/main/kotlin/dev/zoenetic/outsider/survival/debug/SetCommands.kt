@@ -22,11 +22,14 @@ public val setBodyTemperatureCommand: LiteralArgumentBuilder<CommandSourceStack>
                     val vitals = Survival.platform.vitals.get(player)
                     if (vitals == null) {
                         source.sendFailure(
-                            Component.literal("Failed to set body temperature; player conditions not found")
+                            Component.literal(
+                                "Failed to set body temperature; player conditions not found",
+                            ),
                         )
                         return@executes 0
                     }
                     val newVitals = vitals.copy(bodyTemperature = bodyTemperature)
                     Survival.platform.vitals.set(player, newVitals)
                     1
-                })
+                },
+        )

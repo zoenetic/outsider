@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
 import dev.zoenetic.outsider.survival.platform.Platform
+import dev.zoenetic.outsider.survival.registry.OutsiderLooseStones
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import dev.zoenetic.outsider.survival.registry.OutsiderWideners
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
@@ -31,6 +32,7 @@ public object Survival {
         this.platform = platform
         ServerState.init()
         OutsiderBlocks.init()
+        OutsiderLooseStones.init()
         OutsiderComponents.init()
         OutsiderItems.init()
         OutsiderSounds.init()

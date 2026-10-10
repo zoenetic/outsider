@@ -46,7 +46,7 @@ public object LooseStoneArrangements {
         Box(10, 4, 12, 7, 1),
     )
 
-    public val ENDSTONE: LooseStoneArrangement = LooseStoneArrangement(
+    public val END_STONE: LooseStoneArrangement = LooseStoneArrangement(
         Box(4, 10, 7, 12, 2),
         Box(3, 3, 6, 6, 2),
         Box(11, 11, 13, 14, 2),

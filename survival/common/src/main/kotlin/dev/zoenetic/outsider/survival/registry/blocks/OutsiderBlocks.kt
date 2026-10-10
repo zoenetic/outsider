@@ -56,7 +56,5 @@ public object OutsiderBlocks {
         { OutsiderBlockBehaviour.Properties.deadWallTorch() },
     )
 
-    public fun init() {
-        OutsiderLooseStoneBlocks.init()
-    }
+    public fun init() {}
 }

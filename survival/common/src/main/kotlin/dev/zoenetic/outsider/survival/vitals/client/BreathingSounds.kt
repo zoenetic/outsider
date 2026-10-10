@@ -12,10 +12,7 @@ import net.minecraft.client.sounds.SoundEngine.PlayResult
 public val BREATHING: BreathSounds = BreathSounds.init()
 
 // client only
-public data class BreathSounds(
-    var lastPlayer: LocalPlayer?,
-    var lastBreathTime: Time?,
-) {
+public data class BreathSounds(var lastPlayer: LocalPlayer?, var lastBreathTime: Time?) {
     internal fun playBreathSound(breath: Breath, gameTime: Time) {
         val pitch = breath.pitch
         val volume = breath.volume
@@ -56,10 +53,9 @@ public data class BreathSounds(
     }
 
     public companion object {
-        public fun init(): BreathSounds {
-            return BreathSounds(
-                null, null
-            )
-        }
+        public fun init(): BreathSounds = BreathSounds(
+            null,
+            null,
+        )
     }
 }

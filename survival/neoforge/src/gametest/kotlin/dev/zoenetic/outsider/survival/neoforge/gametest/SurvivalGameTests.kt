@@ -33,12 +33,12 @@ public class SurvivalGameTests(modBus: IEventBus) {
         modBus.addListener(RegisterGameTestsEvent::class.java, ::register)
     }
 
-    private val DEFAULT_ENVIRONMENT: Holder<TestEnvironmentDefinition<*>> =
-        Holder.direct<TestEnvironmentDefinition<*>>(
-            TestEnvironmentDefinition.AllOf(emptyList<Holder<TestEnvironmentDefinition<*>>>())
+    private val defaultEnvironment: Holder<TestEnvironmentDefinition<*>> =
+        Holder.direct(
+            TestEnvironmentDefinition.AllOf(emptyList()),
         )
 
-    private val EMPTY_STRUCTURE: Identifier = Identifier.withDefaultNamespace("empty")
+    private val emptyStructure: Identifier = Identifier.withDefaultNamespace("empty")
 
     private fun register(event: RegisterGameTestsEvent) {
         for (test in SurvivalTests.ALL) {
@@ -47,8 +47,8 @@ public class SurvivalGameTests(modBus: IEventBus) {
                 SharedGameTest(
                     test,
                     TestData(
-                        DEFAULT_ENVIRONMENT,
-                        EMPTY_STRUCTURE,
+                        defaultEnvironment,
+                        emptyStructure,
                         test.maxTicks,
                         0,
                         true,

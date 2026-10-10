@@ -47,7 +47,7 @@ class ClimateTests {
     fun `hot noise really is hot`() {
         assertTrue(
             temperatureFromNoise(0.8).celsius > 25.0,
-            "a hot climate should read hot: ${temperatureFromNoise(0.8).celsius}"
+            "a hot climate should read hot: ${temperatureFromNoise(0.8).celsius}",
         )
     }
 
@@ -92,7 +92,7 @@ class ClimateTests {
         assertEquals(
             mean.celsius + DIURNAL_SWING_DRY,
             mean.adjustForTimeOfDay(warmest, Sky(1.0), dry).celsius,
-            1e-9
+            1e-9,
         )
     }
 
@@ -101,7 +101,7 @@ class ClimateTests {
         assertEquals(
             mean.celsius - DIURNAL_SWING_DRY,
             mean.atTime(WARMEST_TICK + dayTicks / 2, Sky(1.0), dry),
-            1e-9
+            1e-9,
         )
     }
 
@@ -142,7 +142,7 @@ class ClimateTests {
                 mean.celsius + DIURNAL_SWING_DRY * sky,
                 mean.atTime(WARMEST_TICK, Sky(sky), dry),
                 1e-9,
-                "sky $sky"
+                "sky $sky",
             )
         }
     }
@@ -159,12 +159,12 @@ class ClimateTests {
         assertEquals(
             mean.celsius + DIURNAL_SWING_DRY,
             mean.atTime(WARMEST_TICK, Sky(1.0), dry),
-            1e-9
+            1e-9,
         )
         assertEquals(
             mean.celsius + DIURNAL_SWING_HUMID,
             mean.atTime(WARMEST_TICK, Sky(1.0), humid),
-            1e-9
+            1e-9,
         )
     }
 

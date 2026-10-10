@@ -18,7 +18,6 @@ public fun maybeSplit(context: UseOnContext): Boolean {
             val state = level.getBlockState(pos)
             if (state.canBeSplit()) {
                 if (context.clickedFace.axis === state.getValue(BlockStateProperties.AXIS)) {
-                    @Suppress("MagicNumber")
                     level.destroyBlock(pos, false, player, 512)
                     val firewood = ItemStack(OutsiderItems.FIREWOOD, FirewoodBlock.MAX_BILLETS)
                     popResource(level, pos, firewood)

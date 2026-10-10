@@ -1,8 +1,7 @@
 package dev.zoenetic.outsider.survival.gametest
 
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.registry.blocks.OutsiderLooseStoneBlocks
-import dev.zoenetic.outsider.survival.registry.items.OutsiderLooseStoneItems
+import dev.zoenetic.outsider.survival.registry.OutsiderLooseStones
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangement
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements
 import dev.zoenetic.outsider.survival.stone.loose.LooseStoneBlock.Companion.STONES
@@ -22,6 +21,7 @@ import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
+import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.shapes.BooleanOp
 import net.minecraft.world.phys.shapes.CollisionContext
@@ -34,7 +34,7 @@ object LooseStoneTests {
     private val STONES_POS = BlockPos(1, 2, 1)
 
     fun looseStonesNeedASturdyFloor(helper: GameTestHelper) {
-        val stones = OutsiderLooseStoneBlocks.STONE.defaultBlockState()
+        val stones = OutsiderLooseStones.STONE.block.defaultBlockState()
         val pos = helper.absolutePos(STONES_POS)
 
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
@@ -50,9 +50,9 @@ object LooseStoneTests {
 
     fun looseStonesBreakWhenTheirSupportIsRemoved(helper: GameTestHelper) {
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
-        helper.setBlock(STONES_POS, OutsiderLooseStoneBlocks.STONE)
+        helper.setBlock(STONES_POS, OutsiderLooseStones.STONE.block)
         helper.setBlock(STONES_POS.below(), Blocks.AIR)
-        helper.assertBlockNotPresent(OutsiderLooseStoneBlocks.STONE, STONES_POS)
+        helper.assertBlockNotPresent(OutsiderLooseStones.STONE.block, STONES_POS)
         helper.succeed()
     }
 
@@ -60,7 +60,7 @@ object LooseStoneTests {
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
         helper.setBlock(
             STONES_POS,
-            OutsiderLooseStoneBlocks.STONE.defaultBlockState().setValue(WATERLOGGED, true),
+            OutsiderLooseStones.STONE.block.defaultBlockState().setValue(WATERLOGGED, true),
         )
         val fluid = helper.getBlockState(STONES_POS).fluidState
         if (!fluid.`is`(Fluids.WATER)) {
@@ -81,18 +81,18 @@ object LooseStoneTests {
 
     // Every loose stone block with the arrangement it was registered with.
     private val TYPES: List<Pair<Block, LooseStoneArrangement>> = listOf(
-        OutsiderLooseStoneBlocks.ANDESITE to LooseStoneArrangements.ANDESITE,
-        OutsiderLooseStoneBlocks.BASALT to LooseStoneArrangements.BASALT,
-        OutsiderLooseStoneBlocks.BLACKSTONE to LooseStoneArrangements.BLACKSTONE,
-        OutsiderLooseStoneBlocks.CALCITE to LooseStoneArrangements.CALCITE,
-        OutsiderLooseStoneBlocks.DEEPSLATE to LooseStoneArrangements.DEEPSLATE,
-        OutsiderLooseStoneBlocks.DIORITE to LooseStoneArrangements.DIORITE,
-        OutsiderLooseStoneBlocks.ENDSTONE to LooseStoneArrangements.ENDSTONE,
-        OutsiderLooseStoneBlocks.GRANITE to LooseStoneArrangements.GRANITE,
-        OutsiderLooseStoneBlocks.RED_SANDSTONE to LooseStoneArrangements.RED_SANDSTONE,
-        OutsiderLooseStoneBlocks.SANDSTONE to LooseStoneArrangements.SANDSTONE,
-        OutsiderLooseStoneBlocks.STONE to LooseStoneArrangements.STONE,
-        OutsiderLooseStoneBlocks.TUFF to LooseStoneArrangements.TUFF,
+        OutsiderLooseStones.ANDESITE.block to LooseStoneArrangements.ANDESITE,
+        OutsiderLooseStones.BASALT.block to LooseStoneArrangements.BASALT,
+        OutsiderLooseStones.BLACKSTONE.block to LooseStoneArrangements.BLACKSTONE,
+        OutsiderLooseStones.CALCITE.block to LooseStoneArrangements.CALCITE,
+        OutsiderLooseStones.DEEPSLATE.block to LooseStoneArrangements.DEEPSLATE,
+        OutsiderLooseStones.DIORITE.block to LooseStoneArrangements.DIORITE,
+        OutsiderLooseStones.END_STONE.block to LooseStoneArrangements.END_STONE,
+        OutsiderLooseStones.GRANITE.block to LooseStoneArrangements.GRANITE,
+        OutsiderLooseStones.RED_SANDSTONE.block to LooseStoneArrangements.RED_SANDSTONE,
+        OutsiderLooseStones.SANDSTONE.block to LooseStoneArrangements.SANDSTONE,
+        OutsiderLooseStones.STONE.block to LooseStoneArrangements.STONE,
+        OutsiderLooseStones.TUFF.block to LooseStoneArrangements.TUFF,
     )
 
     private fun outline(helper: GameTestHelper, block: Block, pos: BlockPos, stones: Int) =
@@ -132,33 +132,64 @@ object LooseStoneTests {
         helper.succeed()
     }
 
-    private val PLACED_FEATURES = listOf(
-        "loose_stone_scatter",
-        "loose_stone_near_plants",
-        "loose_stone_underwater_scatter",
-        "loose_stone_underwater_near_plants",
-    ).map { name ->
-        ResourceKey.create(
-            Registries.PLACED_FEATURE,
-            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
-        )
-    }
+    private fun placed(name: String): ResourceKey<PlacedFeature> = ResourceKey.create(
+        Registries.PLACED_FEATURE,
+        Identifier.fromNamespaceAndPath(Survival.NAMESPACE, name),
+    )
+
+    // One biome per loose stone group, with the features its biome tag must give it. Catches a
+    // group missing from FabricBiomeModifications or from the NeoForge biome modifiers.
+    private val GROUP_FEATURES = mapOf(
+        Biomes.PLAINS to listOf(
+            "loose_temperate_stones_scatter",
+            "loose_temperate_stones_near_plants",
+            "loose_temperate_stones_underwater_scatter",
+            "loose_temperate_stones_underwater_near_plants",
+        ),
+        Biomes.WINDSWEPT_HILLS to listOf(
+            "loose_mountain_stones_scatter",
+            "loose_mountain_stones_near_plants",
+        ),
+        Biomes.STONY_PEAKS to listOf(
+            "loose_peak_stones_scatter",
+            "loose_peak_stones_near_plants",
+        ),
+        Biomes.DESERT to listOf(
+            "loose_desert_stones_scatter",
+            "loose_desert_stones_near_plants",
+        ),
+        Biomes.BADLANDS to listOf(
+            "loose_badlands_stones_scatter",
+            "loose_badlands_stones_near_plants",
+        ),
+        Biomes.BEACH to listOf(
+            "loose_beach_stones_scatter",
+            "loose_beach_stones_near_plants",
+        ),
+        Biomes.RIVER to listOf(
+            "loose_ocean_stones_underwater_scatter",
+            "loose_ocean_stones_underwater_near_plants",
+        ),
+        Biomes.WARM_OCEAN to listOf(
+            "loose_warm_ocean_stones_underwater_scatter",
+            "loose_warm_ocean_stones_underwater_near_plants",
+        ),
+    ).mapValues { (_, names) -> names.map(::placed) }
 
     // The near-plants features only see vanilla's grass and seagrass if they run after it.
-    fun theFeaturesRunAfterVanillaVegetationInPlains(helper: GameTestHelper) {
-        val plains = helper.level.registryAccess().lookupOrThrow(Registries.BIOME)
-            .getOrThrow(Biomes.PLAINS).value()
-        val vegetal = plains.generationSettings.features()[
-            GenerationStep.Decoration.VEGETAL_DECORATION.ordinal,
-        ].map { it.unwrapKey().orElseThrow() }
-        val lastVanilla = vegetal.indexOfLast { it.identifier().namespace == "minecraft" }
-        for (key in PLACED_FEATURES) {
-            val index = vegetal.indexOf(key)
-            if (index < 0) throw helper.assertionException("${key.identifier()} is not in plains")
-            if (index < lastVanilla) {
-                throw helper.assertionException(
-                    "${key.identifier()} runs before vanilla vegetation",
-                )
+    fun eachGroupsFeaturesRunAfterVanillaVegetation(helper: GameTestHelper) {
+        val biomes = helper.level.registryAccess().lookupOrThrow(Registries.BIOME)
+        for ((biome, features) in GROUP_FEATURES) {
+            val vegetal = biomes.getOrThrow(biome).value().generationSettings.features()[
+                GenerationStep.Decoration.VEGETAL_DECORATION.ordinal,
+            ].map { it.unwrapKey().orElseThrow() }
+            val lastVanilla = vegetal.indexOfLast { it.identifier().namespace == "minecraft" }
+            for (key in features) {
+                val index = vegetal.indexOf(key)
+                helper.ensure(index >= 0) { "${key.identifier()} is not in ${biome.identifier()}" }
+                helper.ensure(index > lastVanilla) {
+                    "${key.identifier()} runs before vanilla vegetation in ${biome.identifier()}"
+                }
             }
         }
         helper.succeed()
@@ -170,7 +201,7 @@ object LooseStoneTests {
         val oneTooMany = MAX_STONES + 1
         player.setItemInHand(
             InteractionHand.MAIN_HAND,
-            ItemStack(OutsiderLooseStoneItems.STONE, oneTooMany),
+            ItemStack(OutsiderLooseStones.STONE.item, oneTooMany),
         )
 
         // Clicking the ground's top face targets the space above it, where the cluster sits.
@@ -182,7 +213,7 @@ object LooseStoneTests {
         if (stones != MAX_STONES) {
             throw helper.assertionException("expected $MAX_STONES stones, found $stones")
         }
-        helper.assertBlockNotPresent(OutsiderLooseStoneBlocks.STONE, STONES_POS.above())
+        helper.assertBlockNotPresent(OutsiderLooseStones.STONE.block, STONES_POS.above())
         if (player.mainHandItem.count != 1) {
             throw helper.assertionException(
                 "the fifth stone should stay in hand, found ${player.mainHandItem}",
@@ -195,9 +226,9 @@ object LooseStoneTests {
         helper.setBlock(STONES_POS.below(), Blocks.STONE)
         val pos = helper.absolutePos(STONES_POS)
         for (stones in 1..MAX_STONES) {
-            val state = OutsiderLooseStoneBlocks.STONE.defaultBlockState().setValue(STONES, stones)
+            val state = OutsiderLooseStones.STONE.block.defaultBlockState().setValue(STONES, stones)
             val dropped = Block.getDrops(state, helper.level, pos, null)
-                .filter { it.`is`(OutsiderLooseStoneItems.STONE) }
+                .filter { it.`is`(OutsiderLooseStones.STONE.item) }
                 .sumOf { it.count }
             if (dropped != stones) {
                 throw helper.assertionException("$stones stones dropped $dropped")
@@ -218,9 +249,9 @@ object LooseStoneTests {
             ::breakingAClusterDropsOneStonePerStone,
         ),
         SurvivalTest(
-            "the_features_run_after_vanilla_vegetation_in_plains",
+            "each_groups_features_run_after_vanilla_vegetation",
             TEST_TICKS,
-            ::theFeaturesRunAfterVanillaVegetationInPlains,
+            ::eachGroupsFeaturesRunAfterVanillaVegetation,
         ),
         SurvivalTest(
             "adding_a_stone_keeps_the_others_in_place",

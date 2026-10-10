@@ -23,15 +23,12 @@ public val COMFORT_HIGH: Heat = Heat(30.0)
 public val COLD_LEAKAGE: Heat = Heat(0.5)
 public val HEAT_LEAKAGE: Heat = Heat(0.2)
 
-
-public data class BodyTemperature(
-    val heat: Heat = Heat(37.0)
-) {
+public data class BodyTemperature(val heat: Heat = Heat(37.0)) {
     public fun getNew(
         player: Player,
         conditions: PlayerConditions,
         exertion: MET,
-        elapsed: Duration
+        elapsed: Duration,
     ): BodyTemperature {
         val current = heat
         val insulation = player.getInsulation()
@@ -52,13 +49,9 @@ public data class BodyTemperature(
         return BodyTemperature(new)
     }
 
-
     public companion object {
 
-        internal fun target(
-            ambient: Heat,
-            insulation: Insulation = Insulation.NONE,
-        ): Heat {
+        internal fun target(ambient: Heat, insulation: Insulation = Insulation.NONE): Heat {
             val ambient = ambient
             val target = when {
                 ambient < COMFORT_LOW ->
@@ -101,13 +94,13 @@ public data class BodyTemperature(
         public val CODEC: Codec<BodyTemperature> =
             Heat.CODEC.xmap(
                 ::BodyTemperature,
-                BodyTemperature::heat
+                BodyTemperature::heat,
             )
 
         public val STREAM_CODEC: StreamCodec<ByteBuf, BodyTemperature> =
             Heat.STREAM_CODEC.map(
                 ::BodyTemperature,
-                BodyTemperature::heat
+                BodyTemperature::heat,
             )
 
         public val DEFAULT: BodyTemperature = BodyTemperature(NORMAL_BODY_TEMPERATURE)

@@ -20,9 +20,9 @@ public fun deadCampfireLootTable() = LootTable.lootTable()
                         SetItemCountFunction.setCount(
                             BinomialDistributionGenerator.binomial(
                                 2,
-                                0.5f
-                            )
-                        )
-                    )
-            )
+                                0.5f,
+                            ),
+                        ),
+                    ),
+            ),
     )

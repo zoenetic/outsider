@@ -1,3 +1,44 @@
 [tools]
 gh = "latest"
 java = "temurin-25"
+kotlin = "2.4"
+
+[tasks."textures:campfire"]
+description = "Campfire burn textures, then the ember textures built from them"
+run = ["kotlin scripts/make_burn_textures.main.kts campfire", "kotlin scripts/make_ember_textures.main.kts"]
+
+[tasks."textures:embers"]
+description = "Animated ember textures from the existing campfire burn textures"
+run = "kotlin scripts/make_ember_textures.main.kts"
+
+[tasks."textures:torch"]
+description = "Torch burn textures from the fresh/dead keyframes in blockbench/torch"
+run = "kotlin scripts/make_burn_textures.main.kts torch"
+
+[tasks."textures:items"]
+description = "Slice art/items.png into item textures"
+run = "kotlin scripts/slice_items.main.kts"
+
+[tasks."templates:campfire"]
+description = "Campfire geometry templates from blockbench/campfire/template_campfire_base.json"
+run = "kotlin scripts/make_campfire_templates.main.kts"
+
+[tasks."templates:torch"]
+description = "Dead torch geometry templates from blockbench/torch/dead_torch.bbmodel"
+run = "kotlin scripts/make_torch_templates.main.kts"
+
+[tasks.art]
+description = "Regenerate every texture and template"
+depends = ["textures:campfire", "textures:torch", "textures:items", "templates:campfire", "templates:torch"]
+
+[tasks.worldgen]
+description = "Write the loose stone worldgen JSON"
+run = "kotlin scripts/make_loose_stone_worldgen.main.kts"
+
+[tasks."worldgen:check"]
+description = "List worldgen files that would change, without writing"
+run = "kotlin scripts/make_loose_stone_worldgen.main.kts --check"
+
+[tasks.palette]
+description = "GIMP palettes from vanilla textures, e.g. `mise run palette block/granite`"
+run = "kotlin scripts/vanilla_palette.main.kts"

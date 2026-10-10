@@ -15,9 +15,7 @@ public data class Fuel(public val level: Int) {
 
     public operator fun compareTo(other: Fuel): Int = level.compareTo(other.level)
 
-    public fun coerceAtMost(maximum: Fuel): Fuel {
-        return if (this.level > maximum.level) maximum else this
-    }
+    public fun coerceAtMost(maximum: Fuel): Fuel = if (this.level > maximum.level) maximum else this
 
     public companion object {
         public val EMPTY: Fuel = Fuel(0)
@@ -29,7 +27,7 @@ public data class Fuel(public val level: Int) {
         )
         public val STREAM_CODEC: StreamCodec<ByteBuf, Fuel> = ByteBufCodecs.VAR_INT.map(
             ::Fuel,
-            Fuel::level
+            Fuel::level,
         )
     }
 }

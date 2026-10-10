@@ -12,7 +12,7 @@ import java.util.*
 public val BREATH_VISIBLE_BELOW: Heat = Heat(8.0)
 public val HUMIDITY_TO_BUMP_BREATH_VISIBLE_AT: Humidity = Humidity(0.5)
 
-public class BreathParticles() {
+public class BreathParticles {
 
     public companion object {
 
@@ -28,7 +28,7 @@ public class BreathParticles() {
                     mouth.x, mouth.y, mouth.z,
                     0,
                     look.x + 0.3, look.y + 0.1, look.z + 0.3,
-                    0.005
+                    0.005,
                 )
             }
         }

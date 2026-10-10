@@ -85,7 +85,7 @@ class HeatTrappingTests {
                 fireAt.x and 15,
                 fireAt.y and 15,
                 fireAt.z and 15,
-                Blocks.LAVA.defaultBlockState()
+                Blocks.LAVA.defaultBlockState(),
             )
         val _ = chunk.reconcileEmitters()
 
@@ -100,7 +100,7 @@ class HeatTrappingTests {
         assertTrue(inTheOpen > 0.0, "a fire should warm the air at all, got $inTheOpen")
         assertTrue(
             underARoof > inTheOpen,
-            "roofed $underARoof should exceed open $inTheOpen"
+            "roofed $underARoof should exceed open $inTheOpen",
         )
         assertEquals(inTheOpen * (1.0 + HEAT_TRAPPING), underARoof, 1e-6)
     }

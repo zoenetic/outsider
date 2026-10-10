@@ -29,7 +29,7 @@ public fun Player.getWindExposure(wind: Wind): Double {
                 ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE,
                 this,
-            )
+            ),
         )
         totalWeight += weight
         if (hit.type == HitResult.Type.BLOCK) blockedWeight += weight
@@ -39,4 +39,3 @@ public fun Player.getWindExposure(wind: Wind): Double {
 
 public fun Wind.sheltered(exposure: Double): Wind =
     if (exposure >= 1.0) this else Wind(vector.scale(exposure))
-

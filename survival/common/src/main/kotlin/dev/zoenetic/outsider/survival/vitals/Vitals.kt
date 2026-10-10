@@ -19,23 +19,21 @@ public data class Vitals(
     val bodyTemperature: BodyTemperature,
     val breathingRate: BreathingRate,
     val heartRate: HeartRate,
-    val time: Time
+    val time: Time,
 ) {
     public companion object {
 
         public fun get(player: Player): Vitals? = Survival.platform.vitals.get(player)
 
-        public fun getFirst(time: Time): Vitals {
-            return DEFAULT.copy(
-                time = time,
-            )
-        }
+        public fun getFirst(time: Time): Vitals = DEFAULT.copy(
+            time = time,
+        )
 
         public fun getNew(
             previous: Vitals,
             player: ServerPlayer,
             time: Time,
-            elapsed: Duration
+            elapsed: Duration,
         ): Vitals {
             val conditions =
                 Survival.platform.playerConditions.get(player) ?: return previous
@@ -44,12 +42,12 @@ public data class Vitals(
                 player,
                 conditions,
                 exertion,
-                elapsed
+                elapsed,
             )
             val breathingRate = previous.breathingRate.getNew(
                 bodyTemperature.heat,
                 exertion,
-                elapsed
+                elapsed,
             )
             val heartRate = previous.heartRate.getNew(
                 bodyTemperature.heat,
@@ -60,7 +58,7 @@ public data class Vitals(
                 bodyTemperature,
                 breathingRate,
                 heartRate,
-                time
+                time,
             )
             return vitals
         }
@@ -111,14 +109,14 @@ public data class Vitals(
                 Vitals::heartRate,
                 Time.STREAM_CODEC,
                 Vitals::time,
-                ::Vitals
+                ::Vitals,
             )
 
         public val DEFAULT: Vitals = Vitals(
             bodyTemperature = BodyTemperature.DEFAULT,
             breathingRate = BreathingRate.DEFAULT,
             heartRate = HeartRate.DEFAULT,
-            time = Time(0L)
+            time = Time(0L),
         )
     }
 }

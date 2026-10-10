@@ -8,7 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class LooseStoneArrangementTests {
-    // Every type registered in OutsiderLooseStoneBlocks. Loose obsidian is deliberately absent.
+    // Every type registered in OutsiderLooseStones. Loose obsidian is deliberately absent.
     private val types = mapOf(
         "andesite" to LooseStoneArrangements.ANDESITE,
         "basalt" to LooseStoneArrangements.BASALT,
@@ -16,7 +16,7 @@ class LooseStoneArrangementTests {
         "calcite" to LooseStoneArrangements.CALCITE,
         "deepslate" to LooseStoneArrangements.DEEPSLATE,
         "diorite" to LooseStoneArrangements.DIORITE,
-        "end stone" to LooseStoneArrangements.ENDSTONE,
+        "end stone" to LooseStoneArrangements.END_STONE,
         "granite" to LooseStoneArrangements.GRANITE,
         "red sandstone" to LooseStoneArrangements.RED_SANDSTONE,
         "sandstone" to LooseStoneArrangements.SANDSTONE,

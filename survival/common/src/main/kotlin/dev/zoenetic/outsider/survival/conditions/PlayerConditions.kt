@@ -5,7 +5,14 @@ import dev.zoenetic.outsider.survival.climate.getClimate
 import dev.zoenetic.outsider.survival.climate.getTemperature
 import dev.zoenetic.outsider.survival.climate.getWind
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
-import dev.zoenetic.outsider.survival.units.*
+import dev.zoenetic.outsider.survival.units.Altitude
+import dev.zoenetic.outsider.survival.units.CALM
+import dev.zoenetic.outsider.survival.units.Duration
+import dev.zoenetic.outsider.survival.units.Heat
+import dev.zoenetic.outsider.survival.units.Humidity
+import dev.zoenetic.outsider.survival.units.Sky
+import dev.zoenetic.outsider.survival.units.Time
+import dev.zoenetic.outsider.survival.units.Wind
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.Level
@@ -47,7 +54,9 @@ public class PlayerConditions(
             val sky = player.getSky()
             val ambient = chunk.getTemperature(
                 Altitude(pos.y - level.seaLevel),
-                chunkClimate.humidity, sky, Time(level.overworldClockTime)
+                chunkClimate.humidity,
+                sky,
+                Time(level.overworldClockTime),
             )
             val radiant = EmitterIndex.heatAtPlayer(player)
             val heat = trapHeat(radiant, sky, ambient)
@@ -62,7 +71,7 @@ public class PlayerConditions(
                 heat,
                 wind,
                 windExposure,
-                time
+                time,
             )
         }
 
@@ -99,11 +108,7 @@ public class PlayerConditions(
     }
 }
 
-internal fun trapHeat(
-    radiant: Heat,
-    sky: Sky,
-    ambient: Heat
-): Heat {
+internal fun trapHeat(radiant: Heat, sky: Sky, ambient: Heat): Heat {
     val enclosure = (1.0 - sky.value).coerceIn(0.0, 1.0)
     val headroom = (MAX_HEATED_AIR - ambient - radiant).coerceAtLeast(0.0)
     val trapped = (radiant * HEAT_TRAPPING * enclosure).coerceAtMost(headroom)
