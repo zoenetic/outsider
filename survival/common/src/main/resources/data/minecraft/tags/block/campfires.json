@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "outsider_survival:fire",
     "outsider_survival:campfire"
   ]
 }

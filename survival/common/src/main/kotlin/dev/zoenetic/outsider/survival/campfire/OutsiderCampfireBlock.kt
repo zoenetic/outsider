@@ -105,14 +105,6 @@ public open class OutsiderCampfireBlock(
         return FireInteractions.maybeLightWithLitItem(state, itemStack, level, pos, player)
     }
 
-    override fun useWithoutItem(
-        state: BlockState,
-        level: Level,
-        pos: BlockPos,
-        player: Player,
-        hitResult: BlockHitResult,
-    ): InteractionResult = FireInteractions.maybeLightWithHandDrill(state, level, pos, player)
-
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val level = context.level
         val pos = context.clickedPos

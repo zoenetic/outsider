@@ -1,6 +1,5 @@
 package dev.zoenetic.outsider.survival.vitals
 
-import dev.zoenetic.outsider.survival.Survival
 import net.minecraft.SharedConstants
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
@@ -20,7 +19,8 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemUseAnimation
 import net.minecraft.world.item.equipment.EquipmentAssets
 import net.minecraft.world.level.Level
-import java.util.*
+import java.util.ArrayDeque
+import java.util.UUID
 import kotlin.math.abs
 
 internal val SLEEPING: MET = MET(0.9)
@@ -154,8 +154,7 @@ public class Exertion(private val accumulator: ArrayDeque<MET>) {
 
         internal val ServerPlayer.isShivering: Boolean
             get() {
-                val vitals = Survival.platform.vitals.get(this) ?: return false
-                return shiverIntensity(vitals.bodyTemperature.heat) > 0.0
+                return shiverStrength(this) > 0.0
             }
 
         internal val ServerPlayer.isWalking: Boolean

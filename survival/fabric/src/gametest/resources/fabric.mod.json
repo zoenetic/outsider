@@ -10,7 +10,8 @@
       "dev.zoenetic.outsider.survival.fabric.gametest.TorchLightGameTests",
       "dev.zoenetic.outsider.survival.fabric.gametest.TorchLootGameTests",
       "dev.zoenetic.outsider.survival.fabric.gametest.LooseStoneGameTests",
-      "dev.zoenetic.outsider.survival.fabric.gametest.RefuelGameTests"
+      "dev.zoenetic.outsider.survival.fabric.gametest.RefuelGameTests",
+      "dev.zoenetic.outsider.survival.fabric.gametest.HandDrillGameTests"
     ]
   },
   "depends": {

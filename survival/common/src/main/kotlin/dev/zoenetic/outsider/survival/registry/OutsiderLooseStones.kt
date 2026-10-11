@@ -6,8 +6,9 @@ import dev.zoenetic.outsider.survival.stone.loose.LooseStoneArrangements
 import net.minecraft.resources.Identifier
 
 public object OutsiderLooseStones {
-    public val ALL: List<LooseStone>
-        field = mutableListOf<LooseStone>()
+    private val all: MutableList<LooseStone> = mutableListOf()
+
+    public val ALL: List<LooseStone> = all
 
     public val ANDESITE: LooseStone =
         stone(
@@ -92,7 +93,7 @@ public object OutsiderLooseStones {
         name: String,
         arrangement: LooseStoneArrangement,
         texture: Identifier,
-    ): LooseStone = LooseStone(name, arrangement, texture).also(ALL::add)
+    ): LooseStone = LooseStone(name, arrangement, texture).also(all::add)
 
     public fun init(): Unit = Unit
 }

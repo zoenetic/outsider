@@ -1,35 +1,52 @@
 package dev.zoenetic.outsider.survival.mixin;
 
-import dev.zoenetic.outsider.survival.campfire.client.LightingCampfireState;
-import dev.zoenetic.outsider.survival.vitals.client.ShiverState;
+import dev.zoenetic.outsider.survival.animation.client.itemuse.OutsiderItemUseAnimation;
+import dev.zoenetic.outsider.survival.animation.client.itemuse.OutsiderItemUseAnimationState;
+import dev.zoenetic.outsider.survival.animation.client.player.OutsiderPlayerAnimation;
+import dev.zoenetic.outsider.survival.animation.client.player.OutsiderPlayerAnimationState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.util.Map;
+
 @Mixin(LivingEntityRenderState.class)
-public class LivingEntityRenderStateMixin implements ShiverState, LightingCampfireState {
+public class LivingEntityRenderStateMixin implements OutsiderItemUseAnimationState, OutsiderPlayerAnimationState {
+
     @Unique
-    private double outsider_survival$shiver;
+    private OutsiderItemUseAnimation outsider_survival$itemUseAnimation;
+
     @Unique
-    private boolean outsider_survival$lightingCampfire;
+    private float outsider_survival$itemUseTime;
 
     @Override
-    public double outsider_survival$getShiver() {
-        return outsider_survival$shiver;
+    public OutsiderItemUseAnimation outsider_survival$getItemUseAnimation() {
+        return outsider_survival$itemUseAnimation;
     }
 
     @Override
-    public void outsider_survival$setShiver(double shiver) {
-        outsider_survival$shiver = shiver;
+    public float outsider_survival$getItemUseTicks() {
+        return outsider_survival$itemUseTime;
     }
 
     @Override
-    public boolean outsider_survival$getLightingCampfire() {
-        return outsider_survival$lightingCampfire;
+    public void outsider_survival$setItemUseAnimation(OutsiderItemUseAnimation animation, float ticks) {
+        outsider_survival$itemUseAnimation = animation;
+        outsider_survival$itemUseTime = ticks;
+    }
+
+    @Unique
+    private Map<@NotNull OutsiderPlayerAnimation, @NotNull Float> outsider_survival$playerAnimationStrengths = Map.of();
+
+    @Override
+    public @NotNull Map<@NotNull OutsiderPlayerAnimation, @NotNull Float> outsider_survival$getPlayerAnimations() {
+        return outsider_survival$playerAnimationStrengths;
     }
 
     @Override
-    public void outsider_survival$setLightingCampfire(boolean state) {
-        outsider_survival$lightingCampfire = state;
+    public void outsider_survival$setPlayerAnimations(@NonNull Map<@NotNull OutsiderPlayerAnimation, @NotNull Float> animations) {
+        outsider_survival$playerAnimationStrengths = animations;
     }
 }

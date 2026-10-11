@@ -1,6 +1,7 @@
 package dev.zoenetic.outsider.survival.registry.items
 
 import dev.zoenetic.outsider.survival.Survival
+import dev.zoenetic.outsider.survival.drill.handdrill.HandDrillItem
 import dev.zoenetic.outsider.survival.platform.getValue
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import net.minecraft.core.Direction
@@ -22,6 +23,15 @@ public object OutsiderItems {
         "firewood",
         OutsiderBlocks::FIREWOOD,
     ) { Item.Properties() }
+
+    public val HAND_DRILL: Item by Survival.platform.register.item(
+        "hand_drill",
+        ::HandDrillItem,
+        {
+            Item.Properties()
+                .durability(HandDrillItem.USES)
+        },
+    )
 
     public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(
         "torch",

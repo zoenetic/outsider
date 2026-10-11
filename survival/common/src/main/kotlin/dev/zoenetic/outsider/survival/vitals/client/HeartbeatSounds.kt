@@ -9,8 +9,6 @@ import net.minecraft.client.player.LocalPlayer
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.client.sounds.SoundEngine.PlayResult
 
-public val HEARTBEAT: HeartbeatSounds = HeartbeatSounds.init()
-
 // client only
 public data class HeartbeatSounds(var lastPlayer: LocalPlayer?, var lastHeartbeatTime: Time?) {
     public fun beat(heartbeat: Heartbeat, gameTime: Time) {
@@ -54,6 +52,8 @@ public data class HeartbeatSounds(var lastPlayer: LocalPlayer?, var lastHeartbea
     }
 
     public companion object {
+        public val HEARTBEAT: HeartbeatSounds = init()
+
         public fun init(): HeartbeatSounds = HeartbeatSounds(
             null,
             null,
