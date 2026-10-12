@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.neoforge.datagen
 import dev.zoenetic.outsider.survival.datagen.models.campfireModel
 import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
 import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
+import dev.zoenetic.outsider.survival.datagen.models.handDrillModel
 import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
@@ -36,6 +37,7 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
     override fun getKnownItems(): Stream<out Holder<Item>> = Stream.of(
         BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.CAMPFIRE),
         BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.FIREWOOD),
+        BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.HAND_DRILL),
         BuiltInRegistries.ITEM.wrapAsHolder(OutsiderItems.TORCH),
     )
 
@@ -61,6 +63,8 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
             items.itemModelOutput,
             TextureSlot.create("billet"),
         )
+
+        handDrillModel(blocks.modelOutput, blocks.itemModelOutput)
 
         OutsiderLooseStones.ALL.forEach {
             looseStoneModel(it, blocks.blockStateOutput, blocks.modelOutput, blocks.itemModelOutput)

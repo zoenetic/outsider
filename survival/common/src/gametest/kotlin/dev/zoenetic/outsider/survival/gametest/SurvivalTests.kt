@@ -13,6 +13,7 @@ import dev.zoenetic.outsider.survival.vitals.Vitals
 import net.minecraft.core.BlockPos
 import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
@@ -165,6 +166,17 @@ object SurvivalTests {
         helper.succeed()
     }
 
+    // A tag entry that doesn't resolve drops the whole tag, and only logs an error.
+    fun theCampfireIsInTheCampfiresTag(helper: GameTestHelper) {
+        helper.ensure(OutsiderBlocks.CAMPFIRE.defaultBlockState().`is`(BlockTags.CAMPFIRES)) {
+            "outsider_survival:campfire isn't in #minecraft:campfires"
+        }
+        helper.ensure(Blocks.CAMPFIRE.defaultBlockState().`is`(BlockTags.CAMPFIRES)) {
+            "minecraft:campfire isn't in #minecraft:campfires"
+        }
+        helper.succeed()
+    }
+
     fun aNearbyCampfireIsFoundAsAHeatSource(helper: GameTestHelper) {
         val campfire = BlockPos(1, 1, 1)
         helper.setBlock(campfire, litCampfire())
@@ -214,5 +226,11 @@ object SurvivalTests {
             ::breakingACampfireDeregistersTheHeatSource,
         ),
         SurvivalTest("a_nearby_campfire_is_found", 20, ::aNearbyCampfireIsFoundAsAHeatSource),
-    ) + TorchLootTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL + RefuelTests.ALL + HandDrillTests.ALL
+        SurvivalTest(
+            "the_campfire_is_in_the_campfires_tag",
+            20,
+            ::theCampfireIsInTheCampfiresTag,
+        ),
+    ) + TorchLootTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL + RefuelTests.ALL +
+        HandDrillTests.ALL + WorkingModeTests.ALL
 }

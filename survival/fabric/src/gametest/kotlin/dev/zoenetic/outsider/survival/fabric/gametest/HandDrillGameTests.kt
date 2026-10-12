@@ -23,6 +23,14 @@ class HandDrillGameTests {
         HandDrillTests.aLitCampfireCantBeDrilled(helper)
 
     @GameTest
+    fun standingCantStartDrilling(helper: GameTestHelper): Unit =
+        HandDrillTests.standingCantStartDrilling(helper)
+
+    @GameTest
+    fun standingUpStopsDrillingWithoutLighting(helper: GameTestHelper): Unit =
+        HandDrillTests.standingUpStopsDrillingWithoutLighting(helper)
+
+    @GameTest
     fun reachingTheLimitKeepsTheDrill(helper: GameTestHelper): Unit =
         HandDrillTests.reachingTheLimitKeepsTheDrill(helper)
 }

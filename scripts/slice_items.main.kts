@@ -9,12 +9,14 @@
 import java.io.File
 import kotlin.system.exitProcess
 
-val ROOT: File = __FILE__.canonicalFile.parentFile.parentFile
-val SHEET_PATH = ROOT.resolve("art/items.png")
-val TEXTURES = ROOT.resolve("survival/common/src/main/resources/assets/outsider_survival/textures/item")
-val CELL = 16
+val root: File = __FILE__.canonicalFile.parentFile.parentFile
+val sheetPath = root.resolve("art/items.png")
+val textures = root.resolve(
+    "survival/common/src/main/resources/assets/outsider_survival/textures/item",
+)
+val cellSize = 16
 
-val SHEET: List<String?> = listOf(
+val items: List<String?> = listOf(
     "loose_diorite",
     "loose_andesite",
     "loose_granite",
@@ -27,18 +29,24 @@ val SHEET: List<String?> = listOf(
     "loose_blackstone",
     "loose_calcite",
     "loose_end_stone",
+    null,
+    null,
+    null,
+    null,
+    "hand_drill",
+    "hand_drill_hearth_board",
 )
 
-val sheet = readImage(SHEET_PATH)
-val columns = sheet.width / CELL
-for ((index, name) in SHEET.withIndex()) {
+val sheet = readImage(sheetPath)
+val columns = sheet.width / cellSize
+for ((index, name) in items.withIndex()) {
     if (name == null) continue
-    val (x, y) = index % columns * CELL to index / columns * CELL
-    val cell = sheet.getSubimage(x, y, CELL, CELL).copy()
+    val (x, y) = index % columns * cellSize to index / columns * cellSize
+    val cell = sheet.getSubimage(x, y, cellSize, cellSize).copy()
     if (cell.pixels().all { it[3] == 0 }) {
         System.err.println("$name: cell $index is empty")
         exitProcess(1)
     }
-    cell.save(TEXTURES.resolve("$name.png"))
+    cell.save(textures.resolve("$name.png"))
     println("$name.png")
 }

@@ -1,11 +1,13 @@
 package dev.zoenetic.outsider.survival.registry.items
 
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.drill.handdrill.HandDrillItem
 import dev.zoenetic.outsider.survival.platform.getValue
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
+import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.HandDrillItem
 import net.minecraft.core.Direction
+import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.component.UseEffects
 
 public object OutsiderItems {
 
@@ -30,6 +32,7 @@ public object OutsiderItems {
         {
             Item.Properties()
                 .durability(HandDrillItem.USES)
+                .component(DataComponents.USE_EFFECTS, UseEffects(false, true, 0F))
         },
     )
 

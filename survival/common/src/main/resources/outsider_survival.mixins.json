@@ -13,6 +13,7 @@
     "HumanoidModelMixin",
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",
+    "KeyboardInputMixin",
     "LivingEntityRendererMixin",
     "LivingEntityRenderStateMixin"
   ],

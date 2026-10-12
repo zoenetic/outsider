@@ -1,9 +1,9 @@
 package dev.zoenetic.outsider.survival.gametest
 
-import dev.zoenetic.outsider.survival.drill.handdrill.HandDrillItem.Companion.MAX_DRILL_TICKS
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents.DRILL_TIME_REQUIRED
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
+import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.HandDrillItem.Companion.MAX_DRILL_TICKS
 import net.minecraft.commands.arguments.EntityAnchorArgument
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -33,14 +33,14 @@ object HandDrillTests {
 
     private fun GameTestHelper.isLit(): Boolean = getBlockState(CAMPFIRE_POS).getValue(LIT)
 
-    /** A sneaking survival player two blocks from the campfire, looking at it, starting to drill. */
-    private fun GameTestHelper.startDrilling(): Drilling {
+    /** A survival player two blocks from the campfire, looking at it, starting to drill. */
+    private fun GameTestHelper.startDrilling(crouching: Boolean = true): Drilling {
         val pos = absolutePos(CAMPFIRE_POS)
         val target = Vec3.atBottomCenterOf(pos).add(0.0, 0.2, 0.0)
         val player = makeMockPlayer(GameType.SURVIVAL)
         player.snapTo(pos.x + 2.5, pos.y.toDouble(), pos.z + 0.5)
         player.lookAt(EntityAnchorArgument.Anchor.EYES, target)
-        player.isShiftKeyDown = true
+        player.isShiftKeyDown = crouching
         val drill = ItemStack(OutsiderItems.HAND_DRILL)
         player.setItemInHand(InteractionHand.MAIN_HAND, drill)
         val hit = BlockHitResult(target, Direction.EAST, pos, false)
@@ -107,12 +107,36 @@ object HandDrillTests {
         helper.succeed()
     }
 
+    fun standingCantStartDrilling(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val drilling = helper.startDrilling(crouching = false)
+        helper.ensure(drilling.result == InteractionResult.PASS) {
+            "using the drill while standing returned ${drilling.result}"
+        }
+        helper.ensure(!drilling.player.isUsingItem) { "started drilling while standing" }
+        helper.succeed()
+    }
+
+    fun standingUpStopsDrillingWithoutLighting(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val drilling = helper.startDrilling()
+        val _ = helper.requireStarted(drilling)
+        helper.tick(drilling, 0)
+        drilling.player.isShiftKeyDown = false
+        helper.tick(drilling, 1)
+        helper.ensure(!drilling.player.isUsingItem) { "still drilling after standing up" }
+        helper.ensure(!helper.isLit()) { "lit after standing up" }
+        helper.succeed()
+    }
+
     fun reachingTheLimitKeepsTheDrill(helper: GameTestHelper) {
         helper.campfire(lit = false)
         val drilling = helper.startDrilling()
         val _ = helper.requireStarted(drilling)
         val after = drilling.drill.finishUsingItem(helper.level, drilling.player)
-        helper.ensure(after.`is`(OutsiderItems.HAND_DRILL)) { "the drill became $after at the limit" }
+        helper.ensure(after.`is`(OutsiderItems.HAND_DRILL)) {
+            "the drill became $after at the limit"
+        }
         helper.ensure(!after.has(DRILL_TIME_REQUIRED)) { "the rolled drill time was kept" }
         helper.succeed()
     }
@@ -134,6 +158,16 @@ object HandDrillTests {
             ::lookingAwayStopsDrillingWithoutLighting,
         ),
         SurvivalTest("a_lit_campfire_cant_be_drilled", TEST_TICKS, ::aLitCampfireCantBeDrilled),
-        SurvivalTest("reaching_the_limit_keeps_the_drill", TEST_TICKS, ::reachingTheLimitKeepsTheDrill),
+        SurvivalTest("standing_cant_start_drilling", TEST_TICKS, ::standingCantStartDrilling),
+        SurvivalTest(
+            "standing_up_stops_drilling_without_lighting",
+            TEST_TICKS,
+            ::standingUpStopsDrillingWithoutLighting,
+        ),
+        SurvivalTest(
+            "reaching_the_limit_keeps_the_drill",
+            TEST_TICKS,
+            ::reachingTheLimitKeepsTheDrill,
+        ),
     )
 }

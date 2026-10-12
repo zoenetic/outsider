@@ -42,3 +42,55 @@ run = "kotlin scripts/make_loose_stone_worldgen.main.kts --check"
 [tasks.palette]
 description = "GIMP palettes from vanilla textures, e.g. `mise run palette block/granite`"
 run = "kotlin scripts/vanilla_palette.main.kts"
+
+[tasks.build]
+description = "Build and test both loaders"
+run = "./gradlew build"
+
+[tasks.test]
+description = "JUnit tests"
+run = "./gradlew test"
+
+[tasks.gametest]
+description = "Gametests on both loaders"
+run = "./gradlew --continue :survival:fabric:runGametest :survival:neoforge:runGametest"
+
+[tasks."gametest:fabric"]
+description = "Gametests on Fabric"
+run = "./gradlew :survival:fabric:runGametest"
+
+[tasks."gametest:neoforge"]
+description = "Gametests on NeoForge"
+run = "./gradlew :survival:neoforge:runGametest"
+
+[tasks."datagen:fabric"]
+description = "Regenerate src/generated with Fabric datagen"
+run = "./gradlew :survival:fabric:runDatagen"
+
+[tasks."datagen:neoforge"]
+description = "Regenerate src/generated with NeoForge datagen"
+run = "./gradlew :survival:neoforge:runData"
+
+[tasks."client:fabric"]
+description = "Launch the Fabric client"
+run = "./gradlew :survival:fabric:runClient"
+
+[tasks."client:neoforge"]
+description = "Launch the NeoForge client"
+run = "./gradlew :survival:neoforge:runClient"
+
+[tasks."client:fabric:datagen"]
+description = "Regenerate data, then launch the Fabric client"
+run = "./gradlew :survival:fabric:runClientWithDatagen"
+
+[tasks."client:neoforge:datagen"]
+description = "Regenerate data, then launch the NeoForge client"
+run = "./gradlew :survival:neoforge:runClientWithDatagen"
+
+[tasks."server:fabric"]
+description = "Launch the Fabric server"
+run = "./gradlew :survival:fabric:runServer"
+
+[tasks."server:neoforge"]
+description = "Launch the NeoForge server"
+run = "./gradlew :survival:neoforge:runServer"

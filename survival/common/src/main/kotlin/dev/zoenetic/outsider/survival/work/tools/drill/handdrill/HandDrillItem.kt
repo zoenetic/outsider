@@ -1,16 +1,16 @@
-package dev.zoenetic.outsider.survival.drill.handdrill
+package dev.zoenetic.outsider.survival.work.tools.drill.handdrill
 
-import dev.zoenetic.outsider.survival.registry.OutsiderBlockTags.LIGHTABLE_WITH_DRILL
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
+import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockTags.LIGHTABLE_WITH_DRILL
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
-import net.minecraft.core.BlockPos
+import dev.zoenetic.outsider.survival.work.tools.WorkingToolItem
+import dev.zoenetic.outsider.survival.work.tools.workingBlockTargetOrNull
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
+import net.minecraft.tags.TagKey
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.ItemUseAnimation
@@ -20,25 +20,28 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import net.minecraft.world.phys.BlockHitResult
-import net.minecraft.world.phys.HitResult
 
-public class HandDrillItem(properties: Properties) : Item(properties) {
+public class HandDrillItem(properties: Properties) :
+    Item(properties),
+    WorkingToolItem {
+
+    override val targetBlockTags: List<TagKey<Block>> = listOf(LIGHTABLE_WITH_DRILL)
+
+    override fun canWorkOn(state: BlockState): Boolean =
+        super.canWorkOn(state) && !state.getValueOrElse(BlockStateProperties.LIT, true)
 
     override fun useOn(context: UseOnContext): InteractionResult {
         val player = context.player ?: return InteractionResult.PASS
-        if (getValidBlockPosAndBlockStateOrNull(context.level, player) != null) {
-            val level = context.level
-            if (level is ServerLevel) {
-                context.itemInHand.set(
-                    OutsiderComponents.DRILL_TIME_REQUIRED,
-                    drillTimeRequired(level),
-                )
-            }
-            player.startUsingItem(context.hand)
-            return InteractionResult.CONSUME
+        val _ = player.workingBlockTargetOrNull(this) ?: return InteractionResult.PASS
+        val level = context.level
+        if (level is ServerLevel) {
+            context.itemInHand.set(
+                OutsiderComponents.DRILL_TIME_REQUIRED,
+                drillTimeRequired(level),
+            )
         }
-        return InteractionResult.PASS
+        player.startUsingItem(context.hand)
+        return InteractionResult.CONSUME
     }
 
     override fun getUseAnimation(itemStack: ItemStack): ItemUseAnimation = ItemUseAnimation.NONE
@@ -55,7 +58,7 @@ public class HandDrillItem(properties: Properties) : Item(properties) {
         ticksRemaining: Int,
     ) {
         val player = livingEntity as? Player ?: return livingEntity.releaseUsingItem()
-        val (pos, state) = getValidBlockPosAndBlockStateOrNull(level, player)
+        val (pos, state) = player.workingBlockTargetOrNull(this)
             ?: return livingEntity.releaseUsingItem()
         val useDuration = this.getUseDuration(itemStack, livingEntity)
         val elapsed = useDuration - ticksRemaining
@@ -113,32 +116,6 @@ public class HandDrillItem(properties: Properties) : Item(properties) {
 
     private fun drillTimeRequired(level: ServerLevel): Int =
         level.random.triangle(BASE_DRILL_TICKS.toDouble(), DRILL_JITTER_TICKS.toDouble()).toInt()
-
-    private fun getValidBlockPosAndBlockStateOrNull(
-        level: Level,
-        player: Player,
-    ): Pair<BlockPos, BlockState>? {
-        val hit = ProjectileUtil.getHitResultOnViewVector(
-            player,
-            EntitySelector.CAN_BE_PICKED,
-            player.blockInteractionRange(),
-        ) as? BlockHitResult ?: return null
-        return if (hit.type ==
-            HitResult.Type.BLOCK
-        ) {
-            val pos = hit.blockPos
-            val state = level.getBlockState(pos)
-            if (state.`is`(LIGHTABLE_WITH_DRILL) &&
-                !state.getValueOrElse(BlockStateProperties.LIT, false)
-            ) {
-                Pair(pos, state)
-            } else {
-                null
-            }
-        } else {
-            null
-        }
-    }
 
     public companion object {
         public const val MAX_DRILL_TICKS: Int = 600

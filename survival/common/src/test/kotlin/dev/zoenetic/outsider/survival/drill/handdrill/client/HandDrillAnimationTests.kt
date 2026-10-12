@@ -1,6 +1,7 @@
 package dev.zoenetic.outsider.survival.drill.handdrill.client
 
 import com.mojang.blaze3d.vertex.PoseStack
+import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.client.HandDrillAnimation
 import net.minecraft.client.model.geom.ModelPart
 import net.minecraft.world.entity.HumanoidArm
 import org.joml.Vector3f
@@ -54,7 +55,14 @@ class HandDrillAnimationTests {
     @Test
     fun `first-person stroke repeats each period`() {
         for (t in ticks) {
-            assertEquals(firstPerson(HumanoidArm.RIGHT, t).z, firstPerson(HumanoidArm.RIGHT, t + period).z, 1e-4F)
+            assertEquals(
+                firstPerson(HumanoidArm.RIGHT, t).z,
+                firstPerson(
+                    HumanoidArm.RIGHT,
+                    t + period,
+                ).z,
+                1e-4F,
+            )
         }
     }
 }

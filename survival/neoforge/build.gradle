@@ -61,7 +61,7 @@ neoForge {
     runs {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_namespace)
-            ideName = "NeoForge ${it.name.capitalize()}"
+            disableIdeRun()
         }
         client {
             client()

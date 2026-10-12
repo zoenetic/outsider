@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.drill.handdrill.client
+package dev.zoenetic.outsider.survival.work.tools.drill.handdrill.client
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis

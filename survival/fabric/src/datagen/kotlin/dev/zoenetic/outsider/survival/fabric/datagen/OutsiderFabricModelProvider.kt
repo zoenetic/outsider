@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.fabric.datagen
 import dev.zoenetic.outsider.survival.datagen.models.campfireModel
 import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
 import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
+import dev.zoenetic.outsider.survival.datagen.models.handDrillModel
 import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
@@ -51,6 +52,8 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             blocks.itemModelOutput,
             torch0,
         )
+
+        handDrillModel(blocks.modelOutput, blocks.itemModelOutput)
 
         val wallTorch0 = wallTorchModel(
             blocks.blockStateOutput,

@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.registry
+package dev.zoenetic.outsider.survival.registry.blocks
 
 import dev.zoenetic.outsider.survival.Survival
 import net.minecraft.core.registries.Registries

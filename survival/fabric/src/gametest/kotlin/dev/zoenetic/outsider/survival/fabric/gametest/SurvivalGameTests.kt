@@ -37,4 +37,8 @@ class SurvivalGameTests {
     @GameTest
     fun aNearbyCampfireIsFoundAsAHeatSource(helper: GameTestHelper): Unit =
         SurvivalTests.aNearbyCampfireIsFoundAsAHeatSource(helper)
+
+    @GameTest
+    fun theCampfireIsInTheCampfiresTag(helper: GameTestHelper): Unit =
+        SurvivalTests.theCampfireIsInTheCampfiresTag(helper)
 }

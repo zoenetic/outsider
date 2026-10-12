@@ -64,23 +64,23 @@ loom {
         accessWidenerPath.set(aw)
     }
     runs {
+        configureEach {
+            ideConfigGenerated(false)
+        }
         client {
             client()
             setConfigName('Fabric Client')
-            ideConfigGenerated(true)
             runDir('runs/client')
         }
         server {
             server()
             setConfigName('Fabric Server')
-            ideConfigGenerated(true)
             runDir('runs/server')
         }
         gametest {
             server()
             setConfigName('Fabric Game Test')
             source(sourceSets.gametest)
-            ideConfigGenerated(true)
             runDir('runs/gametest')
             vmArg('-Dfabric-api.gametest')
             vmArg("-Dfabric-api.gametest.report-file=${layout.buildDirectory.get().asFile}/gametest/report.xml")
