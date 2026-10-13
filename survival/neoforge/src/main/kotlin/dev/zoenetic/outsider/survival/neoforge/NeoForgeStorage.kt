@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.neoforge
 import dev.zoenetic.outsider.survival.platform.ChunkStore
 import dev.zoenetic.outsider.survival.platform.PlayerStore
 import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore
+import dev.zoenetic.outsider.survival.platform.TransientSyncedPlayerStore
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.chunk.LevelChunk
@@ -15,6 +16,7 @@ internal class NeoForgePersistentSyncedChunkStore<T : Any>(val type: Supplier<At
     override fun set(chunk: LevelChunk, value: T) {
         chunk.setData(type, value)
     }
+
     override fun remove(chunk: LevelChunk) {
         chunk.removeData(type)
     }
@@ -34,5 +36,18 @@ internal class NeoForgePersistentSyncedPlayerStore<T : Any>(
     override fun get(player: Player): T? = player.getExistingDataOrNull(type)
     override fun set(player: Player, value: T) {
         player.setData(type, value)
+    }
+}
+
+internal class NeoForgeTransientSyncedPlayerStore<T : Any>(
+    private val type: Supplier<AttachmentType<T>>,
+) : TransientSyncedPlayerStore<T> {
+    override fun get(player: Player): T? = player.getExistingDataOrNull(type)
+    override fun set(player: Player, value: T) {
+        player.setData(type, value)
+    }
+
+    override fun remove(player: Player) {
+        player.removeData(type)
     }
 }

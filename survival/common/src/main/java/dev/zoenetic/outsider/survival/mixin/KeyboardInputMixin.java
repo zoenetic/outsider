@@ -1,6 +1,6 @@
 package dev.zoenetic.outsider.survival.mixin;
 
-import dev.zoenetic.outsider.survival.work.tools.WorkingModeInput;
+import dev.zoenetic.outsider.survival.work.WorkingModeInput;
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.world.phys.Vec2;

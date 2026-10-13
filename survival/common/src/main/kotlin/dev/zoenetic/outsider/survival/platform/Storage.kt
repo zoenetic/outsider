@@ -19,3 +19,9 @@ public interface SyncedPlayerStore<T> {
     public fun get(player: Player): T?
     public fun set(player: Player, value: T)
 }
+
+public interface TransientSyncedPlayerStore<T> {
+    public fun get(player: Player): T?
+    public fun set(player: Player, value: T)
+    public fun remove(player: Player)
+}

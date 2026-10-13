@@ -8,8 +8,10 @@ import dev.zoenetic.outsider.survival.platform.ChunkStore
 import dev.zoenetic.outsider.survival.platform.Platform
 import dev.zoenetic.outsider.survival.platform.PlayerStore
 import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore
+import dev.zoenetic.outsider.survival.platform.TransientSyncedPlayerStore
 import dev.zoenetic.outsider.survival.platform.Widener
 import dev.zoenetic.outsider.survival.vitals.Vitals
+import dev.zoenetic.outsider.survival.work.WorkState
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
@@ -51,6 +53,13 @@ public object FabricPlatform : Platform {
                     .syncWith(Vitals.STREAM_CODEC, AttachmentSyncPredicate.all())
             },
     )
+
+    override val workState: TransientSyncedPlayerStore<WorkState> =
+        FabricTransientSyncedPlayerStore(
+            AttachmentRegistry.create(id("working_mode")) {
+                it.syncWith(WorkState.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+            },
+        )
 }
 
 private fun id(path: String) = Identifier.fromNamespaceAndPath(MOD_ID, path)

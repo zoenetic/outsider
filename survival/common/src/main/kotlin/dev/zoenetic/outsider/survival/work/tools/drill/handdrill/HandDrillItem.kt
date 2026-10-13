@@ -1,10 +1,12 @@
 package dev.zoenetic.outsider.survival.work.tools.drill.handdrill
 
+import dev.zoenetic.outsider.survival.fire.LightingFireState
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockTags.LIGHTABLE_WITH_DRILL
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
+import dev.zoenetic.outsider.survival.work.WorkState
 import dev.zoenetic.outsider.survival.work.tools.WorkingToolItem
-import dev.zoenetic.outsider.survival.work.tools.workingBlockTargetOrNull
+import dev.zoenetic.outsider.survival.work.workingBlockTargetOrNull
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.TagKey
@@ -30,6 +32,48 @@ public class HandDrillItem(properties: Properties) :
     override fun canWorkOn(state: BlockState): Boolean =
         super.canWorkOn(state) && !state.getValueOrElse(BlockStateProperties.LIT, true)
 
+    override fun tickWork(player: Player, state: WorkState): WorkState? {
+        val level = player.level()
+        if (state !is LightingFireState) return null
+        val drilling = player.isUsingItem && player.usedItemHand == state.hand
+        if (drilling) {
+            if (state.elapsed % 7 == 0) {
+                player.level().playSound(
+                    player,
+                    state.target,
+                    OutsiderSounds.USE_DRILL_SOUND,
+                    SoundSource.BLOCKS,
+                )
+            }
+            if (level is ServerLevel) {
+                val itemStack = player.getItemInHand(state.hand)
+                if (state.elapsed > 0 && state.elapsed % 20 == 0) {
+                    itemStack.hurtAndBreak(1, player, state.hand)
+                }
+                if (state.elapsed >= state.required) {
+                    val blockState = level.getBlockState(state.target)
+                    level.setBlock(
+                        state.target,
+                        blockState.setValue(BlockStateProperties.LIT, true),
+                        Block.UPDATE_ALL,
+                    )
+                    level.playSound(
+                        null,
+                        state.target,
+                        OutsiderSounds.FIRE_SUCCESS,
+                        SoundSource.BLOCKS,
+                        1F,
+                        1F,
+                    )
+                    return null
+                }
+                return state.copy(elapsed = state.elapsed + 1)
+            }
+        }
+        return state
+    }
+
+    // TODO: enter the work mode here (server only); if already in it on this target, just resume
     override fun useOn(context: UseOnContext): InteractionResult {
         val player = context.player ?: return InteractionResult.PASS
         val _ = player.workingBlockTargetOrNull(this) ?: return InteractionResult.PASS
@@ -51,6 +95,7 @@ public class HandDrillItem(properties: Properties) :
         return MAX_DRILL_TICKS
     }
 
+    // TODO: remove once useOn enters the work mode; tickWork replaces this
     override fun onUseTick(
         level: Level,
         livingEntity: LivingEntity,
@@ -95,6 +140,7 @@ public class HandDrillItem(properties: Properties) :
         }
     }
 
+    // TODO: drop DRILL_TIME_REQUIRED cleanup here and in releaseUsing with the old path
     override fun finishUsingItem(
         itemStack: ItemStack,
         level: Level,

@@ -7,7 +7,9 @@ import dev.zoenetic.outsider.survival.platform.ChunkStore
 import dev.zoenetic.outsider.survival.platform.Platform
 import dev.zoenetic.outsider.survival.platform.PlayerStore
 import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore
+import dev.zoenetic.outsider.survival.platform.TransientSyncedPlayerStore
 import dev.zoenetic.outsider.survival.vitals.Vitals
+import dev.zoenetic.outsider.survival.work.WorkState
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 import net.minecraft.world.level.chunk.LevelChunk
 import net.neoforged.bus.api.IEventBus
@@ -31,9 +33,12 @@ public object NeoForgePlatform : Platform {
         register.attachment("chunk_emitters") {
             AttachmentType.builder(Supplier { EmitterIndex.create() })
                 .serialize(EmitterIndex.CODEC.fieldOf("emitters"))
-                .sync({ chunk, _ ->
-                    chunk is LevelChunk && chunk.isSendable()
-                }, EmitterIndex.STREAM_CODEC)
+                .sync(
+                    { chunk, _ ->
+                        chunk is LevelChunk && chunk.isSendable()
+                    },
+                    EmitterIndex.STREAM_CODEC,
+                )
                 .build()
         },
     )
@@ -53,6 +58,18 @@ public object NeoForgePlatform : Platform {
                 .build()
         },
     )
+
+    override val workState: TransientSyncedPlayerStore<WorkState> =
+        NeoForgeTransientSyncedPlayerStore(
+            register.attachment("working_mode") {
+                AttachmentType.builder(
+                    Supplier<WorkState> {
+                        error("working_mode has no default")
+                    },
+                ).sync({ holder, to -> holder === to }, WorkState.STREAM_CODEC)
+                    .build()
+            },
+        )
 
     public fun init(bus: IEventBus) {
         register.init(bus)

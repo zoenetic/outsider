@@ -3,6 +3,7 @@ package dev.zoenetic.outsider.survival.fabric
 import dev.zoenetic.outsider.survival.platform.ChunkStore
 import dev.zoenetic.outsider.survival.platform.PlayerStore
 import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore
+import dev.zoenetic.outsider.survival.platform.TransientSyncedPlayerStore
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
@@ -14,6 +15,7 @@ internal class FabricPersistentSyncedChunkStore<T : Any>(private val type: Attac
     override fun set(chunk: LevelChunk, value: T) {
         chunk.setAttached(type, value)
     }
+
     override fun remove(chunk: LevelChunk) {
         chunk.removeAttached(type)
     }
@@ -31,5 +33,17 @@ internal class FabricPersistentSyncedPlayerStore<T : Any>(private val type: Atta
     override fun get(player: Player): T? = player.getAttached(type)
     override fun set(player: Player, value: T) {
         player.setAttached(type, value)
+    }
+}
+
+internal class FabricTransientSyncedPlayerStore<T : Any>(private val type: AttachmentType<T>) :
+    TransientSyncedPlayerStore<T> {
+    override fun get(player: Player): T? = player.getAttached(type)
+    override fun set(player: Player, value: T) {
+        player.setAttached(type, value)
+    }
+
+    override fun remove(player: Player) {
+        player.removeAttached(type)
     }
 }

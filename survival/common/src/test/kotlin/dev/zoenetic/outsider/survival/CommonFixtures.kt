@@ -9,9 +9,11 @@ import dev.zoenetic.outsider.survival.platform.Platform
 import dev.zoenetic.outsider.survival.platform.PlayerStore
 import dev.zoenetic.outsider.survival.platform.Register
 import dev.zoenetic.outsider.survival.platform.SyncedPlayerStore
+import dev.zoenetic.outsider.survival.platform.TransientSyncedPlayerStore
 import dev.zoenetic.outsider.survival.platform.Widener
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.vitals.Vitals
+import dev.zoenetic.outsider.survival.work.WorkState
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 import net.minecraft.SharedConstants
 import net.minecraft.core.BlockPos
@@ -167,6 +169,20 @@ object TestPlatform : Platform {
 
             override fun set(player: Player, value: Vitals) {
                 byPlayer[player] = value
+            }
+        }
+
+    override val workState: TransientSyncedPlayerStore<WorkState> =
+        object : TransientSyncedPlayerStore<WorkState> {
+            private val byPlayer = IdentityHashMap<Player, WorkState>()
+            override fun get(player: Player): WorkState? = byPlayer[player]
+
+            override fun set(player: Player, value: WorkState) {
+                byPlayer[player] = value
+            }
+
+            override fun remove(player: Player) {
+                byPlayer.remove(player)
             }
         }
 }

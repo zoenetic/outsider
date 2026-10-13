@@ -2,6 +2,7 @@ package dev.zoenetic.outsider.survival.platform
 
 import dev.zoenetic.outsider.survival.conditions.PlayerConditions
 import dev.zoenetic.outsider.survival.vitals.Vitals
+import dev.zoenetic.outsider.survival.work.WorkState
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap
 
 public interface Platform {
@@ -15,4 +16,5 @@ public interface Platform {
     public val emitters: ChunkStore<Long2LongOpenHashMap>
     public val playerConditions: PlayerStore<PlayerConditions>
     public val vitals: SyncedPlayerStore<Vitals>
+    public val workState: TransientSyncedPlayerStore<WorkState>
 }

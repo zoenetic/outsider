@@ -1,12 +1,13 @@
-package dev.zoenetic.outsider.survival.work.tools
+package dev.zoenetic.outsider.survival.work
 
 import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.player.Input
 
 public object WorkingModeInput {
     @JvmStatic
-    public fun isLocked(): Boolean =
-        Minecraft.getInstance().player?.workingBlockTargetOrNull() != null
+    public fun isLocked(): Boolean = Minecraft.getInstance().player.let {
+        it != null && WorkState.get(it) != null
+    }
 
     @JvmStatic
     public fun lock(input: Input): Input =

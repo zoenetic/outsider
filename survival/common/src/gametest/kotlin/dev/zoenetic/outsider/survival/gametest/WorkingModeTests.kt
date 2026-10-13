@@ -2,7 +2,7 @@ package dev.zoenetic.outsider.survival.gametest
 
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
-import dev.zoenetic.outsider.survival.work.tools.workingBlockTargetOrNull
+import dev.zoenetic.outsider.survival.work.workingBlockTargetOrNull
 import net.minecraft.commands.arguments.EntityAnchorArgument
 import net.minecraft.core.BlockPos
 import net.minecraft.gametest.framework.GameTestHelper
