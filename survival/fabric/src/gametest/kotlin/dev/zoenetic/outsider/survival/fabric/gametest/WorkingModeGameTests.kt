@@ -7,16 +7,12 @@ import net.minecraft.gametest.framework.GameTestHelper
 class WorkingModeGameTests {
 
     @GameTest
-    fun crouchingWithTheDrillAtAnUnlitCampfireIsReady(helper: GameTestHelper): Unit =
-        WorkingModeTests.crouchingWithTheDrillAtAnUnlitCampfireIsReady(helper)
+    fun theDrillAtAnUnlitCampfireIsReady(helper: GameTestHelper): Unit =
+        WorkingModeTests.theDrillAtAnUnlitCampfireIsReady(helper)
 
     @GameTest
     fun theDrillInTheOffHandCounts(helper: GameTestHelper): Unit =
         WorkingModeTests.theDrillInTheOffHandCounts(helper)
-
-    @GameTest
-    fun standingIsNotReady(helper: GameTestHelper): Unit =
-        WorkingModeTests.standingIsNotReady(helper)
 
     @GameTest
     fun withoutAWorkingToolIsNotReady(helper: GameTestHelper): Unit =

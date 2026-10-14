@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Input
 public object WorkingModeInput {
     @JvmStatic
     public fun isLocked(): Boolean = Minecraft.getInstance().player.let {
-        it != null && WorkState.get(it) != null
+        it != null && Work.get(it) != null
     }
 
     @JvmStatic

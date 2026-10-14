@@ -13,6 +13,7 @@ import dev.zoenetic.outsider.survival.vitals.BreathParticles
 import dev.zoenetic.outsider.survival.vitals.Exertion
 import dev.zoenetic.outsider.survival.vitals.SpeedPenalty
 import dev.zoenetic.outsider.survival.vitals.Vitals
+import dev.zoenetic.outsider.survival.work.Work
 import net.minecraft.server.level.ServerLevel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -47,6 +48,7 @@ public object Survival {
     public fun tick(level: ServerLevel) {
         PlayerConditions.tick(level)
         Vitals.tick(level)
+        Work.tick(level)
         Exertion.tick(level)
         SpeedPenalty.tick(level)
         BreathParticles.tick(level)

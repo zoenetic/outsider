@@ -52,8 +52,7 @@ public data class HeartbeatSounds(var lastPlayer: LocalPlayer?, var lastHeartbea
     }
 
     public companion object {
-        public val HEARTBEAT: HeartbeatSounds = init()
-
+        public val HEARTBEAT_SOUNDS: HeartbeatSounds = init()
         public fun init(): HeartbeatSounds = HeartbeatSounds(
             null,
             null,

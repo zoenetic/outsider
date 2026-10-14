@@ -2,7 +2,6 @@ package dev.zoenetic.outsider.survival.neoforge
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.SurvivalClient
-import dev.zoenetic.outsider.survival.vitals.client.HeartbeatSounds.Companion.HEARTBEAT
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
@@ -22,8 +21,8 @@ public class NeoForgeSurvivalClient(modBus: IEventBus) {
 
         val clientBus = NeoForge.EVENT_BUS
 
-        clientBus.addListener(ClientTickEvent.Post::class.java) { _ ->
-            HEARTBEAT.tick()
+        clientBus.addListener(ClientTickEvent.Post::class.java) { event ->
+            SurvivalClient.tick()
         }
     }
 }

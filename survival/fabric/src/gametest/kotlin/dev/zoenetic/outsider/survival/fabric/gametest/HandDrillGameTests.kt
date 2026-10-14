@@ -7,30 +7,34 @@ import net.minecraft.gametest.framework.GameTestHelper
 class HandDrillGameTests {
 
     @GameTest
-    fun drillingLightsTheCampfireAtTheRolledTime(helper: GameTestHelper): Unit =
-        HandDrillTests.drillingLightsTheCampfireAtTheRolledTime(helper)
+    fun usingTheDrillStartsWorkOnTheCampfire(helper: GameTestHelper): Unit =
+        HandDrillTests.usingTheDrillStartsWorkOnTheCampfire(helper)
 
-    @GameTest
+    @GameTest(maxTicks = 300)
+    fun drillingLightsTheCampfireAfterTheRolledTime(helper: GameTestHelper): Unit =
+        HandDrillTests.drillingLightsTheCampfireAfterTheRolledTime(helper)
+
+    @GameTest(maxTicks = 300)
     fun drillingWearsTheDrillOncePerSecond(helper: GameTestHelper): Unit =
         HandDrillTests.drillingWearsTheDrillOncePerSecond(helper)
 
     @GameTest
-    fun lookingAwayStopsDrillingWithoutLighting(helper: GameTestHelper): Unit =
-        HandDrillTests.lookingAwayStopsDrillingWithoutLighting(helper)
+    fun releasingPausesDrilling(helper: GameTestHelper): Unit =
+        HandDrillTests.releasingPausesDrilling(helper)
+
+    @GameTest
+    fun usingTheDrillAgainResumesDrilling(helper: GameTestHelper): Unit =
+        HandDrillTests.usingTheDrillAgainResumesDrilling(helper)
+
+    @GameTest
+    fun lookingAwayEndsWorkWithoutLighting(helper: GameTestHelper): Unit =
+        HandDrillTests.lookingAwayEndsWorkWithoutLighting(helper)
+
+    @GameTest
+    fun puttingTheDrillAwayEndsWork(helper: GameTestHelper): Unit =
+        HandDrillTests.puttingTheDrillAwayEndsWork(helper)
 
     @GameTest
     fun aLitCampfireCantBeDrilled(helper: GameTestHelper): Unit =
         HandDrillTests.aLitCampfireCantBeDrilled(helper)
-
-    @GameTest
-    fun standingCantStartDrilling(helper: GameTestHelper): Unit =
-        HandDrillTests.standingCantStartDrilling(helper)
-
-    @GameTest
-    fun standingUpStopsDrillingWithoutLighting(helper: GameTestHelper): Unit =
-        HandDrillTests.standingUpStopsDrillingWithoutLighting(helper)
-
-    @GameTest
-    fun reachingTheLimitKeepsTheDrill(helper: GameTestHelper): Unit =
-        HandDrillTests.reachingTheLimitKeepsTheDrill(helper)
 }

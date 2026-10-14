@@ -8,20 +8,21 @@ import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 
-public fun Player.workingBlockTargetOrNull(tool: WorkingToolItem): WorkingBlockTarget? {
+public fun Player.validWorkingBlockTargetOrNull(tool: WorkingToolItem): WorkingBlockTarget? {
     val hit = ProjectileUtil.getHitResultOnViewVector(
         this,
         EntitySelector.CAN_BE_PICKED,
         blockInteractionRange(),
     ) as? BlockHitResult ?: return null
     if (hit.type != HitResult.Type.BLOCK) return null
-    val state = level().getBlockState(hit.blockPos)
-    return if (tool.canWorkOn(state)) WorkingBlockTarget(hit.blockPos, state) else null
+    val blockState = level().getBlockState(hit.blockPos)
+    if (!tool.isValidTarget(hit.blockPos, blockState)) return null
+    return WorkingBlockTarget(hit.blockPos, blockState)
 }
 
-public fun Player.workingBlockTargetOrNull(): WorkingBlockTarget? {
+public fun Player.validWorkingBlockTargetOrNull(): WorkingBlockTarget? {
     val tool =
         mainHandItem.asWorkingToolItemOrNull() ?: offhandItem.asWorkingToolItemOrNull()
             ?: return null
-    return workingBlockTargetOrNull(tool)
+    return validWorkingBlockTargetOrNull(tool)
 }
