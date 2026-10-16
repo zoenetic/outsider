@@ -1,26 +1,36 @@
 package dev.zoenetic.outsider.survival.work
 
-import dev.zoenetic.outsider.survival.fire.LightingFireWithDrillState
+import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState
 import net.minecraft.core.BlockPos
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.world.InteractionHand
 
 public interface WorkState {
 
     public val kind: Kind
     public val blockPos: BlockPos
-    public val hand: InteractionHand
     public val phase: Phase
 
-    public fun isSameWorkAs(other: WorkState): Boolean =
-        kind == other.kind && blockPos == other.blockPos && hand == other.hand
+    public fun tick(context: WorkContext): WorkState?
+    public fun tickEffects(context: WorkEffectsContext)
+
+    public fun isSameWorkAs(other: WorkState?): Boolean =
+        other != null && kind == other.kind && blockPos == other.blockPos
+
+    public interface Phase {
+        public fun tick(context: WorkContext, work: WorkState): Phase?
+        public fun tickEffects(context: WorkEffectsContext, blockPos: BlockPos)
+    }
 
     public enum class Kind(
         public val codec: () -> StreamCodec<RegistryFriendlyByteBuf, out WorkState>,
     ) {
-        LIGHTING_FIRE_WITH_DRILL({ LightingFireWithDrillState.STREAM_CODEC }),
+        LIGHTING_FIRE_WITH_DRILL(
+            {
+                LightingFireState.STREAM_CODEC
+            },
+        ),
         ;
 
         public companion object {
@@ -37,6 +47,4 @@ public interface WorkState {
                 it.codec()
             }
     }
-
-    public interface Phase
 }

@@ -11,8 +11,8 @@ class HandDrillGameTests {
         HandDrillTests.usingTheDrillStartsWorkOnTheCampfire(helper)
 
     @GameTest(maxTicks = 300)
-    fun drillingLightsTheCampfireAfterTheRolledTime(helper: GameTestHelper): Unit =
-        HandDrillTests.drillingLightsTheCampfireAfterTheRolledTime(helper)
+    fun drillingFormsAnEmberOnceTheDustIsDrilled(helper: GameTestHelper): Unit =
+        HandDrillTests.drillingFormsAnEmberOnceTheDustIsDrilled(helper)
 
     @GameTest(maxTicks = 300)
     fun drillingWearsTheDrillOncePerSecond(helper: GameTestHelper): Unit =
@@ -22,13 +22,17 @@ class HandDrillGameTests {
     fun releasingPausesDrilling(helper: GameTestHelper): Unit =
         HandDrillTests.releasingPausesDrilling(helper)
 
+    @GameTest(maxTicks = 30)
+    fun releasingBanksTheDrillingSoFar(helper: GameTestHelper): Unit =
+        HandDrillTests.releasingBanksTheDrillingSoFar(helper)
+
     @GameTest
     fun usingTheDrillAgainResumesDrilling(helper: GameTestHelper): Unit =
         HandDrillTests.usingTheDrillAgainResumesDrilling(helper)
 
     @GameTest
-    fun lookingAwayEndsWorkWithoutLighting(helper: GameTestHelper): Unit =
-        HandDrillTests.lookingAwayEndsWorkWithoutLighting(helper)
+    fun lookingAwayKeepsWorking(helper: GameTestHelper): Unit =
+        HandDrillTests.lookingAwayKeepsWorking(helper)
 
     @GameTest
     fun puttingTheDrillAwayEndsWork(helper: GameTestHelper): Unit =

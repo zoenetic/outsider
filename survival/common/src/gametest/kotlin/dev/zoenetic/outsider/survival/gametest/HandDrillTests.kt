@@ -1,10 +1,11 @@
 package dev.zoenetic.outsider.survival.gametest
 
-import dev.zoenetic.outsider.survival.fire.LightingFireWithDrillState
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import dev.zoenetic.outsider.survival.units.Duration
+import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.work.Work
+import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState
 import net.minecraft.commands.arguments.EntityAnchorArgument
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -21,8 +22,8 @@ import net.minecraft.world.phys.Vec3
 
 private const val SHORT_TICKS = 20
 
-// Longest roll (160 + 60) plus the ember phase, with room to spare.
-private const val LIGHTING_TICKS = 300
+// Longest dust roll (200 + 50), with room to spare.
+private const val EMBER_TICKS = 300
 
 // A real in-level server player, so the server's own tick drives Work.tick exactly once a tick.
 object HandDrillTests {
@@ -65,20 +66,16 @@ object HandDrillTests {
         return DrillUse(player, drill, useDrill(player, drill))
     }
 
-    private fun workOf(player: ServerPlayer): LightingFireWithDrillState? =
-        Work.get(player) as? LightingFireWithDrillState
+    private fun workOf(player: ServerPlayer): LightingFireState? =
+        Work.get(player) as? LightingFireState
 
-    private fun GameTestHelper.drillingPhase(
-        player: ServerPlayer,
-    ): LightingFireWithDrillState.Drilling {
+    private fun GameTestHelper.drillingPhase(player: ServerPlayer): LightingFireState.Drilling {
         val work = workOf(player) ?: throw assertionException("the player isn't working")
-        return work.phase as? LightingFireWithDrillState.Drilling
+        return work.phase as? LightingFireState.Drilling
             ?: throw assertionException("expected the drilling phase, found ${work.phase}")
     }
 
-    private fun GameTestHelper.requireStarted(
-        drilling: DrillUse,
-    ): LightingFireWithDrillState.Drilling {
+    private fun GameTestHelper.requireStarted(drilling: DrillUse): LightingFireState.Drilling {
         ensure(drilling.result == InteractionResult.CONSUME) {
             "using the drill on an unlit campfire returned ${drilling.result}"
         }
@@ -94,35 +91,48 @@ object HandDrillTests {
         helper.ensure(work.blockPos == helper.absolutePos(CAMPFIRE_POS)) {
             "work started on ${work.blockPos}, not the campfire"
         }
-        helper.ensure(work.hand == InteractionHand.MAIN_HAND) { "work recorded the ${work.hand}" }
-        helper.ensure(phase.elapsed == Duration.NONE) { "work started at ${phase.elapsed.value}" }
+        helper.ensure(phase.hand == InteractionHand.MAIN_HAND) { "work recorded the ${phase.hand}" }
+        helper.ensure(phase.dust == Duration.NONE) { "work started at ${phase.dust.value} dust" }
+        helper.ensure(!phase.held) { "work started already held, before any tick" }
         helper.succeed()
     }
 
-    fun drillingLightsTheCampfireAfterTheRolledTime(helper: GameTestHelper) {
+    private fun GameTestHelper.requireEmber(drilling: DrillUse) {
+        val work = workOf(drilling.player)
+            ?: throw assertionException("stopped working before an ember formed")
+        ensure(work.phase is LightingFireState.NursingEmbers) { "no ember yet" }
+    }
+
+    // Blowing isn't implemented yet, so end the work once the ember forms.
+    fun drillingFormsAnEmberOnceTheDustIsDrilled(helper: GameTestHelper) {
         helper.campfire(lit = false)
         val drilling = helper.startDrilling()
-        val required = helper.requireStarted(drilling).required.value
+        val required = helper.requireStarted(drilling).dustRequired.value
         val startedAt = helper.tick
         helper.succeedWhen {
-            helper.ensure(helper.isLit()) { "not lit yet" }
+            helper.requireEmber(drilling)
             val took = helper.tick - startedAt
-            helper.ensure(took >= required) { "lit after $took ticks, before the rolled $required" }
-            helper.ensure(workOf(drilling.player) == null) { "still working once lit" }
+            helper.ensure(took >= required) {
+                "ember after $took ticks, before the rolled $required"
+            }
+            helper.ensure(!drilling.player.isUsingItem) { "still drilling once the ember formed" }
+            helper.ensure(!helper.isLit()) { "lit without blowing on the ember" }
+            Work.end(drilling.player)
         }
     }
 
     fun drillingWearsTheDrillOncePerSecond(helper: GameTestHelper) {
         helper.campfire(lit = false)
         val drilling = helper.startDrilling()
-        val required = helper.requireStarted(drilling).required.value
+        val required = helper.requireStarted(drilling).dustRequired.value
         helper.succeedWhen {
-            helper.ensure(helper.isLit()) { "not lit yet" }
+            helper.requireEmber(drilling)
             val expected = (required / 20).toInt()
             helper.ensure(drilling.drill.damageValue == expected) {
                 "drill took ${drilling.drill.damageValue} damage over $required ticks, " +
                     "expected $expected"
             }
+            Work.end(drilling.player)
         }
     }
 
@@ -133,11 +143,31 @@ object HandDrillTests {
         drilling.player.releaseUsingItem()
         helper.runAfterDelay(10) {
             val phase = helper.drillingPhase(drilling.player)
-            helper.ensure(phase.elapsed == Duration.NONE) {
-                "drilling advanced to ${phase.elapsed.value} without the drill in use"
+            helper.ensure(phase.dust == Duration.NONE && !phase.held) {
+                "drilling advanced to ${phase.dust.value} without the drill in use"
             }
             helper.ensure(drilling.drill.damageValue == 0) { "the drill wore while paused" }
             helper.ensure(!helper.isLit()) { "lit while paused" }
+            helper.succeed()
+        }
+    }
+
+    fun releasingBanksTheDrillingSoFar(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val drilling = helper.startDrilling()
+        val _ = helper.requireStarted(drilling)
+        helper.runAfterDelay(10) { drilling.player.releaseUsingItem() }
+        var banked: LightingFireState.Drilling? = null
+        helper.runAfterDelay(12) {
+            val phase = helper.drillingPhase(drilling.player)
+            helper.ensure(!phase.held) { "still held after releasing" }
+            helper.ensure(phase.dust > Duration.NONE) { "releasing banked no dust" }
+            helper.ensure(phase.heat > Heat(20.0)) { "releasing banked no heat" }
+            banked = phase
+        }
+        helper.runAfterDelay(20) {
+            val phase = helper.drillingPhase(drilling.player)
+            helper.ensure(phase == banked) { "resting changed $banked to $phase" }
             helper.succeed()
         }
     }
@@ -158,15 +188,14 @@ object HandDrillTests {
         }
     }
 
-    fun lookingAwayEndsWorkWithoutLighting(helper: GameTestHelper) {
+    fun lookingAwayKeepsWorking(helper: GameTestHelper) {
         helper.campfire(lit = false)
         val drilling = helper.startDrilling()
         val _ = helper.requireStarted(drilling)
         val player = drilling.player
         player.lookAt(EntityAnchorArgument.Anchor.EYES, player.eyePosition.add(0.0, 10.0, 0.0))
         helper.runAfterDelay(2) {
-            helper.ensure(workOf(player) == null) { "still working after looking away" }
-            helper.ensure(!helper.isLit()) { "lit after looking away" }
+            helper.ensure(workOf(player) != null) { "stopped working after looking away" }
             helper.succeed()
         }
     }
@@ -202,26 +231,27 @@ object HandDrillTests {
             ::usingTheDrillStartsWorkOnTheCampfire,
         ),
         SurvivalTest(
-            "drilling_lights_the_campfire_after_the_rolled_time",
-            LIGHTING_TICKS,
-            ::drillingLightsTheCampfireAfterTheRolledTime,
+            "drilling_forms_an_ember_once_the_dust_is_drilled",
+            EMBER_TICKS,
+            ::drillingFormsAnEmberOnceTheDustIsDrilled,
         ),
         SurvivalTest(
             "drilling_wears_the_drill_once_per_second",
-            LIGHTING_TICKS,
+            EMBER_TICKS,
             ::drillingWearsTheDrillOncePerSecond,
         ),
         SurvivalTest("releasing_pauses_drilling", SHORT_TICKS, ::releasingPausesDrilling),
+        SurvivalTest(
+            "releasing_banks_the_drilling_so_far",
+            30,
+            ::releasingBanksTheDrillingSoFar,
+        ),
         SurvivalTest(
             "using_the_drill_again_resumes_drilling",
             SHORT_TICKS,
             ::usingTheDrillAgainResumesDrilling,
         ),
-        SurvivalTest(
-            "looking_away_ends_work_without_lighting",
-            SHORT_TICKS,
-            ::lookingAwayEndsWorkWithoutLighting,
-        ),
+        SurvivalTest("looking_away_keeps_working", SHORT_TICKS, ::lookingAwayKeepsWorking),
         SurvivalTest(
             "putting_the_drill_away_ends_work",
             SHORT_TICKS,

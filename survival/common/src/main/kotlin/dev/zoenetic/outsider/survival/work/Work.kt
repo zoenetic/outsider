@@ -1,8 +1,7 @@
 package dev.zoenetic.outsider.survival.work
 
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.work.tools.WorkingToolItem
-import dev.zoenetic.outsider.survival.work.tools.WorkingToolItem.Companion.asWorkingToolItemOrNull
+import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
@@ -23,12 +22,13 @@ public object Work {
     }
 
     public fun tick(level: Level, player: Player) {
+        val now = Time(level.gameTime)
         val stored = get(player) ?: return
-        val tool = player.activeToolOrNull(stored)
-        tool?.tickWorkEffects(player, stored)
+        val effectsContext = WorkEffectsContext(level, player, now)
+        stored.tickEffects(effectsContext)
         if (level !is ServerLevel || player !is ServerPlayer) return
-        if (tool == null) return end(player)
-        val next = tool.tickWork(level, player, stored) ?: return end(player)
+        val context = WorkContext.of(level, player)
+        val next = stored.tick(context) ?: return end(player)
         if (next != stored) set(player, next)
     }
 
@@ -36,10 +36,4 @@ public object Work {
 
     private fun set(player: Player, state: WorkState): Unit =
         Survival.platform.workState.set(player, state)
-
-    private fun Player.activeToolOrNull(stored: WorkState): WorkingToolItem? {
-        val tool = getItemInHand(stored.hand).asWorkingToolItemOrNull() ?: return null
-        val target = validWorkingBlockTargetOrNull(tool) ?: return null
-        return if (target.blockPos == stored.blockPos) tool else null
-    }
 }
