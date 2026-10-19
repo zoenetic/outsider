@@ -1,7 +1,7 @@
 package dev.zoenetic.outsider.survival.drill.handdrill.client
 
 import com.mojang.blaze3d.vertex.PoseStack
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.client.HandDrillAnimation
+import dev.zoenetic.outsider.survival.tools.drill.handdrill.client.HandDrillAnimation
 import net.minecraft.client.model.geom.ModelPart
 import net.minecraft.world.entity.HumanoidArm
 import org.joml.Vector3f

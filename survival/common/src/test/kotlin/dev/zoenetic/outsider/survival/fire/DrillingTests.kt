@@ -1,10 +1,10 @@
-package dev.zoenetic.outsider.survival.work.tools.drill.handdrill
+package dev.zoenetic.outsider.survival.fire
 
+import dev.zoenetic.outsider.survival.fire.LightingFireState.Drilling
+import dev.zoenetic.outsider.survival.tools.drill.handdrill.DrillingConditions
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState.Drilling
-import net.minecraft.world.InteractionHand
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,12 +20,11 @@ class DrillingTests {
     private val recordedAt = Time(1_000)
 
     private fun drilling(held: Boolean, dust: Long = 0, heat: Double = 20.0) = Drilling(
-        InteractionHand.MAIN_HAND,
-        Duration(dust),
-        Duration(200),
-        Heat(heat),
-        held,
-        recordedAt,
+        dust = Duration(dust),
+        dustRequired = Duration(200),
+        heat = Heat(heat),
+        held = held,
+        timestamp = recordedAt,
     )
 
     private fun later(ticks: Long) = recordedAt + Duration(ticks)

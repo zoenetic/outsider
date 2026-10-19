@@ -51,6 +51,10 @@ run = "./gradlew build"
 description = "JUnit tests"
 run = "./gradlew test"
 
+[tasks.check]
+description = "JUnit tests and gametests on both loaders, all run even if one fails"
+run = "./gradlew --continue test :survival:fabric:runGametest :survival:neoforge:runGametest"
+
 [tasks.gametest]
 description = "Gametests on both loaders"
 run = "./gradlew --continue :survival:fabric:runGametest :survival:neoforge:runGametest"

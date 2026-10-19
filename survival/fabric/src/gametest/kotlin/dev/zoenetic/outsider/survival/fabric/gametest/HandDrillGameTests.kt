@@ -10,11 +10,31 @@ class HandDrillGameTests {
     fun usingTheDrillStartsWorkOnTheCampfire(helper: GameTestHelper): Unit =
         HandDrillTests.usingTheDrillStartsWorkOnTheCampfire(helper)
 
-    @GameTest(maxTicks = 300)
-    fun drillingFormsAnEmberOnceTheDustIsDrilled(helper: GameTestHelper): Unit =
-        HandDrillTests.drillingFormsAnEmberOnceTheDustIsDrilled(helper)
+    @GameTest
+    fun aDrillInTheOffHandStartsWork(helper: GameTestHelper): Unit =
+        HandDrillTests.aDrillInTheOffHandStartsWork(helper)
 
-    @GameTest(maxTicks = 300)
+    @GameTest
+    fun aLitCampfireCantBeDrilled(helper: GameTestHelper): Unit =
+        HandDrillTests.aLitCampfireCantBeDrilled(helper)
+
+    @GameTest
+    fun tinderCantStartWork(helper: GameTestHelper): Unit =
+        HandDrillTests.tinderCantStartWork(helper)
+
+    @GameTest
+    fun tinderDoesNothingWhileDrilling(helper: GameTestHelper): Unit =
+        HandDrillTests.tinderDoesNothingWhileDrilling(helper)
+
+    @GameTest
+    fun usingTheDrillOnAnotherCampfireDoesNothing(helper: GameTestHelper): Unit =
+        HandDrillTests.usingTheDrillOnAnotherCampfireDoesNothing(helper)
+
+    @GameTest(maxTicks = 900)
+    fun drillingFormsAnEmberInOneHold(helper: GameTestHelper): Unit =
+        HandDrillTests.drillingFormsAnEmberInOneHold(helper)
+
+    @GameTest(maxTicks = 900)
     fun drillingWearsTheDrillOncePerSecond(helper: GameTestHelper): Unit =
         HandDrillTests.drillingWearsTheDrillOncePerSecond(helper)
 
@@ -35,10 +55,34 @@ class HandDrillGameTests {
         HandDrillTests.lookingAwayKeepsWorking(helper)
 
     @GameTest
-    fun puttingTheDrillAwayEndsWork(helper: GameTestHelper): Unit =
-        HandDrillTests.puttingTheDrillAwayEndsWork(helper)
+    fun lookingAwayPausesDrilling(helper: GameTestHelper): Unit =
+        HandDrillTests.lookingAwayPausesDrilling(helper)
+
+    @GameTest(maxTicks = 60)
+    fun lookingAwayMidDrillBanksOnlyTheDrillingDone(helper: GameTestHelper): Unit =
+        HandDrillTests.lookingAwayMidDrillBanksOnlyTheDrillingDone(helper)
+
+    @GameTest(maxTicks = 30)
+    fun lookingAwayRestsWithoutChangingTheState(helper: GameTestHelper): Unit =
+        HandDrillTests.lookingAwayRestsWithoutChangingTheState(helper)
 
     @GameTest
-    fun aLitCampfireCantBeDrilled(helper: GameTestHelper): Unit =
-        HandDrillTests.aLitCampfireCantBeDrilled(helper)
+    fun puttingTheDrillAwayRestsWithoutEndingWork(helper: GameTestHelper): Unit =
+        HandDrillTests.puttingTheDrillAwayRestsWithoutEndingWork(helper)
+
+    @GameTest(maxTicks = 900)
+    fun anEmberLeftAloneGoesBackToDrilling(helper: GameTestHelper): Unit =
+        HandDrillTests.anEmberLeftAloneGoesBackToDrilling(helper)
+
+    @GameTest(maxTicks = 900)
+    fun drillInTheMainHandAndTinderInTheOffHandLightTheCampfire(helper: GameTestHelper): Unit =
+        HandDrillTests.drillInTheMainHandAndTinderInTheOffHandLightTheCampfire(helper)
+
+    @GameTest(maxTicks = 900)
+    fun tinderInTheMainHandAndDrillInTheOffHandLightTheCampfire(helper: GameTestHelper): Unit =
+        HandDrillTests.tinderInTheMainHandAndDrillInTheOffHandLightTheCampfire(helper)
+
+    @GameTest(maxTicks = 900)
+    fun swappingOneHandFromDrillToTinderLightsTheCampfire(helper: GameTestHelper): Unit =
+        HandDrillTests.swappingOneHandFromDrillToTinderLightsTheCampfire(helper)
 }

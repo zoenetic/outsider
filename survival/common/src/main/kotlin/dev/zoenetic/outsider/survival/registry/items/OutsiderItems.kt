@@ -3,7 +3,8 @@ package dev.zoenetic.outsider.survival.registry.items
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.platform.getValue
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.HandDrillItem
+import dev.zoenetic.outsider.survival.tools.TinderItem
+import dev.zoenetic.outsider.survival.tools.drill.handdrill.HandDrillItem
 import net.minecraft.core.Direction
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.Item
@@ -29,12 +30,19 @@ public object OutsiderItems {
     public val HAND_DRILL: Item by Survival.platform.register.item(
         "hand_drill",
         ::HandDrillItem,
-        {
-            Item.Properties()
-                .durability(HandDrillItem.USES)
-                .component(DataComponents.USE_EFFECTS, UseEffects(false, true, 0F))
-        },
-    )
+    ) {
+        Item.Properties()
+            .durability(HandDrillItem.USES)
+            .component(DataComponents.USE_EFFECTS, UseEffects(false, true, 0F))
+    }
+
+    public val TINDER: Item by Survival.platform.register.item(
+        "tinder",
+        ::TinderItem,
+    ) {
+        Item.Properties()
+            .durability(1)
+    }
 
     public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(
         "torch",

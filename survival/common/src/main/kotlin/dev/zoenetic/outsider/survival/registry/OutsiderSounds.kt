@@ -11,6 +11,11 @@ public object OutsiderSounds {
             SoundEvent.createFixedRangeEvent(it, 0F)
         }
 
+    public val BLOWING: SoundEvent by
+        Survival.platform.register.sound("blowing") {
+            SoundEvent.createVariableRangeEvent(it)
+        }
+
     public val USE_DRILL_SOUND: SoundEvent by
         Survival.platform.register.sound("use_drill_sound") {
             SoundEvent.createVariableRangeEvent(it)

@@ -232,5 +232,5 @@ object SurvivalTests {
             ::theCampfireIsInTheCampfiresTag,
         ),
     ) + TorchLootTests.ALL + TorchLightTests.ALL + LooseStoneTests.ALL + RefuelTests.ALL +
-        HandDrillTests.ALL + WorkingModeTests.ALL
+        HandDrillTests.ALL
 }

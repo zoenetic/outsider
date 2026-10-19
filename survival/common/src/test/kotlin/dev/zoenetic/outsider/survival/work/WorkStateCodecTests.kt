@@ -1,78 +1,85 @@
 package dev.zoenetic.outsider.survival.work
 
+import dev.zoenetic.outsider.survival.Survival
+import dev.zoenetic.outsider.survival.fire.LightingFireState
+import dev.zoenetic.outsider.survival.fire.LightingFireState.Drilling
+import dev.zoenetic.outsider.survival.fire.LightingFireState.NursingEmbers
+import dev.zoenetic.outsider.survival.fire.LightingFireState.Phase
+import dev.zoenetic.outsider.survival.registry.OutsiderWork
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState.NursingEmbers
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState.Drilling
-import dev.zoenetic.outsider.survival.work.tools.drill.handdrill.LightingFireState.Phase
 import io.netty.buffer.Unpooled
+import io.netty.handler.codec.DecoderException
 import net.minecraft.core.BlockPos
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.RegistryFriendlyByteBuf
-import net.minecraft.world.InteractionHand
+import net.minecraft.resources.Identifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertSame
 
 class WorkStateCodecTests {
 
+    private fun buffer() = RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY)
+
     private fun roundTrip(state: WorkState): WorkState {
-        val buffer = RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY)
+        val buffer = buffer()
         WorkState.STREAM_CODEC.encode(buffer, state)
         val decoded = WorkState.STREAM_CODEC.decode(buffer)
         assertEquals(0, buffer.readableBytes(), "bytes left over after decoding $state")
         return decoded
     }
 
-    private val drillingPhases: Map<Phase.Kind, Phase> = mapOf(
+    private val lightingFirePhases: Map<Phase.Kind, Phase> = mapOf(
         Phase.Kind.DRILLING to Drilling(
-            InteractionHand.OFF_HAND,
-            Duration(35),
-            Duration(160),
-            Heat(212.5),
-            true,
-            Time(9_000),
+            dust = Duration(35),
+            dustRequired = Duration(160),
+            heat = Heat(212.5),
+            held = true,
+            timestamp = Time(9_000),
         ),
         Phase.Kind.NURSING_EMBERS to NursingEmbers(
-            Time(123_456),
-            Duration(7),
-            Duration(20),
-            true,
-            Time(123_440),
+            diesAt = Time(123_456),
+            blown = Duration(7),
+            blownRequired = Duration(20),
+            held = true,
+            timestamp = Time(123_440),
         ),
     )
 
     @Test
-    fun `lighting a fire with a drill survives a round trip in every phase`() {
-        assertEquals(Phase.Kind.entries.toSet(), drillingPhases.keys, "a phase has no example here")
-        for ((kind, phase) in drillingPhases) {
+    fun `lighting a fire survives a round trip in every phase`() {
+        assertEquals(Phase.Kind.entries.toSet(), lightingFirePhases.keys, "a phase has no example here")
+        for ((kind, phase) in lightingFirePhases) {
             assertEquals(kind, phase.kind, "${phase::class.simpleName} reports the wrong kind")
-            val state =
-                LightingFireState(BlockPos(12, -40, 7), phase)
-            assertEquals(state, roundTrip(state))
+            val state = LightingFireState(BlockPos(12, -40, 7), phase)
+            val decoded = roundTrip(state)
+            assertEquals(state, decoded)
+            assertSame(state.work, decoded.work)
         }
     }
 
     @Test
-    fun `every kind decodes to its own type`() {
-        val examples: Map<WorkState.Kind, WorkState> = mapOf(
-            WorkState.Kind.LIGHTING_FIRE_WITH_DRILL to LightingFireState(
-                BlockPos.ZERO,
-                Drilling(
-                    InteractionHand.MAIN_HAND,
-                    Duration.NONE,
-                    Duration(1),
-                    Heat(20.0),
-                    false,
-                    Time(0),
-                ),
-            ),
+    fun `a registered work is one instance`() {
+        assertSame(OutsiderWork.LIGHTING_FIRE, OutsiderWork.LIGHTING_FIRE)
+    }
+
+    @Test
+    fun `a work decodes to the registered instance`() {
+        val buffer = buffer()
+        OutsiderWork.STREAM_CODEC.encode(buffer, OutsiderWork.LIGHTING_FIRE)
+        assertSame(OutsiderWork.LIGHTING_FIRE, OutsiderWork.STREAM_CODEC.decode(buffer))
+    }
+
+    @Test
+    fun `an unknown work fails to decode`() {
+        val buffer = buffer()
+        Identifier.STREAM_CODEC.encode(
+            buffer,
+            Identifier.fromNamespaceAndPath(Survival.NAMESPACE, "no_such_work"),
         )
-        assertEquals(WorkState.Kind.entries.toSet(), examples.keys, "a kind has no example here")
-        for ((kind, state) in examples) {
-            assertEquals(kind, state.kind, "${state::class.simpleName} reports the wrong kind")
-            assertEquals(state, roundTrip(state))
-        }
+        assertFailsWith<DecoderException> { OutsiderWork.STREAM_CODEC.decode(buffer) }
     }
 }

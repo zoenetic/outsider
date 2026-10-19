@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.work.tools.drill.handdrill
+package dev.zoenetic.outsider.survival.tools.drill.handdrill
 
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
