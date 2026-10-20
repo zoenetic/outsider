@@ -85,4 +85,20 @@ class HandDrillGameTests {
     @GameTest(maxTicks = 900)
     fun swappingOneHandFromDrillToTinderLightsTheCampfire(helper: GameTestHelper): Unit =
         HandDrillTests.swappingOneHandFromDrillToTinderLightsTheCampfire(helper)
+
+    @GameTest
+    fun closingWorkEndsIt(helper: GameTestHelper): Unit =
+        HandDrillTests.closingWorkEndsIt(helper)
+
+    @GameTest
+    fun closingWorkWithoutWorkDoesNothing(helper: GameTestHelper): Unit =
+        HandDrillTests.closingWorkWithoutWorkDoesNothing(helper)
+
+    @GameTest
+    fun theDrillStartsFreshWorkAfterClosing(helper: GameTestHelper): Unit =
+        HandDrillTests.theDrillStartsFreshWorkAfterClosing(helper)
+
+    @GameTest(maxTicks = 900)
+    fun closingWorkWhileNursingTheEmberLeavesTheCampfireUnlit(helper: GameTestHelper): Unit =
+        HandDrillTests.closingWorkWhileNursingTheEmberLeavesTheCampfireUnlit(helper)
 }

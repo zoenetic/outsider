@@ -8,6 +8,8 @@ import dev.zoenetic.outsider.survival.debug.setBodyTemperatureCommand
 import dev.zoenetic.outsider.survival.debug.watchCommand
 import dev.zoenetic.outsider.survival.emission.EmitterIndex.reconcileEmitters
 import dev.zoenetic.outsider.survival.vitals.Exertion
+import dev.zoenetic.outsider.survival.work.Work
+import dev.zoenetic.outsider.survival.work.WorkClosePacketPayload
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.bus.api.IEventBus
@@ -20,6 +22,7 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent
 import net.neoforged.neoforge.event.server.ServerStoppedEvent
 import net.neoforged.neoforge.event.tick.LevelTickEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 
 @Mod(Survival.MOD_ID)
 public class NeoForgeSurvival(modBus: IEventBus) {
@@ -37,6 +40,17 @@ public class NeoForgeSurvival(modBus: IEventBus) {
                     .then(watchCommand),
 
             )
+        }
+
+        modBus.addListener(RegisterPayloadHandlersEvent::class.java) { event ->
+            event.registrar("1")
+                .playToServer(
+                    WorkClosePacketPayload.TYPE,
+                    WorkClosePacketPayload.STREAM_CODEC,
+                ) { payload, context ->
+                    val player = context.player() as? ServerPlayer ?: return@playToServer
+                    Work.end(player)
+                }
         }
 
         eventBus.addListener(ServerAboutToStartEvent::class.java) { _ ->

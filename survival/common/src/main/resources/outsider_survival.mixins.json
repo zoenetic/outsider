@@ -7,15 +7,19 @@
     "AxeItemMixin",
     "BlockStateBaseMixin",
     "LevelChunkMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "client": [
+    "AbstractClientPlayerMixin",
     "HumanoidModelMixin",
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",
+    "KeyboardHandlerMixin",
     "KeyboardInputMixin",
     "LivingEntityRendererMixin",
-    "LivingEntityRenderStateMixin"
+    "LivingEntityRenderStateMixin",
+    "MinecraftMixin"
   ],
   "server": [],
   "injectors": {

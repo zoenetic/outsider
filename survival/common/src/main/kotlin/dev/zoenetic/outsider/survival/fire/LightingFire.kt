@@ -11,6 +11,7 @@ import dev.zoenetic.outsider.survival.work.Work
 import dev.zoenetic.outsider.survival.work.WorkContext
 import dev.zoenetic.outsider.survival.work.WorkEffectsContext
 import dev.zoenetic.outsider.survival.work.WorkState
+import dev.zoenetic.outsider.survival.work.client.isWithinWorkInteractionRange
 import net.minecraft.core.BlockPos
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -35,8 +36,29 @@ public class LightingFire(id: Identifier) : Work<LightingFireState>(id) {
     override val stateCodec: StreamCodec<RegistryFriendlyByteBuf, LightingFireState>
         get() = LightingFireState.STREAM_CODEC
 
+    override fun accepts(player: Player, item: Item, blockPos: BlockPos): Boolean =
+        stillValid(player, blockPos) && when (val current = get(player)) {
+            is LightingFireState -> {
+                blockPos == current.blockPos && when (current.phase) {
+                    is LightingFireState.Drilling ->
+                        item is HandDrillItem
+
+                    is LightingFireState.NursingEmbers -> item is TinderItem
+                }
+            }
+
+            is WorkState -> false
+
+            null -> item is HandDrillItem
+        }
+
+    override fun stillValid(player: Player, blockPos: BlockPos): Boolean {
+        val blockState = player.level().getBlockState(blockPos)
+        return blockState.isLightable() && player.isWithinWorkInteractionRange(blockPos)
+    }
+
     override fun tick(context: WorkContext, state: LightingFireState): LightingFireState? {
-        if (!context.level.getBlockState(state.blockPos).isLightable()) return null
+        if (!stillValid(context.player, state.blockPos)) return null
         when (val phase = state.phase) {
             is LightingFireState.Drilling -> {
                 val phase = tickDrilling(context, state.blockPos, phase) ?: return null
@@ -59,31 +81,14 @@ public class LightingFire(id: Identifier) : Work<LightingFireState>(id) {
         if (accepts(player, item, blockPos)) {
             if (player is ServerPlayer && get(player) == null) {
                 val context = WorkContext.of(player)
-                val _ = start(player, LightingFireState(blockPos, drilling(blockPos, context)))
-                    ?: return InteractionResult.PASS
+                val _ =
+                    start(player, LightingFireState(blockPos, drilling(blockPos, context)))
+                        ?: return InteractionResult.PASS
             }
             player.startUsingItem(hand)
             return InteractionResult.CONSUME
         }
         return InteractionResult.PASS
-    }
-
-    private fun accepts(player: Player, item: Item, blockPos: BlockPos): Boolean {
-        val blockState = player.level().getBlockState(blockPos)
-        return blockState.isLightable() && when (val current = get(player)) {
-            is LightingFireState -> {
-                blockPos == current.blockPos && when (current.phase) {
-                    is LightingFireState.Drilling ->
-                        item is HandDrillItem
-
-                    is LightingFireState.NursingEmbers -> item is TinderItem
-                }
-            }
-
-            is WorkState -> false
-
-            null -> item is HandDrillItem
-        }
     }
 
     private fun BlockState.isLightable(): Boolean = `is`(OutsiderBlockTags.LIGHTABLE_WITH_DRILL) &&

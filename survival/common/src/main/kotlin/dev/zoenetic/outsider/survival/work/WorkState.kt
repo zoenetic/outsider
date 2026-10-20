@@ -6,6 +6,7 @@ import net.minecraft.network.codec.StreamCodec
 
 public interface WorkState {
     public val work: Work<*>
+
     public fun tick(context: WorkContext): WorkState?
     public fun tickEffects(context: WorkEffectsContext)
 

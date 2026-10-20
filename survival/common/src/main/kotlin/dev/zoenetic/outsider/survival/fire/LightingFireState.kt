@@ -18,6 +18,7 @@ public data class LightingFireState(val blockPos: BlockPos, val phase: Phase) : 
 
     override val work: LightingFire get() = OutsiderWork.LIGHTING_FIRE
     override fun tick(context: WorkContext): LightingFireState? = work.tick(context, this)
+
     override fun tickEffects(context: WorkEffectsContext): Unit = work.tickEffects(context, this)
 
     public sealed interface Phase {

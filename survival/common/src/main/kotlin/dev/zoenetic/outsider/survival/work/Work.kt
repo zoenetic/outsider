@@ -18,15 +18,17 @@ public abstract class Work<S : WorkState>(public val id: Identifier) {
 
     public abstract val stateCodec: StreamCodec<RegistryFriendlyByteBuf, S>
 
+    public abstract fun accepts(player: Player, item: Item, blockPos: BlockPos): Boolean
+    public abstract fun stillValid(player: Player, blockPos: BlockPos): Boolean
     public abstract fun tick(context: WorkContext, state: S): S?
-    public open fun tickEffects(context: WorkEffectsContext, state: S) {}
-
     public abstract fun use(
         player: Player,
         hand: InteractionHand,
         item: Item,
         blockPos: BlockPos,
     ): InteractionResult
+
+    public open fun tickEffects(context: WorkEffectsContext, state: S) {}
 
     protected fun start(player: ServerPlayer, state: S): S? {
         val stored = get(player)

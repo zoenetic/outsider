@@ -8,10 +8,12 @@ import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.work.Work
+import dev.zoenetic.outsider.survival.work.WorkClosePacketPayload
 import net.minecraft.commands.arguments.EntityAnchorArgument
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.gametest.framework.GameTestHelper
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
@@ -392,6 +394,71 @@ object HandDrillTests {
         }
     }
 
+    // Through the player's connection, so the loader's registered receiver handles it.
+    private fun GameTestHelper.closeWork(player: ServerPlayer) {
+        MockConnections.prepareForPayloads(player)
+        player.connection.handleCustomPayload(ServerboundCustomPayloadPacket(WorkClosePacketPayload))
+        ensure(!player.hasDisconnected()) { "closing work disconnected the player" }
+    }
+
+    fun closingWorkEndsIt(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val player = helper.startDrilling()
+        helper.runAfterDelay(5) {
+            helper.closeWork(player)
+            helper.ensure(workOf(player) == null) { "still working after closing" }
+        }
+        helper.runAfterDelay(10) {
+            helper.ensure(workOf(player) == null) { "work came back after closing" }
+            helper.ensure(!helper.isLit()) { "closing lit the campfire" }
+            helper.succeed()
+        }
+    }
+
+    fun closingWorkWithoutWorkDoesNothing(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val player = helper.worker()
+        helper.closeWork(player)
+        helper.closeWork(player)
+        helper.runAfterDelay(2) {
+            helper.ensure(workOf(player) == null) { "closing started work" }
+            helper.succeed()
+        }
+    }
+
+    fun theDrillStartsFreshWorkAfterClosing(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val player = helper.startDrilling()
+        helper.runAfterDelay(10) { player.releaseUsingItem() }
+        helper.runAfterDelay(12) {
+            helper.ensure(helper.drillingPhase(player).dust > Duration.NONE) { "no dust banked" }
+            helper.closeWork(player)
+            val _ = helper.startDrilling(player)
+            val phase = helper.drillingPhase(player)
+            helper.ensure(phase.dust == Duration.NONE) {
+                "the new work kept ${phase.dust.value} dust from the closed one"
+            }
+            helper.succeed()
+        }
+    }
+
+    fun closingWorkWhileNursingTheEmberLeavesTheCampfireUnlit(helper: GameTestHelper) {
+        helper.campfire(lit = false)
+        val player = helper.startDrilling(helper.worker(off = ItemStack(OutsiderItems.TINDER)))
+        var closedAt: Long? = null
+        helper.keepDrillingUntilEmber(player) {
+            val _ = helper.press(player)
+            helper.closeWork(player)
+            closedAt = helper.tick
+        }
+        helper.succeedWhen {
+            val closed = closedAt ?: throw helper.assertionException("no ember yet")
+            helper.ensure(helper.tick >= closed + 40) { "only just closed" }
+            helper.ensure(workOf(player) == null) { "still working after closing on the ember" }
+            helper.ensure(!helper.isLit()) { "lit after closing on the ember" }
+        }
+    }
+
     val ALL: List<SurvivalTest> = listOf(
         SurvivalTest(
             "using_the_drill_starts_work_on_the_campfire",
@@ -472,6 +539,22 @@ object HandDrillTests {
             "swapping_one_hand_from_drill_to_tinder_lights_the_campfire",
             EMBER_TICKS,
             ::swappingOneHandFromDrillToTinderLightsTheCampfire,
+        ),
+        SurvivalTest("closing_work_ends_it", SHORT_TICKS, ::closingWorkEndsIt),
+        SurvivalTest(
+            "closing_work_without_work_does_nothing",
+            SHORT_TICKS,
+            ::closingWorkWithoutWorkDoesNothing,
+        ),
+        SurvivalTest(
+            "the_drill_starts_fresh_work_after_closing",
+            SHORT_TICKS,
+            ::theDrillStartsFreshWorkAfterClosing,
+        ),
+        SurvivalTest(
+            "closing_work_while_nursing_the_ember_leaves_the_campfire_unlit",
+            EMBER_TICKS,
+            ::closingWorkWhileNursingTheEmberLeavesTheCampfireUnlit,
         ),
     )
 }

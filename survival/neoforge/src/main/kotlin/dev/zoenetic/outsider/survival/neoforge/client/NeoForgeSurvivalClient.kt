@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.neoforge
+package dev.zoenetic.outsider.survival.neoforge.client
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.SurvivalClient
@@ -9,6 +9,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.common.NeoForge
 
+// client only
 @Mod(value = Survival.MOD_ID, dist = [Dist.CLIENT])
 public class NeoForgeSurvivalClient(modBus: IEventBus) {
 
@@ -16,7 +17,7 @@ public class NeoForgeSurvivalClient(modBus: IEventBus) {
         Survival.LOGGER.info("Outsider: Survival client starting on NeoForge")
 
         modBus.addListener(FMLClientSetupEvent::class.java) { event ->
-            event.enqueueWork { SurvivalClient.init() }
+            event.enqueueWork { SurvivalClient.init(NeoForgeClientPlatform) }
         }
 
         val clientBus = NeoForge.EVENT_BUS

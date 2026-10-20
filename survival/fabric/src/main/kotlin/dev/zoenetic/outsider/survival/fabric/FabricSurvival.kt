@@ -8,12 +8,16 @@ import dev.zoenetic.outsider.survival.debug.setBodyTemperatureCommand
 import dev.zoenetic.outsider.survival.debug.watchCommand
 import dev.zoenetic.outsider.survival.emission.EmitterIndex.reconcileEmitters
 import dev.zoenetic.outsider.survival.vitals.Exertion
+import dev.zoenetic.outsider.survival.work.Work
+import dev.zoenetic.outsider.survival.work.WorkClosePacketPayload
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 
 public object FabricSurvival : ModInitializer {
 
@@ -28,6 +32,18 @@ public object FabricSurvival : ModInitializer {
                     .then(setBodyTemperatureCommand)
                     .then(watchCommand),
             )
+        }
+
+        PayloadTypeRegistry.serverboundPlay().register(
+            WorkClosePacketPayload.TYPE,
+            WorkClosePacketPayload.STREAM_CODEC,
+        )
+
+        ServerPlayNetworking.registerGlobalReceiver(WorkClosePacketPayload.TYPE) {
+                payload,
+                context,
+            ->
+            Work.end(context.player())
         }
 
         ServerLifecycleEvents.SERVER_STARTING.register { ServerState.onServerStarting() }

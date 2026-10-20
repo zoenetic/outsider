@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.outsider.survival.Survival
+import dev.zoenetic.outsider.survival.gametest.MockConnections
 import dev.zoenetic.outsider.survival.gametest.SurvivalTest
 import dev.zoenetic.outsider.survival.gametest.SurvivalTests
 import net.minecraft.core.Holder
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.Rotation
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.event.RegisterGameTestsEvent
+import net.neoforged.neoforge.network.registration.NetworkRegistry
 import net.neoforged.neoforge.registries.DeferredRegister
 import java.util.function.Supplier
 
@@ -31,6 +33,9 @@ public class SurvivalGameTests(modBus: IEventBus) {
     init {
         TEST_INSTANCE_TYPES.register(modBus)
         modBus.addListener(RegisterGameTestsEvent::class.java, ::register)
+        MockConnections.prepareForPayloads = { player ->
+            NetworkRegistry.configureMockConnection(player.connection.getConnection())
+        }
     }
 
     private val defaultEnvironment: Holder<TestEnvironmentDefinition<*>> =

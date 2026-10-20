@@ -1,4 +1,4 @@
-package dev.zoenetic.outsider.survival.fabric
+package dev.zoenetic.outsider.survival.fabric.client
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.SurvivalClient
@@ -10,7 +10,7 @@ public object FabricSurvivalClient : ClientModInitializer {
     override fun onInitializeClient() {
         Survival.LOGGER.info("Outsider: Survival client starting on Fabric")
 
-        SurvivalClient.init()
+        SurvivalClient.init(FabricClientPlatform)
 
         ClientTickEvents.END_CLIENT_TICK.register {
             SurvivalClient.tick()
