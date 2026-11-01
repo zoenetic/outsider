@@ -33,18 +33,18 @@ public data class BreathingRate(val value: Double = RESTING_BREATHING_RATE) {
         val current = value
         val chill =
             ((bodyTemperature - APNOEA_TEMPERATURE) / (SHIVER_CEASES - APNOEA_TEMPERATURE)).coerceIn(
-                Heat(0.0),
-                Heat(1.0),
+                0.0,
+                1.0,
             )
         val fever =
-            (bodyTemperature - NORMAL_BODY_TEMPERATURE).coerceAtLeast(
+            (bodyTemperature - NORMAL_BODY_TEMPERATURE).celsius.coerceAtLeast(
                 0.0,
             ) * BREATHS_PER_DEGREE_OF_FEVER
         val reserve = MAX_BREATHING_RATE - RESTING_BREATHING_RATE
         val exerted =
             RESTING_BREATHING_RATE + reserve * exertion.capacity(MET_MAX).coerceIn(0.0, 1.0)
                 .pow(BREATHING_RATE_CURVE)
-        val target = (chill.celsius * (exerted + fever.celsius)).coerceAtMost(MAX_BREATHING_RATE)
+        val target = (chill * (exerted + fever)).coerceAtMost(MAX_BREATHING_RATE)
         val isRising = target > current
         val halfLife = halfLife(isRising)
         val new = approach(

@@ -1,297 +1,192 @@
 package dev.zoenetic.outsider.survival.vitals
 
-import dev.zoenetic.outsider.survival.units.*
-import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.approach
-import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.halfLife
-import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.target
-import net.minecraft.world.phys.Vec3
-import kotlin.math.sqrt
+import dev.zoenetic.outsider.survival.units.Conductance
+import dev.zoenetic.outsider.survival.units.Duration
+import dev.zoenetic.outsider.survival.units.Heat
+import dev.zoenetic.outsider.survival.units.Insulation
+import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.rate
+import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.step
+import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.sweating
+import dev.zoenetic.outsider.survival.vitals.BodyTemperature.Companion.tissueResistance
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class BodyTemperatureTests {
 
-    private fun h(v: Double) = Heat(v)
-    private fun d(v: Long) = Duration(v)
+    private val calm = Conductance(1.0)
+    private val resting = MET(1.0)
+    private val sprinting = MET(14.0)
+    private val leather = Insulation(2.0)
 
-    private fun assertEquals(expected: Heat, actual: Heat, absoluteTolerance: Double) {
-        assertEquals(expected.celsius, actual.celsius, absoluteTolerance)
-    }
+    private val oneSecond = Duration(20L)
+    private val anHour = 3600
 
-    @Test
-    fun `approach returns current exactly for 0 elapsed ticks`() {
-        val low = h(30.0)
-        assertEquals(low, approach(low, Heat(28.0), d(0), BODY_COOLS_AT))
-        val high = h(44.0)
-        assertEquals(high, approach(high, Heat(46.0), d(0), BODY_WARMS_AT))
-    }
+    private class Body(
+        val environment: Heat,
+        val conductance: Conductance,
+        val insulation: Insulation,
+        val exertion: MET,
+        var heat: Heat,
+    ) {
+        fun live(seconds: Int): Body = apply {
+            repeat(seconds) { tick() }
+        }
 
-    @Test
-    fun `one half-life closes exactly half the gap`() {
-        val oneSecond = 1.0
-        assertEquals(
-            28.5,
-            approach(
-                h(30.0),
-                h(27.0),
-                d(20),
-                oneSecond,
-            ).celsius,
-            1e-9,
-        )
-        assertEquals(
-            45.5,
-            approach(
-                h(44.0),
-                h(47.0),
-                d(20),
-                oneSecond,
-            ).celsius,
-            1e-9,
-        )
-    }
-
-    @Test
-    fun `approach never overshoots when warming`() {
-        val current = NORMAL_BODY_TEMPERATURE
-        for (gap in 1..10) {
-            val target = current + h(gap.toDouble())
-            for (elapsed in listOf(1L, 20L, 100_000L)) {
-                val new = approach(current, target, d(elapsed), BODY_WARMS_AT)
-                assertTrue(
-                    new in current..target,
-                    "gap $gap, elapsed $elapsed: got $new",
-                )
+        fun secondsUntil(limit: Int, reached: (Heat) -> Boolean): Int? {
+            for (second in 1..limit) {
+                tick()
+                if (reached(heat)) return second
             }
+            return null
+        }
+
+        // In game, Exertion adds the body's own shivering each tick; mirror that here.
+        private fun tick() {
+            val shivering = (SHIVERING.value - 1.0) * shiverIntensity(heat)
+            val met = MET(exertion.value + shivering)
+            heat = step(heat, environment, conductance, insulation, met, Duration(20L))
+        }
+    }
+
+    private fun body(
+        environment: Double,
+        conductance: Conductance = calm,
+        insulation: Insulation = Insulation.NONE,
+        exertion: MET = resting,
+        from: Double = NORMAL_BODY_TEMPERATURE.celsius,
+    ) = Body(Heat(environment), conductance, insulation, exertion, Heat(from))
+
+    @Test
+    fun `no time passing changes nothing`() {
+        val t = Heat(35.0)
+        assertEquals(t, step(t, Heat(-20.0), calm, Insulation.NONE, resting, Duration.NONE))
+    }
+
+    @Test
+    fun `two one-second steps equal one two-second step`() {
+        val t = Heat(36.0)
+        val once = step(t, Heat(-5.0), calm, Insulation.NONE, resting, Duration(40L))
+        val first = step(t, Heat(-5.0), calm, Insulation.NONE, resting, oneSecond)
+        val twice = step(first, Heat(-5.0), calm, Insulation.NONE, resting, oneSecond)
+        assertEquals(once.celsius, twice.celsius, 1e-12)
+    }
+
+    @Test
+    fun `catching up after a long absence is capped`() {
+        val t = Heat(36.0)
+        val threeDays = Duration(24_000L * 3)
+        assertEquals(
+            step(t, Heat(-30.0), calm, Insulation.NONE, resting, MAX_CATCH_UP),
+            step(t, Heat(-30.0), calm, Insulation.NONE, resting, threeDays),
+        )
+    }
+
+    @Test
+    fun `a body colder than its surroundings warms, and a hotter one cools`() {
+        assertTrue(rate(Heat(33.0), Heat(30.0), calm, Insulation.NONE, resting) > 0.0)
+        assertTrue(rate(Heat(37.0), Heat(-10.0), calm, Insulation.NONE, resting) < 0.0)
+    }
+
+    @Test
+    fun `the body holds normal temperature across a mild band without shivering or sweat`() {
+        for (environment in listOf(20.0, 25.0, 30.0)) {
+            val settled = body(environment).live(anHour).heat
+            assertTrue(settled > SHIVER_ONSET, "at $environment settled at $settled")
+            assertTrue(settled < Heat(37.5), "at $environment settled at $settled")
         }
     }
 
     @Test
-    fun `approach never overshoots when cooling`() {
-        val current = NORMAL_BODY_TEMPERATURE
-        for (gap in 1..10) {
-            val target = current - h(gap.toDouble())
-            for (elapsed in listOf(1L, 20L, 100_000L)) {
-                val new = approach(current, target, d(elapsed), BODY_COOLS_AT)
-                assertTrue(
-                    new in target..current,
-                    "gap $gap, elapsed $elapsed: got $new",
-                )
-            }
-        }
+    fun `in mild cold shivering holds the line`() {
+        val settled = body(5.0).live(anHour).heat
+        assertTrue(shiverIntensity(settled) > 0.0, "expected shivering at $settled")
+        assertTrue(settled > Heat(35.5), "5C without clothing settled at $settled")
     }
 
     @Test
-    fun `approach composes, 40 ticks equals 2 x 20 ticks`() {
-        val target = NORMAL_BODY_TEMPERATURE + h(3.0)
-        val afterForty = approach(NORMAL_BODY_TEMPERATURE, target, d(40), BODY_WARMS_AT)
-        val afterFirstTwenty = approach(NORMAL_BODY_TEMPERATURE, target, d(20), BODY_WARMS_AT)
-        val afterSecondTwenty = approach(afterFirstTwenty, target, d(20), BODY_WARMS_AT)
-        assertEquals(afterForty, afterSecondTwenty, 1e-9)
+    fun `in hard cold the body falls past the point shivering stops, within a night`() {
+        val seconds = body(-10.0).secondsUntil(anHour) { it <= SHIVER_CEASES }
+        assertTrue(seconds != null && seconds in 4 * 60..12 * 60, "reached 32C after $seconds s")
     }
 
     @Test
-    fun `one tick at a time equals one step of twenty ticks`() {
-        val target = NORMAL_BODY_TEMPERATURE - h(8.0)
-        var stepwise = NORMAL_BODY_TEMPERATURE
-        repeat(20) { stepwise = approach(stepwise, target, d(1), BODY_COOLS_AT) }
-        val oneGo = approach(NORMAL_BODY_TEMPERATURE, target, d(20), BODY_COOLS_AT)
-        assertEquals(oneGo, stepwise, 1e-9)
+    fun `once shivering fails there is no resting point`() {
+        val failing = body(-10.0).live(anHour).heat
+        assertTrue(failing < Heat(28.0), "an hour at -10C without clothing ended at $failing")
     }
 
     @Test
-    fun `a single tick actually moves the body temperature`() {
-        val target = NORMAL_BODY_TEMPERATURE - h(20.0)
-        val after = approach(NORMAL_BODY_TEMPERATURE, target, d(1), BODY_COOLS_AT)
-        assertTrue(
-            after < NORMAL_BODY_TEMPERATURE,
-            "one tick in the cold should cool the body, got $after",
-        )
+    fun `leather lets the body hold in hard cold`() {
+        val settled = body(-10.0, insulation = leather).live(anHour).heat
+        assertTrue(settled > Heat(35.5), "-10C in leather settled at $settled")
     }
 
     @Test
-    fun `if current == target, approach returns current`() {
-        val current = h(24.0)
-        assertEquals(current, approach(current, current, d(1), BODY_WARMS_AT))
-        assertEquals(current, approach(current, current, d(1), BODY_COOLS_AT))
+    fun `insulation slows the fall`() {
+        val naked = body(-20.0).live(120).heat
+        val wrapped = body(-20.0, insulation = leather).live(120).heat
+        assertTrue(wrapped > naked, "wrapped $wrapped should be warmer than naked $naked")
     }
 
     @Test
-    fun `half life is the baseline with no medium, surface or wind`() {
-        assertEquals(BODY_WARMS_AT, halfLife(isWarming = true))
-        assertEquals(BODY_COOLS_AT, halfLife(isWarming = false))
+    fun `cold water is dangerous within minutes, not seconds`() {
+        val air = Contact(Heat(15.0), calm)
+        val water = Contact(Heat(5.0), ConductiveMedium.WATER.conductance)
+        val contacts = listOf(air, water)
+        val swimming = body(contacts.environment().celsius, contacts.conductance())
+        val seconds = swimming.secondsUntil(anHour) { it <= Heat(34.0) }
+        assertTrue(seconds != null && seconds in 2 * 60..10 * 60, "reached 34C after $seconds s")
     }
 
     @Test
-    fun `warming and cooling use different baselines`() {
-        assertNotEquals(halfLife(isWarming = true), halfLife(isWarming = false))
+    fun `sprinting keeps you warm enough to stop shivering at freezing`() {
+        val settled = body(0.0, exertion = sprinting).live(anHour).heat
+        assertTrue(settled >= SHIVER_ONSET, "sprinting at 0C settled at $settled")
     }
 
     @Test
-    fun `a conductive medium divides the baseline by its conductance`() {
-        val water = ConductiveMedium.WATER.conductance
-        assertEquals(BODY_COOLS_AT / water.value, halfLife(isWarming = false, medium = water))
-        assertEquals(BODY_WARMS_AT / water.value, halfLife(isWarming = true, medium = water))
+    fun `sprinting in temperate weather never overheats`() {
+        val settled = body(25.0, exertion = sprinting).live(anHour).heat
+        assertTrue(settled < Heat(38.5), "sprinting at 25C settled at $settled")
     }
 
     @Test
-    fun `a conductive surface divides the baseline by its conductance`() {
-        val metal = ConductiveSurface.METAL.conductance
-        assertEquals(BODY_COOLS_AT / metal.value, halfLife(isWarming = false, surface = metal))
+    fun `standing in desert heat, sweat holds the body`() {
+        val settled = body(35.0).live(anHour).heat
+        assertTrue(settled < Heat(38.0), "standing at 35C settled at $settled")
     }
 
     @Test
-    fun `medium and surface conductance values multiply`() {
-        val water = ConductiveMedium.WATER.conductance
-        val metal = ConductiveSurface.METAL.conductance
-        assertEquals(
-            BODY_COOLS_AT / (water.value * metal.value),
-            halfLife(isWarming = false, medium = water, surface = metal),
-            1e-9,
-        )
+    fun `sprinting in desert heat overheats within minutes`() {
+        val seconds = body(35.0, exertion = sprinting).secondsUntil(anHour) { it >= Heat(39.0) }
+        assertTrue(seconds != null && seconds in 30..5 * 60, "reached 39C after $seconds s")
     }
 
     @Test
-    fun `lava is effectively instantaneous`() {
-        val lava = ConductiveMedium.LAVA.conductance
-        assertTrue(halfLife(isWarming = true, medium = lava) < 1.0)
+    fun `extreme heat overwhelms sweating`() {
+        val settled = body(55.0).live(anHour).heat
+        assertTrue(settled > Heat(40.0), "an hour at 55C ended at $settled")
     }
 
     @Test
-    fun `target is normal anywhere inside the comfort band`() {
-        for (ambient in listOf(COMFORT_LOW, h(22.0), h(25.0), h(28.0), COMFORT_HIGH)) {
-            assertEquals(NORMAL_BODY_TEMPERATURE, target(ambient), "ambient $ambient")
-        }
+    fun `a fire brings a chilled body back within minutes`() {
+        val seconds = body(30.0, from = 33.0).secondsUntil(anHour) { it >= SHIVER_ONSET }
+        assertTrue(seconds != null && seconds < 5 * 60, "back to 36.5C after $seconds s")
     }
 
     @Test
-    fun `target is continuous at both band edges`() {
-        val epsilon = 1e-6
-        assertEquals(
-            target(COMFORT_LOW),
-            target(h(COMFORT_LOW.celsius - epsilon)),
-            1e-3,
-        )
-        assertEquals(
-            target(COMFORT_HIGH),
-            target(h(COMFORT_HIGH.celsius + epsilon)),
-            1e-3,
-        )
+    fun `blood vessels constrict in the cold and dilate in the heat`() {
+        assertEquals(TISSUE_RESISTANCE_CONSTRICTED, tissueResistance(Heat(35.0)))
+        assertEquals(TISSUE_RESISTANCE_DILATED, tissueResistance(Heat(38.0)))
+        val between = tissueResistance(NORMAL_BODY_TEMPERATURE)
+        assertTrue(between < TISSUE_RESISTANCE_CONSTRICTED && between > TISSUE_RESISTANCE_DILATED)
     }
 
     @Test
-    fun `target moves with ambient outside the band, but by less than ambient does`() {
-        val coldDrop = NORMAL_BODY_TEMPERATURE - target(h(0.0))
-        assertTrue(coldDrop > h(0.0) && coldDrop < COMFORT_LOW, "cold drop $coldDrop")
-        val heatRise = target(h(60.0)) - NORMAL_BODY_TEMPERATURE
-        assertTrue(heatRise > h(0.0) && heatRise < h(60.0) - COMFORT_HIGH, "heat rise $heatRise")
-    }
-
-    @Test
-    fun `cold leaks through to the core more than heat does`() {
-        val coldDrop = NORMAL_BODY_TEMPERATURE - target(h(COMFORT_LOW.celsius - 10.0))
-        val heatRise = target(h(COMFORT_HIGH.celsius + 10.0)) - NORMAL_BODY_TEMPERATURE
-        assertTrue(coldDrop > heatRise)
-    }
-
-    @Test
-    fun `calm wind has unit conductance and leaves the half life unchanged`() {
-        assertEquals(1.0, CALM.conductance.value, 1e-9)
-        assertEquals(
-            BODY_COOLS_AT,
-            halfLife(isWarming = false, wind = CALM.conductance),
-            1e-9,
-        )
-    }
-
-    @Test
-    fun `wind conductance grows linearly with speed`() {
-        val fiveMetresPerSecond = Wind(Vec3(5.0, 0.0, 0.0))
-        assertEquals(1.0 + CHILL * 5.0, fiveMetresPerSecond.conductance.value, 1e-9)
-        assertEquals(
-            BODY_COOLS_AT / (1.0 + CHILL * 5.0),
-            halfLife(isWarming = false, wind = fiveMetresPerSecond.conductance),
-            1e-9,
-        )
-    }
-
-    @Test
-    fun `wind conductance depends on speed, not direction`() {
-        val east = Wind(Vec3(3.0, 0.0, 0.0))
-        val north = Wind(Vec3(0.0, 0.0, -3.0))
-        val diagonal = Wind(Vec3(3.0 / sqrt(2.0), 0.0, 3.0 / sqrt(2.0)))
-        assertEquals(east.conductance.value, north.conductance.value, 1e-9)
-        assertEquals(east.conductance.value, diagonal.conductance.value, 1e-9)
-    }
-
-    @Test
-    fun `wind multiplies with medium and surface`() {
-        val water = ConductiveMedium.WATER.conductance
-        val metal = ConductiveSurface.METAL.conductance
-        val wind = Wind(Vec3(5.0, 0.0, 0.0)).conductance
-        assertEquals(
-            BODY_COOLS_AT / (water.value * metal.value * wind.value),
-            halfLife(
-                isWarming = false,
-                medium = water,
-                surface = metal,
-                wind = wind,
-            ),
-            1e-9,
-        )
-    }
-
-    @Test
-    fun `no insulation leaves target and half life unchanged`() {
-        assertEquals(target(h(0.0)), target(h(0.0), Insulation.NONE))
-        assertEquals(
-            halfLife(isWarming = false),
-            halfLife(isWarming = false, insulation = Insulation.NONE),
-        )
-    }
-
-    @Test
-    fun `insulation divides the cold drop of the target`() {
-        val naked = NORMAL_BODY_TEMPERATURE - target(h(0.0))
-        val wrapped = NORMAL_BODY_TEMPERATURE - target(h(0.0), Insulation(2.0))
-        assertEquals(naked / 2.0, wrapped, 1e-9)
-    }
-
-    @Test
-    fun `insulation multiplies the heat rise of the target`() {
-        val naked = target(h(45.0)) - NORMAL_BODY_TEMPERATURE
-        val wrapped = target(h(45.0), Insulation(2.0)) - NORMAL_BODY_TEMPERATURE
-        assertEquals(naked * 2.0, wrapped, 1e-9)
-    }
-
-    @Test
-    fun `insulation does nothing inside the comfort band`() {
-        assertEquals(NORMAL_BODY_TEMPERATURE, target(h(25.0), Insulation(3.0)))
-    }
-
-    @Test
-    fun `insulation lengthens the half life in both directions`() {
-        assertEquals(
-            BODY_COOLS_AT * 2.0,
-            halfLife(isWarming = false, insulation = Insulation(2.0)),
-            1e-9,
-        )
-        assertEquals(
-            BODY_WARMS_AT * 2.0,
-            halfLife(isWarming = true, insulation = Insulation(2.0)),
-            1e-9,
-        )
-    }
-
-    @Test
-    fun `insulation and wind pull the half life in opposite directions`() {
-        val wind = Wind(Vec3(5.0, 0.0, 0.0)).conductance
-        assertEquals(
-            BODY_COOLS_AT * 2.0 / wind.value,
-            halfLife(isWarming = false, wind = wind, insulation = Insulation(2.0)),
-            1e-9,
-        )
+    fun `sweating starts above normal and saturates`() {
+        assertEquals(0.0, sweating(NORMAL_BODY_TEMPERATURE))
+        assertEquals(1.0, sweating(SWEAT_FULL))
+        assertEquals(1.0, sweating(Heat(41.0)))
     }
 }

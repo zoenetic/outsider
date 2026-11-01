@@ -14,6 +14,8 @@ public value class Time(public val value: Long) {
     public operator fun compareTo(o: Time): Int = value.compareTo(o.value)
 
     public companion object {
+        public val NEVER: Time = Time(Long.MAX_VALUE)
+
         public val CODEC: Codec<Time> =
             Codec.LONG.xmap(
                 ::Time,

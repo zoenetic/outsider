@@ -41,8 +41,8 @@ public object FabricPlatform : Platform {
         },
     )
 
-    override val playerConditions: PlayerStore<PlayerConditions> = FabricPlayerStore(
-        AttachmentRegistry.create(id("player_conditions")),
+    override val conditions: PlayerStore<PlayerConditions> = FabricPlayerStore(
+        AttachmentRegistry.create(id("conditions")),
     )
 
     override val vitals: SyncedPlayerStore<Vitals> = FabricPersistentSyncedPlayerStore(

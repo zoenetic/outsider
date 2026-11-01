@@ -1,30 +1,32 @@
 package dev.zoenetic.outsider.survival.emission
 
-import dev.zoenetic.outsider.survival.units.Heat
+import dev.zoenetic.outsider.survival.fuel.Fuel
+import dev.zoenetic.outsider.survival.units.Power
 
 public class HeatTable private constructor(private val values: DoubleArray) {
 
-    public operator fun get(level: Int): Heat = Heat(values[level])
-
-    internal fun with(level: Int, heat: Heat): HeatTable =
-        HeatTable(values.copyOf().also { it[level] = heat.celsius })
-
-    internal fun map(f: (Heat) -> Heat): HeatTable =
-        HeatTable(DoubleArray(16) { f(this[it]).celsius })
-
-    public fun toDoubleArray(): DoubleArray = values.copyOf()
+    public operator fun get(level: Int): Power = Power(values[level])
 
     override fun equals(other: Any?): Boolean =
         other is HeatTable && values.contentEquals(other.values)
     override fun hashCode(): Int = values.contentHashCode()
-    override fun toString(): String = (0..15).joinToString(prefix = "HeatTable[", postfix = "]")
+    override fun toString(): String =
+        (0..15).joinToString(prefix = "HeatTable[", postfix = "]") { "${values[it]}" }
 
     public companion object {
-        public fun from(f: (Int) -> Heat): HeatTable = HeatTable(DoubleArray(16) { f(it).celsius })
+        internal const val EMBER_FRACTION: Double = 0.4
 
-        public fun of(vararg celsius: Double): HeatTable {
-            require(celsius.size == 16) { "need 16 values, got ${celsius.size}" }
-            return from { Heat(celsius[it]) }
+        public fun from(f: (Int) -> Power): HeatTable =
+            HeatTable(DoubleArray(Fuel.MAX.level + 1) { f(it).value })
+
+        public fun constant(power: Power): HeatTable = from { power }
+
+        public fun embers(max: Power): HeatTable = from { level ->
+            if (level == 0) {
+                Power.ZERO
+            } else {
+                max * (EMBER_FRACTION + (1.0 - EMBER_FRACTION) * level / Fuel.MAX.level)
+            }
         }
     }
 }

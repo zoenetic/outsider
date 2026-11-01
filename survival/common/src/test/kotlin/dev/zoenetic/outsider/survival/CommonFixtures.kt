@@ -152,7 +152,7 @@ object TestPlatform : Platform {
             }
         }
 
-    override val playerConditions: PlayerStore<PlayerConditions> =
+    override val conditions: PlayerStore<PlayerConditions> =
         object : PlayerStore<PlayerConditions> {
             private val byPlayer = IdentityHashMap<ServerPlayer, PlayerConditions>()
             override fun get(player: ServerPlayer): PlayerConditions? = byPlayer[player]

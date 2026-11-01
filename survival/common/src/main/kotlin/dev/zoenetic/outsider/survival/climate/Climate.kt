@@ -19,6 +19,8 @@ internal const val DIURNAL_SWING_DRY = 11.0
 internal const val DIURNAL_SWING_HUMID = 3.5
 internal const val WARMEST_TICK = 9000L // 15:00
 internal const val LAPSE_RATE_PER_BLOCK = 0.07
+internal const val GEOTHERMAL_DEPTH = 32
+internal const val GEOTHERMAL_RATE_PER_BLOCK = 0.1
 internal const val EQUATOR_C: Double = 30.0
 internal const val POLE_C: Double = -20.0
 internal const val LATITUDE_FALLOFF = 1.3
@@ -53,6 +55,9 @@ public fun LevelChunk.getTemperature(
     .adjustForAltitude(altitude)
     .adjustForTimeOfDay(time, sky, humidity)
 
+public fun LevelChunk.getGroundTemperature(altitude: Altitude): Heat =
+    getBaseTemperature().adjustForAltitude(altitude)
+
 public fun LevelChunk.getWind(): Wind {
     val level = level as ServerLevel
     val function = level.chunkSource.randomState().sampler().temperature
@@ -84,10 +89,11 @@ internal fun temperatureFromNoise(noise: Double): Heat {
 
 internal fun Heat.adjustForAltitude(altitude: Altitude? = null): Heat {
     if (altitude == null) return this
-    val t = if (altitude.value > 0) {
-        celsius - (altitude.value * LAPSE_RATE_PER_BLOCK)
-    } else {
-        celsius
+    val depth = -altitude.value - GEOTHERMAL_DEPTH
+    val t = when {
+        altitude.value > 0 -> celsius - (altitude.value * LAPSE_RATE_PER_BLOCK)
+        depth > 0 -> celsius + (depth * GEOTHERMAL_RATE_PER_BLOCK)
+        else -> celsius
     }
     return Heat(t)
 }

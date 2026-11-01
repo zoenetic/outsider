@@ -52,10 +52,25 @@ class ClimateTests {
     }
 
     @Test
-    fun `adjusting for altitude has no effect at or below sea level`() {
+    fun `adjusting for altitude has no effect from sea level down to the shallow caves`() {
         val t = Heat(0.0)
         assertEquals(0.0, t.adjustForAltitude(Altitude(0)).celsius)
-        assertEquals(0.0, t.adjustForAltitude(Altitude(-100)).celsius)
+        assertEquals(0.0, t.adjustForAltitude(Altitude(-GEOTHERMAL_DEPTH)).celsius)
+    }
+
+    @Test
+    fun `deep caves are warmer the deeper they go`() {
+        val t = Heat(0.0)
+        val shallow = t.adjustForAltitude(Altitude(-GEOTHERMAL_DEPTH - 10)).celsius
+        val deep = t.adjustForAltitude(Altitude(-GEOTHERMAL_DEPTH - 80)).celsius
+        assertTrue(shallow > 0.0, "10 blocks into the deep read $shallow")
+        assertTrue(deep > shallow, "expected $deep to exceed $shallow")
+    }
+
+    @Test
+    fun `the bottom of the world is warm but not hot`() {
+        val bedrock = Heat(0.0).adjustForAltitude(Altitude(-63 - 64)).celsius
+        assertTrue(bedrock in 5.0..15.0, "the bottom of a 0C column read $bedrock")
     }
 
     @Test

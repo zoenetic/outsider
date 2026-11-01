@@ -2,6 +2,7 @@ package dev.zoenetic.outsider.survival.conditions
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.climate.getClimate
+import dev.zoenetic.outsider.survival.climate.getGroundTemperature
 import dev.zoenetic.outsider.survival.climate.getTemperature
 import dev.zoenetic.outsider.survival.climate.getWind
 import dev.zoenetic.outsider.survival.emission.EmitterIndex
@@ -22,29 +23,31 @@ private val INTERVAL = Duration(20L)
 
 internal const val HEAT_TRAPPING: Double = 2.0
 internal val MAX_HEATED_AIR: Heat = Heat(30.0)
+internal const val RADIANT_WIND_DAMPING: Double = 10.0
 
 public class PlayerConditions(
     public val humidity: Humidity,
     public val isUnderOpenSky: Boolean,
     public val sky: Sky,
     public val ambient: Heat,
+    public val ground: Heat,
     public val radiant: Heat,
+    public val vapourPressure: Double,
     public val wind: Wind,
     public val windExposure: Double,
     public val time: Time,
 ) {
     public fun feelsLike(): Heat {
-        val h = humidity.value
         val t = ambient.celsius
-        val e = h * 6.105 * exp(17.27 * t / (237.7 + t))
-        val w = wind.speed
-        return Heat(t + 0.33 * e - 0.70 * w - 4.00)
+        val e = vapourPressure
+        val r = radiant.celsius * RADIANT_WIND_DAMPING / (wind.speed + RADIANT_WIND_DAMPING)
+        return Heat(t + 0.33 * e - 4.00 + r)
     }
 
     public companion object {
 
         public fun get(player: ServerPlayer): PlayerConditions? =
-            Survival.platform.playerConditions.get(player)
+            Survival.platform.conditions.get(player)
 
         public fun getNew(player: ServerPlayer, time: Time): PlayerConditions {
             val level = player.level()
@@ -52,14 +55,15 @@ public class PlayerConditions(
             val chunk = level.getChunkAt(pos)
             val chunkClimate = chunk.getClimate()
             val sky = player.getSky()
-            val ambient = chunk.getTemperature(
-                Altitude(pos.y - level.seaLevel),
+            val altitude = Altitude(pos.y - level.seaLevel)
+            val air = chunk.getTemperature(
+                altitude,
                 chunkClimate.humidity,
                 sky,
                 Time(level.overworldClockTime),
             )
             val radiant = EmitterIndex.heatAtPlayer(player)
-            val heat = trapHeat(radiant, sky, ambient)
+            val trapped = trapHeat(radiant, sky, air)
             val chunkWind = chunk.getWind()
             val windExposure = player.getWindExposure(chunkWind)
             val wind = chunkWind.sheltered(windExposure)
@@ -67,8 +71,10 @@ public class PlayerConditions(
                 chunkClimate.humidity,
                 player.isUnderOpenSky(),
                 sky,
-                ambient + heat,
-                heat,
+                air + trapped,
+                chunk.getGroundTemperature(altitude),
+                radiant,
+                vapourPressure(chunkClimate.humidity, air),
                 wind,
                 windExposure,
                 time,
@@ -76,7 +82,7 @@ public class PlayerConditions(
         }
 
         public fun set(player: ServerPlayer, conditions: PlayerConditions) {
-            Survival.platform.playerConditions.set(player, conditions)
+            Survival.platform.conditions.set(player, conditions)
         }
 
         public fun tick(level: Level) {
@@ -100,7 +106,9 @@ public class PlayerConditions(
             isUnderOpenSky = false,
             sky = Sky(1.0),
             ambient = Heat(20.0),
+            ground = Heat(20.0),
             radiant = Heat(0.0),
+            vapourPressure = vapourPressure(Humidity(0.5), Heat(20.0)),
             wind = CALM,
             windExposure = 1.0,
             time = Time(0L),
@@ -108,9 +116,13 @@ public class PlayerConditions(
     }
 }
 
-internal fun trapHeat(radiant: Heat, sky: Sky, ambient: Heat): Heat {
+internal fun trapHeat(radiant: Heat, sky: Sky, air: Heat): Heat {
     val enclosure = (1.0 - sky.value).coerceIn(0.0, 1.0)
-    val headroom = (MAX_HEATED_AIR - ambient - radiant).coerceAtLeast(0.0)
-    val trapped = (radiant * HEAT_TRAPPING * enclosure).coerceAtMost(headroom)
-    return radiant + trapped
+    val headroom = (MAX_HEATED_AIR - air).coerceAtLeast(0.0)
+    return (radiant * HEAT_TRAPPING * enclosure).coerceAtMost(headroom)
+}
+
+internal fun vapourPressure(humidity: Humidity, air: Heat): Double {
+    val t = air.celsius
+    return humidity.value * 6.105 * exp(17.27 * t / (237.7 + t))
 }

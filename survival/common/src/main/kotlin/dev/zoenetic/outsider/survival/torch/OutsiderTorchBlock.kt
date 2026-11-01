@@ -4,6 +4,7 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.outsider.survival.emission.EmittingBlock
+import dev.zoenetic.outsider.survival.emission.HeatTable
 import dev.zoenetic.outsider.survival.emission.LightTable
 import dev.zoenetic.outsider.survival.fire.FireInteractions
 import dev.zoenetic.outsider.survival.fuel.Burnout
@@ -13,8 +14,8 @@ import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperti
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
 import dev.zoenetic.outsider.survival.units.Duration
-import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Light
+import dev.zoenetic.outsider.survival.units.Power
 import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.SimpleParticleType
@@ -91,9 +92,14 @@ public open class OutsiderTorchBlock(flameParticle: SimpleParticleType, properti
     internal val props: Properties get() = properties
     internal val flame: SimpleParticleType get() = flameParticle
 
-    override val maxHeat: Heat = Heat(6.0) // TODO: fix
+    override val maxHeat: Power get() = Power(1.0)
 
-    override fun getHeat(state: BlockState): Heat = if (state.getValue(LIT)) maxHeat else Heat(0.0)
+    override val heatTable: HeatTable get() = HeatTable.embers(maxHeat)
+
+    override fun getHeat(state: BlockState): Power {
+        if (!state.getValue(LIT)) return Power.ZERO
+        return heatTable[getFuel(state).level]
+    }
 
     override fun getLight(state: BlockState): Light {
         if (!state.getValue(LIT)) return Light.ZERO

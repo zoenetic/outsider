@@ -30,8 +30,8 @@ public data class HeartRate(val bpm: BPM = BPM(75.0)) {
         val current = bpm.value
         val chill =
             ((bodyTemperature - ASYSTOLE_TEMPERATURE) / (SHIVER_CEASES - ASYSTOLE_TEMPERATURE)).coerceIn(
-                Heat(0.0),
-                Heat(1.0),
+                0.0,
+                1.0,
             )
         val heatDelta =
             10 * (bodyTemperature - NORMAL_BODY_TEMPERATURE).coerceIn(
@@ -41,7 +41,7 @@ public data class HeartRate(val bpm: BPM = BPM(75.0)) {
         val reserve = MAX_HEART_RATE - RESTING_HEART_RATE
         val exerted = RESTING_HEART_RATE + reserve * exertion.capacity(MET_MAX)
         val target =
-            ((exerted + heatDelta) * chill.celsius).value.coerceAtMost(MAX_HEART_RATE.value)
+            ((exerted + heatDelta) * chill).value.coerceAtMost(MAX_HEART_RATE.value)
         val isRising = target > current
         val halfLife = halfLife(isRising)
         val new = approach(

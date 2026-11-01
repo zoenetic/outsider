@@ -43,9 +43,9 @@ public object NeoForgePlatform : Platform {
         },
     )
 
-    override val playerConditions: PlayerStore<PlayerConditions> =
+    override val conditions: PlayerStore<PlayerConditions> =
         NeoForgePlayerStore(
-            register.attachment("player_conditions") {
+            register.attachment("conditions") {
                 AttachmentType.builder(Supplier { PlayerConditions.EMPTY }).build()
             },
         )

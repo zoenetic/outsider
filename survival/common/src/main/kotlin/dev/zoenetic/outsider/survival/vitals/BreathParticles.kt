@@ -1,16 +1,11 @@
 package dev.zoenetic.outsider.survival.vitals
 
 import dev.zoenetic.outsider.survival.Survival
-import dev.zoenetic.outsider.survival.units.Heat
-import dev.zoenetic.outsider.survival.units.Humidity
 import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import java.util.*
-
-public val BREATH_VISIBLE_BELOW: Heat = Heat(8.0)
-public val HUMIDITY_TO_BUMP_BREATH_VISIBLE_AT: Humidity = Humidity(0.5)
+import java.util.UUID
 
 public class BreathParticles {
 
@@ -18,8 +13,8 @@ public class BreathParticles {
 
         internal val cache: HashMap<UUID, Time> = HashMap()
 
-        internal fun emitBreathParticle(player: ServerPlayer, temperature: Heat) {
-            if (temperature < BREATH_VISIBLE_BELOW) {
+        internal fun emitBreathParticle(player: ServerPlayer, visibility: Float) {
+            if (player.random.nextFloat() < visibility) {
                 val eye = player.eyePosition
                 val look = player.getViewVector(1.0f)
                 val mouth = eye.add(look.scale(0.25)).subtract(0.0, 0.15, 0.0)
@@ -43,11 +38,11 @@ public class BreathParticles {
             val vitals = Survival.platform.vitals.get(player) ?: return
             val breath = vitals.breathingRate.toBreath() ?: return
             val interval = breath.interval
-            val conditions = Survival.platform.playerConditions.get(player) ?: return
+            val conditions = Survival.platform.conditions.get(player) ?: return
             val last = cache.getOrPut(player.uuid) { gameTime }
             val elapsed = gameTime - last
             if (elapsed < interval) return
-            emitBreathParticle(player, conditions.ambient)
+            emitBreathParticle(player, vitals.breathingRate.visibility(conditions.ambient))
             cache[player.uuid] = gameTime
         }
     }

@@ -23,6 +23,7 @@ import java.util.ArrayDeque
 import java.util.UUID
 import kotlin.math.abs
 
+// vanilla
 internal val SLEEPING: MET = MET(0.9)
 internal val DRINKING: MET = MET(1.3)
 internal val RIDING: MET = MET(1.3)
@@ -35,7 +36,7 @@ internal val CRAWLING: MET = MET(4.0)
 internal val DRAWING_BOW: MET = MET(4.0)
 internal val TREADING_WATER: MET = MET(4.0)
 internal val WALKING: MET = MET(4.0)
-internal val SHIVERING: MET = MET(4.5)
+internal val SHIVERING: MET = MET(6.0)
 internal val ROWING: MET = MET(6.0)
 internal val USING_HOE: MET = MET(6.0)
 internal val USING_SHOVEL: MET = MET(7.0)
@@ -152,9 +153,9 @@ public class Exertion(private val accumulator: ArrayDeque<MET>) {
                 return boat.getPaddleState(0) || boat.getPaddleState(1)
             }
 
-        internal val ServerPlayer.isShivering: Boolean
+        internal val ServerPlayer.shivering: MET
             get() {
-                return shiverStrength(this) > 0.0
+                return MET(1.0 + (SHIVERING.value - 1.0) * shiverStrength(this))
             }
 
         internal val ServerPlayer.isWalking: Boolean
@@ -209,7 +210,7 @@ public class Exertion(private val accumulator: ArrayDeque<MET>) {
             if (player.isPlacingBlocks) activities.add(PLACING_BLOCKS)
             if (player.isRiding) activities.add(RIDING)
             if (player.isRowing) activities.add(ROWING)
-            if (player.isShivering) activities.add(SHIVERING)
+            activities.add(player.shivering)
             if (player.isSleeping) activities.add(SLEEPING)
             if (player.isSprinting) activities.add(SPRINTING)
             if (player.isSwimming) activities.add(SWIMMING)

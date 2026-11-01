@@ -4,17 +4,21 @@ import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
+import kotlin.math.pow
 
 @JvmInline
 public value class Heat(public val celsius: Double) : Comparable<Heat> {
     public operator fun plus(o: Heat): Heat = Heat(celsius + o.celsius)
     public operator fun minus(o: Heat): Heat = Heat(celsius - o.celsius)
-    public operator fun div(o: Heat): Heat = Heat(celsius / o.celsius)
+    public operator fun div(o: Heat): Double = celsius / o.celsius
     public operator fun div(d: Double): Heat = Heat(celsius / d)
-    public operator fun times(o: Heat): Heat = Heat(celsius * o.celsius)
     public operator fun times(d: Double): Heat = Heat(celsius * d)
     override fun compareTo(other: Heat): Int = compareValues(celsius, other.celsius)
     override fun toString(): String = "$celsius°C"
+
+    public fun approach(equilibrium: Heat, elapsed: Duration, halfLife: Duration): Heat =
+        equilibrium + (this - equilibrium) *
+            0.5.pow(elapsed.value.coerceAtLeast(0).toDouble() / halfLife.value)
 
     public fun coerceAtLeast(minimum: Double): Heat =
         if (this.celsius < minimum) Heat(minimum) else this

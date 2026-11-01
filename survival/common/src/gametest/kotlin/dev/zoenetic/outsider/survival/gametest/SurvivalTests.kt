@@ -7,9 +7,13 @@ import dev.zoenetic.outsider.survival.emission.EmitterIndex
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
-import dev.zoenetic.outsider.survival.vitals.COMFORT_HIGH
-import dev.zoenetic.outsider.survival.vitals.COMFORT_LOW
+import dev.zoenetic.outsider.survival.vitals.BodyTemperature
+import dev.zoenetic.outsider.survival.vitals.MET
 import dev.zoenetic.outsider.survival.vitals.Vitals
+import dev.zoenetic.outsider.survival.vitals.conductance
+import dev.zoenetic.outsider.survival.vitals.environment
+import dev.zoenetic.outsider.survival.vitals.getContacts
+import dev.zoenetic.outsider.survival.vitals.getInsulation
 import net.minecraft.core.BlockPos
 import net.minecraft.gametest.framework.GameTestHelper
 import net.minecraft.server.level.ServerPlayer
@@ -20,6 +24,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import kotlin.math.abs
 
 data class SurvivalTest(val name: String, val maxTicks: Int, val run: (GameTestHelper) -> Unit)
+
+private const val STILL_RATE = 1e-4
+private const val STILL_DRIFT = 0.01
 
 object SurvivalTests {
 
@@ -81,7 +88,7 @@ object SurvivalTests {
         PlayerConditions.tick(helper.level)
 
         val stored = helper.require(
-            Survival.platform.playerConditions.get(player),
+            Survival.platform.conditions.get(player),
             "conditions for a player the level tick has just visited",
         )
         if (stored.time.value != helper.level.gameTime) {
@@ -97,13 +104,23 @@ object SurvivalTests {
         val player = helper.playerAt(BlockPos(1, 2, 1))
         var ambient: Heat? = null
         var start: Double? = null
+        var predicted: Double? = null
 
         helper.startSequence()
             .thenIdle(2)
             .thenExecute {
-                ambient = helper.sample(player).ambient
-                start = helper.require(Vitals.get(player), "seeded vitals")
-                    .bodyTemperature.heat.celsius
+                val conditions = helper.sample(player)
+                val body = helper.require(Vitals.get(player), "seeded vitals").bodyTemperature.heat
+                val contacts = player.getContacts(conditions)
+                ambient = conditions.ambient
+                start = body.celsius
+                predicted = BodyTemperature.rate(
+                    body,
+                    contacts.environment(),
+                    contacts.conductance(),
+                    player.getInsulation(),
+                    MET(1.0),
+                )
             }
             .thenExecuteFor(100) { /* the mod's own tick handlers do the work */ }
             .thenExecute {
@@ -113,24 +130,17 @@ object SurvivalTests {
                     .bodyTemperature.heat.celsius
                 val drift = now - began
                 val where = "ambient ${outside.celsius}C, body $began -> $now (drift $drift)"
-                when {
-                    outside < COMFORT_LOW -> if (drift >= 0.0) {
+                val rate = helper.require(predicted, "a predicted rate")
+                if (abs(rate) < STILL_RATE) {
+                    if (abs(drift) > STILL_DRIFT) {
                         throw helper.assertionException(
-                            "below the comfort band the body should cool: $where",
+                            "the model predicts a steady body, but it moved: $where",
                         )
                     }
-
-                    outside > COMFORT_HIGH -> if (drift <= 0.0) {
-                        throw helper.assertionException(
-                            "above the comfort band the body should warm: $where",
-                        )
-                    }
-
-                    else -> if (abs(drift) > 1e-6) {
-                        throw helper.assertionException(
-                            "inside the comfort band the body should hold steady: $where",
-                        )
-                    }
+                } else if (drift * rate <= 0.0) {
+                    throw helper.assertionException(
+                        "the model predicts ${if (rate > 0) "warming" else "cooling"}: $where",
+                    )
                 }
             }
             .thenSucceed()

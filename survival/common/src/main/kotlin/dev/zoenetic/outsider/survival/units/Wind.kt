@@ -9,7 +9,7 @@ public val CALM: Wind = Wind(Vec3(0.0, 0.0, 0.0))
 public const val GRADIENT_STEP: Int = 16
 public const val SPEED_SCALE: Double = 1000.0
 public const val MAX_SPEED: Double = 15.0
-public const val CHILL: Double = 0.2
+public const val CHILL: Double = 0.03
 
 public data class Wind(public val vector: Vec3) {
     public val speed: Double = vector.length()

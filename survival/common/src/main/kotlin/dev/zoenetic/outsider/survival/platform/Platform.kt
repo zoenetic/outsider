@@ -14,7 +14,7 @@ public interface Platform {
     public val wideners: Widener
 
     public val emitters: ChunkStore<Long2LongOpenHashMap>
-    public val playerConditions: PlayerStore<PlayerConditions>
+    public val conditions: PlayerStore<PlayerConditions>
     public val vitals: SyncedPlayerStore<Vitals>
     public val workState: TransientSyncedPlayerStore<WorkState>
 }

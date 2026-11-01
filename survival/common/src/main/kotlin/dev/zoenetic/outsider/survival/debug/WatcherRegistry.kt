@@ -41,7 +41,7 @@ public object WatcherRegistry {
                 val player = players[uuid] ?: continue
                 val level = player.level()
                 val time = Time(level.gameTime)
-                val conditions = Survival.platform.playerConditions.get(player) ?: continue
+                val conditions = Survival.platform.conditions.get(player) ?: continue
                 val vitals = Survival.platform.vitals.get(player) ?: continue
                 val exertion = Exertion.average(player.uuid)
                 val speed = player.getAttributeValue(MOVEMENT_SPEED)
@@ -53,7 +53,7 @@ public object WatcherRegistry {
                         Component.literal(
                             "FL${"%.1f".format(Locale.ROOT, conditions.feelsLike().celsius)}" +
                                 " A${"%.1f".format(Locale.ROOT, conditions.ambient.celsius)}" +
-                                " H${"%.1f".format(Locale.ROOT, conditions.radiant.celsius)}/${
+                                " R${"%.1f".format(Locale.ROOT, conditions.radiant.celsius)}/${
                                     "%.1f".format(
                                         Locale.ROOT,
                                         radiant.celsius,

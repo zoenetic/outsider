@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.zoenetic.outsider.survival.emission.EmittingBlock
+import dev.zoenetic.outsider.survival.emission.HeatTable
 import dev.zoenetic.outsider.survival.emission.LightTable
 import dev.zoenetic.outsider.survival.fire.FireInteractions
 import dev.zoenetic.outsider.survival.fuel.Burnout
@@ -12,8 +13,8 @@ import dev.zoenetic.outsider.survival.fuel.FuelledBlock
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
 import dev.zoenetic.outsider.survival.units.Duration
-import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Light
+import dev.zoenetic.outsider.survival.units.Power
 import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -57,8 +58,10 @@ public open class OutsiderCampfireBlock(
     @Suppress("UNCHECKED_CAST")
     override fun codec(): MapCodec<CampfireBlock> = CODEC as MapCodec<CampfireBlock>
 
-    override val maxHeat: Heat
-        get() = Heat(20.0)
+    override val maxHeat: Power
+        get() = Power(16.0)
+
+    override val heatTable: HeatTable get() = HeatTable.embers(maxHeat)
 
     override val maxLight: Light get() = Light(lightTable[Fuel.MAX.level])
 
@@ -66,7 +69,10 @@ public open class OutsiderCampfireBlock(
 
     override val lightTable: LightTable get() = LightTable.IDENTITY
 
-    override fun getHeat(state: BlockState): Heat = if (state.getValue(LIT)) maxHeat else Heat.ZERO
+    override fun getHeat(state: BlockState): Power {
+        if (!state.getValue(LIT)) return Power.ZERO
+        return heatTable[getFuel(state).level]
+    }
 
     override fun getLight(state: BlockState): Light {
         if (!state.getValue(LIT)) return Light.ZERO

@@ -8,6 +8,7 @@ import dev.zoenetic.outsider.survival.emission.EmittingBlock.Companion.emitterOr
 import dev.zoenetic.outsider.survival.fuel.Burnout
 import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.units.Heat
+import dev.zoenetic.outsider.survival.units.Power
 import dev.zoenetic.outsider.survival.units.Time
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.longs.Long2LongMaps
@@ -29,7 +30,7 @@ import java.util.stream.LongStream
 public object EmitterIndex {
 
     public const val ABSENT: Long = Long.MIN_VALUE
-    internal const val EMISSION_SOFTENING = 1.0
+    internal const val EMISSION_RADIUS = 2.0
 
     internal val MAX_RADIUS: Int
         get() = 16
@@ -94,14 +95,14 @@ public object EmitterIndex {
         return total
     }
 
-    internal fun heatFrom(body: Vec3, source: BlockPos, heat: Heat): Heat {
+    internal fun heatFrom(body: Vec3, source: BlockPos, power: Power): Heat {
         val distanceSq = body.distanceToSqr(Vec3.atCenterOf(source))
-        return Heat(heat.celsius / (distanceSq + EMISSION_SOFTENING))
+        return Heat(power.value / (1.0 + distanceSq / (EMISSION_RADIUS * EMISSION_RADIUS)))
     }
 
     public fun BlockState.isLit(): Boolean = getValueOrElse(BlockStateProperties.LIT, true)
 
-    internal fun BlockState.heat(): Heat? {
+    internal fun BlockState.heat(): Power? {
         val block = block
         val emitter = block.emitterOrNull() ?: return null
         return emitter.getHeat(this)

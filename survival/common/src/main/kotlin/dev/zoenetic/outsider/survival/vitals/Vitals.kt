@@ -36,7 +36,7 @@ public data class Vitals(
             elapsed: Duration,
         ): Vitals {
             val conditions =
-                Survival.platform.playerConditions.get(player) ?: return previous
+                Survival.platform.conditions.get(player) ?: return previous
             val exertion = Exertion.average(player.uuid) ?: Exertion.DEFAULT
             val bodyTemperature = previous.bodyTemperature.getNew(
                 player,
