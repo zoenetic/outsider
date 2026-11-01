@@ -26,6 +26,9 @@ internal const val BREATHING_FULL_VOLUME_THRESHOLD = 40.0
 internal const val BREATHING_VISIBLE_THRESHOLD = 8.0
 internal const val BREATHING_FULL_VISIBILITY_THRESHOLD = -5.0
 
+internal val LONGEST_EXHALE_AT_REST: Duration = Duration(60)
+internal val INHALE: Duration = Duration(20)
+
 public data class Breath(val interval: Duration, val pitch: Float, val volume: Float)
 
 public data class BreathingRate(val value: Double = RESTING_BREATHING_RATE) {
@@ -54,6 +57,14 @@ public data class BreathingRate(val value: Double = RESTING_BREATHING_RATE) {
             halfLife,
         )
         return BreathingRate(new)
+    }
+
+    public fun longestExhale(): Duration = if (value <=
+        0.0
+    ) {
+        Duration.NONE
+    } else {
+        LONGEST_EXHALE_AT_REST * (RESTING_BREATHING_RATE / value)
     }
 
     public fun toBreath(): Breath? {

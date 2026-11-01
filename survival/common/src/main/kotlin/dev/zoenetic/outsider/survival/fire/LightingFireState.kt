@@ -5,18 +5,23 @@ import dev.zoenetic.outsider.survival.tools.drill.handdrill.DrillingConditions
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
+import dev.zoenetic.outsider.survival.vitals.MET
 import dev.zoenetic.outsider.survival.work.WorkContext
 import dev.zoenetic.outsider.survival.work.WorkEffectsContext
 import dev.zoenetic.outsider.survival.work.WorkState
-import net.minecraft.core.BlockPos
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import kotlin.math.pow
+import net.minecraft.world.phys.Vec3
 
-public data class LightingFireState(val blockPos: BlockPos, val phase: Phase) : WorkState {
+public data class LightingFireState(val board: Vec3, val phase: Phase) : WorkState {
 
     override val work: LightingFire get() = OutsiderWork.LIGHTING_FIRE
+
+    override fun anchor(): Vec3 = work.anchor(this)
+
+    override fun exertion(): MET? = work.exertion(this)
+
     override fun tick(context: WorkContext): LightingFireState? = work.tick(context, this)
 
     override fun tickEffects(context: WorkEffectsContext): Unit = work.tickEffects(context, this)
@@ -64,13 +69,11 @@ public data class LightingFireState(val blockPos: BlockPos, val phase: Phase) : 
         }
 
         public fun heatAt(now: Time, conditions: DrillingConditions): Heat = with(conditions) {
-            if (held) {
-                val elapsed = now - timestamp
-                return (heat + risePerTick * elapsed.value.toDouble()).coerceAtMost(ignition)
-            } else {
-                val elapsed = (now - timestamp).value.toDouble()
-                return ambient + (heat - ambient) * 0.5.pow(elapsed / halfLife.value)
-            }
+            heat.approach(
+                if (held) ambient + drillingRise else ambient,
+                now - timestamp,
+                halfLife,
+            )
         }
 
         public companion object {
@@ -92,9 +95,12 @@ public data class LightingFireState(val blockPos: BlockPos, val phase: Phase) : 
     }
 
     public data class NursingEmbers(
+        val heat: Heat,
         val diesAt: Time,
         val blown: Duration,
         val blownRequired: Duration,
+        val breathUntil: Time,
+        val nextBreathAt: Time,
         val held: Boolean,
         val timestamp: Time,
     ) : Phase {
@@ -107,15 +113,29 @@ public data class LightingFireState(val blockPos: BlockPos, val phase: Phase) : 
             return blown
         }
 
+        public fun heatAt(now: Time, conditions: EmberConditions): Heat = with(conditions) {
+            heat.approach(
+                if (held) ambient + blowingRise else ambient,
+                now - timestamp,
+                halfLife,
+            )
+        }
+
         public companion object {
             public val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, NursingEmbers> =
                 StreamCodec.composite(
+                    Heat.STREAM_CODEC,
+                    NursingEmbers::heat,
                     Time.STREAM_CODEC,
                     NursingEmbers::diesAt,
                     Duration.STREAM_CODEC,
                     NursingEmbers::blown,
                     Duration.STREAM_CODEC,
                     NursingEmbers::blownRequired,
+                    Time.STREAM_CODEC,
+                    NursingEmbers::breathUntil,
+                    Time.STREAM_CODEC,
+                    NursingEmbers::nextBreathAt,
                     ByteBufCodecs.BOOL,
                     NursingEmbers::held,
                     Time.STREAM_CODEC,
@@ -128,8 +148,8 @@ public data class LightingFireState(val blockPos: BlockPos, val phase: Phase) : 
     public companion object {
         public val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, LightingFireState> =
             StreamCodec.composite(
-                BlockPos.STREAM_CODEC,
-                LightingFireState::blockPos,
+                Vec3.STREAM_CODEC,
+                LightingFireState::board,
                 Phase.STREAM_CODEC,
                 LightingFireState::phase,
                 ::LightingFireState,

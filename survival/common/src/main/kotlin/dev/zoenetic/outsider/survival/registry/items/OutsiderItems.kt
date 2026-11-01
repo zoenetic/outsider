@@ -40,8 +40,7 @@ public object OutsiderItems {
         "tinder",
         ::TinderItem,
     ) {
-        Item.Properties()
-            .durability(1)
+        Item.Properties().stacksTo(16)
     }
 
     public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(

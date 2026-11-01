@@ -5,14 +5,16 @@ import dev.zoenetic.outsider.survival.tools.drill.handdrill.DrillingConditions
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
+import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class DrillingTests {
 
     private val conditions = DrillingConditions(
         ambient = Heat(20.0),
-        risePerTick = Heat(4.0),
+        drillingRise = Heat(480.0),
         halfLife = Duration(40),
         ignition = Heat(400.0),
     )
@@ -40,16 +42,35 @@ class DrillingTests {
     }
 
     @Test
-    fun `held heat rises at the conditions' rate`() {
-        assertEquals(Heat(100.0), drilling(held = true).heatAt(later(20), conditions))
+    fun `held heat closes half the gap to its drilling equilibrium every half-life`() {
+        assertEquals(260.0, drilling(held = true).heatAt(later(40), conditions).celsius, 1e-9)
     }
 
     @Test
-    fun `held heat stops at the ignition point`() {
-        assertEquals(
-            Heat(400.0),
-            drilling(held = true, heat = 300.0).heatAt(later(100), conditions),
-        )
+    fun `held heat levels off at ambient plus the drilling rise`() {
+        val settled = drilling(held = true).heatAt(later(10_000), conditions)
+        assertEquals(500.0, settled.celsius, 1e-6)
+    }
+
+    @Test
+    fun `steady drilling from cold reaches ignition in a few seconds`() {
+        val start = drilling(held = true)
+        assertTrue(start.heatAt(later(90), conditions) < conditions.ignition)
+        assertTrue(start.heatAt(later(91), conditions) >= conditions.ignition)
+    }
+
+    @Test
+    fun `colder air makes the char take longer to reach ignition`() {
+        val cold = conditions.copy(ambient = Heat(-20.0))
+        val start = drilling(held = true, heat = -20.0)
+        assertTrue(start.heatAt(later(91), cold) < cold.ignition)
+    }
+
+    @Test
+    fun `air too cold for the drilling rise never reaches ignition`() {
+        val bitter = conditions.copy(ambient = Heat(-90.0))
+        val start = drilling(held = true, heat = -90.0)
+        assertTrue(start.heatAt(later(100_000), bitter) < bitter.ignition)
     }
 
     @Test
@@ -78,6 +99,7 @@ class DrillingTests {
             held = true,
             timestamp = pressedAt,
         )
-        assertEquals(250.0, pressed.heatAt(pressedAt + Duration(10), conditions).celsius, 1e-9)
+        val expected = 500.0 - 290.0 * 0.5.pow(10.0 / 40.0)
+        assertEquals(expected, pressed.heatAt(pressedAt + Duration(10), conditions).celsius, 1e-9)
     }
 }

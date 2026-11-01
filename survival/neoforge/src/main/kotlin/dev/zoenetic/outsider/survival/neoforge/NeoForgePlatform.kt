@@ -61,12 +61,12 @@ public object NeoForgePlatform : Platform {
 
     override val workState: TransientSyncedPlayerStore<WorkState> =
         NeoForgeTransientSyncedPlayerStore(
-            register.attachment("working_mode") {
+            register.attachment("work_states") {
                 AttachmentType.builder(
                     Supplier<WorkState> {
-                        error("working_mode has no default")
+                        error("work_states has no default")
                     },
-                ).sync({ holder, to -> holder === to }, WorkState.STREAM_CODEC)
+                ).sync(WorkState.STREAM_CODEC)
                     .build()
             },
         )

@@ -7,8 +7,8 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
 
 public object OutsiderBlockTags {
-    public val LIGHTABLE_WITH_DRILL: TagKey<Block> = TagKey.create(
+    public val LIGHTABLE_WITH_FIRE: TagKey<Block> = TagKey.create(
         Registries.BLOCK,
-        Identifier.fromNamespaceAndPath(Survival.NAMESPACE, "lightable_with_drill"),
+        Identifier.fromNamespaceAndPath(Survival.NAMESPACE, "lightable_with_fire"),
     )
 }

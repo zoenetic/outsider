@@ -16,8 +16,8 @@ public object OutsiderSounds {
             SoundEvent.createVariableRangeEvent(it)
         }
 
-    public val USE_DRILL_SOUND: SoundEvent by
-        Survival.platform.register.sound("use_drill_sound") {
+    public val DRILL_USE: SoundEvent by
+        Survival.platform.register.sound("drill_use_sound") {
             SoundEvent.createVariableRangeEvent(it)
         }
 
@@ -33,6 +33,11 @@ public object OutsiderSounds {
 
     public val REFUEL_FIRE: SoundEvent by
         Survival.platform.register.sound("refuel_fire") {
+            SoundEvent.createVariableRangeEvent(it)
+        }
+
+    public val TINDER_BURNS_UP: SoundEvent by
+        Survival.platform.register.sound("tinder_burns_up") {
             SoundEvent.createVariableRangeEvent(it)
         }
 

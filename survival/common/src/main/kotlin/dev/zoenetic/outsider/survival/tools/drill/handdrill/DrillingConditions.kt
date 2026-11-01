@@ -5,7 +5,7 @@ import dev.zoenetic.outsider.survival.units.Heat
 
 public data class DrillingConditions(
     val ambient: Heat,
-    val risePerTick: Heat,
+    val drillingRise: Heat,
     val halfLife: Duration,
     val ignition: Heat,
 )

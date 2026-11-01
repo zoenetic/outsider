@@ -1,6 +1,15 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "outsider_survival:item/hand_drill"
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "outsider_survival:item/hand_drill"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/stick"
+    },
+    "phase": "drilling",
+    "property": "outsider_survival:lighting_phase"
   }
 }

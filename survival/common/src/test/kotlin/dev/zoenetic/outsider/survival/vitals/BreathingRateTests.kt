@@ -146,4 +146,25 @@ class BreathingRateTests {
         val vis = temps.map { visibility(it) }
         assertEquals(vis.sortedDescending(), vis, "visibility should fall as air warms")
     }
+
+    @Test
+    fun `at rest the longest exhale is the full resting blow`() {
+        assertEquals(LONGEST_EXHALE_AT_REST, BreathingRate(resting).longestExhale())
+    }
+
+    @Test
+    fun `breathing twice as fast halves the longest exhale`() {
+        assertEquals(Duration(30), BreathingRate(resting * 2).longestExhale())
+    }
+
+    @Test
+    fun `the longest exhale shrinks as breathing quickens`() {
+        val exhales = (14..50 step 4).map { BreathingRate(it.toDouble()).longestExhale().value }
+        assertEquals(exhales.sortedDescending(), exhales)
+    }
+
+    @Test
+    fun `without breathing there is no exhale`() {
+        assertEquals(Duration.NONE, BreathingRate(0.0).longestExhale())
+    }
 }

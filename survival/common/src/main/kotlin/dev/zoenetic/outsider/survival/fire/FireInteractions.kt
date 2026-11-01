@@ -7,6 +7,7 @@ import dev.zoenetic.outsider.survival.fuel.FuelledBlock.Companion.fuelledOrNull
 import dev.zoenetic.outsider.survival.registry.OutsiderSounds
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
+import dev.zoenetic.outsider.survival.tools.TinderItem
 import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.core.BlockPos
 import net.minecraft.sounds.SoundSource
@@ -63,6 +64,7 @@ public object FireInteractions {
         pos: BlockPos,
         player: Player,
     ): InteractionResult {
+        if (itemStack.item is TinderItem) return InteractionResult.PASS
         if (!state.hasProperty(BlockStateProperties.LIT) ||
             state.getValue(BlockStateProperties.LIT)
         ) {

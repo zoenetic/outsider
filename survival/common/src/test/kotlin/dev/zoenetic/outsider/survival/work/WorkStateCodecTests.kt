@@ -11,10 +11,10 @@ import dev.zoenetic.outsider.survival.units.Heat
 import dev.zoenetic.outsider.survival.units.Time
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.DecoderException
-import net.minecraft.core.BlockPos
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.resources.Identifier
+import net.minecraft.world.phys.Vec3
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -41,9 +41,12 @@ class WorkStateCodecTests {
             timestamp = Time(9_000),
         ),
         Phase.Kind.NURSING_EMBERS to NursingEmbers(
+            heat = Heat(512.5),
             diesAt = Time(123_456),
             blown = Duration(7),
             blownRequired = Duration(20),
+            breathUntil = Time(9_060),
+            nextBreathAt = Time(8_990),
             held = true,
             timestamp = Time(123_440),
         ),
@@ -54,7 +57,7 @@ class WorkStateCodecTests {
         assertEquals(Phase.Kind.entries.toSet(), lightingFirePhases.keys, "a phase has no example here")
         for ((kind, phase) in lightingFirePhases) {
             assertEquals(kind, phase.kind, "${phase::class.simpleName} reports the wrong kind")
-            val state = LightingFireState(BlockPos(12, -40, 7), phase)
+            val state = LightingFireState(Vec3(12.5, -40.0, 7.25), phase)
             val decoded = roundTrip(state)
             assertEquals(state, decoded)
             assertSame(state.work, decoded.work)

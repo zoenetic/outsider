@@ -5,15 +5,6 @@
     ],
     "subtitle": "subtitles.outsider_survival.breath"
   },
-  "flint_and_steel_fail": {
-    "sounds": [
-      {
-        "name": "minecraft:block.candle.extinguish",
-        "type": "event"
-      }
-    ],
-    "subtitle": "subtitles.outsider_survival.flint_and_steel_fail"
-  },
   "fire_success": {
     "sounds": [
       {
@@ -46,5 +37,23 @@
       }
     ],
     "subtitle": "subtitles.outsider_survival.refuel_fire"
+  },
+  "tinder_burns_up": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.burn",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.outsider_survival.tinder_burns_up"
+  },
+  "blowing": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.puffer_fish.blow_out",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.outsider_survival.blowing"
   }
 }

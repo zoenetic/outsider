@@ -5,6 +5,7 @@ import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
 import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
 import dev.zoenetic.outsider.survival.datagen.models.handDrillModel
 import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
+import dev.zoenetic.outsider.survival.datagen.models.tinderModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.torchModel
@@ -65,6 +66,7 @@ class OutsiderNeoForgeModelProvider(output: PackOutput, modId: String) :
         )
 
         handDrillModel(blocks.modelOutput, blocks.itemModelOutput)
+        tinderModel(blocks.modelOutput, blocks.itemModelOutput)
 
         OutsiderLooseStones.ALL.forEach {
             looseStoneModel(it, blocks.blockStateOutput, blocks.modelOutput, blocks.itemModelOutput)

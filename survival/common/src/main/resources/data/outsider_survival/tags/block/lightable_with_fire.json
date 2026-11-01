@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "outsider_survival:campfire",
+    "outsider_survival:torch",
+    "outsider_survival:wall_torch",
+    "#minecraft:candles",
+    "#minecraft:candle_cakes"
+  ]
+}

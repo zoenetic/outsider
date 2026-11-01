@@ -2,7 +2,7 @@ package dev.zoenetic.outsider.survival.work
 
 import dev.zoenetic.outsider.survival.Survival
 import dev.zoenetic.outsider.survival.units.Time
-import net.minecraft.core.BlockPos
+import dev.zoenetic.outsider.survival.vitals.MET
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.Identifier
@@ -13,20 +13,16 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
+import net.minecraft.world.phys.Vec3
 
 public abstract class Work<S : WorkState>(public val id: Identifier) {
 
     public abstract val stateCodec: StreamCodec<RegistryFriendlyByteBuf, S>
 
-    public abstract fun accepts(player: Player, item: Item, blockPos: BlockPos): Boolean
-    public abstract fun stillValid(player: Player, blockPos: BlockPos): Boolean
+    public abstract fun anchor(state: S): Vec3?
+    public abstract fun exertion(state: S): MET?
     public abstract fun tick(context: WorkContext, state: S): S?
-    public abstract fun use(
-        player: Player,
-        hand: InteractionHand,
-        item: Item,
-        blockPos: BlockPos,
-    ): InteractionResult
+    public abstract fun use(player: Player, hand: InteractionHand, item: Item): InteractionResult
 
     public open fun tickEffects(context: WorkEffectsContext, state: S) {}
 
@@ -50,12 +46,19 @@ public abstract class Work<S : WorkState>(public val id: Identifier) {
         public fun tick(player: Player, level: Level) {
             val now = Time(level.gameTime)
             val stored = get(player) ?: return
+            player.faceWork(stored)
             val effectsContext = WorkEffectsContext(level, player, now)
             stored.tickEffects(effectsContext)
             if (level !is ServerLevel || player !is ServerPlayer) return
             val context = WorkContext.of(player)
             val next = stored.tick(context) ?: return end(player)
-            set(player, next)
+            if (next != stored) set(player, next)
+        }
+
+        private fun Player.faceWork(state: WorkState) {
+            val anchor = state.anchor() ?: return
+            yBodyRot = yawTowards(position(), anchor)
+            yBodyRotO = yBodyRot
         }
     }
 }

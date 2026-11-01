@@ -56,8 +56,8 @@ public object FabricPlatform : Platform {
 
     override val workState: TransientSyncedPlayerStore<WorkState> =
         FabricTransientSyncedPlayerStore(
-            AttachmentRegistry.create(id("working_mode")) {
-                it.syncWith(WorkState.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+            AttachmentRegistry.create(id("work_states")) {
+                it.syncWith(WorkState.STREAM_CODEC, AttachmentSyncPredicate.all())
             },
         )
 }

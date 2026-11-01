@@ -13,10 +13,12 @@
   "client": [
     "AbstractClientPlayerMixin",
     "HumanoidModelMixin",
+    "ItemInHandLayerMixin",
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",
     "KeyboardHandlerMixin",
     "KeyboardInputMixin",
+    "LevelRendererMixin",
     "LivingEntityRendererMixin",
     "LivingEntityRenderStateMixin",
     "MinecraftMixin"

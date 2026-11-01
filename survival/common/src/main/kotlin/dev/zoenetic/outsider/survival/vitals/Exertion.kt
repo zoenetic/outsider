@@ -1,5 +1,6 @@
 package dev.zoenetic.outsider.survival.vitals
 
+import dev.zoenetic.outsider.survival.work.Work
 import net.minecraft.SharedConstants
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
@@ -52,6 +53,10 @@ internal val JABBING_TRIDENT: MET = MET(12.0)
 internal val SPRINTING: MET = MET(14.0)
 internal val CHARGING_TRIDENT: MET = MET(4.0)
 internal val BRACING_SPEAR: MET = MET(2.0)
+
+// outsider
+internal val BLOWING: MET = MET(2.0)
+internal val HAND_DRILLING: MET = MET(6.0)
 
 internal const val LEATHER_WEIGHT = 0.7
 internal const val DIAMOND_WEIGHT = 1.0
@@ -218,6 +223,7 @@ public class Exertion(private val accumulator: ArrayDeque<MET>) {
             if (player.isVisuallyCrawling) activities.add(CRAWLING)
             if (player.isWalking) activities.add(WALKING)
             activities.addAll(useActions(player))
+            Work.get(player)?.exertion()?.let(activities::add)
 
             val exertion = activities.sumOf { it.value - 1.0 }
             val load = player.encumbrance.sumOf { it.value }

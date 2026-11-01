@@ -1,0 +1,58 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "component": "outsider_survival:lit",
+    "on_false": {
+      "type": "minecraft:condition",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "outsider_survival:item/tinder_unlit"
+      },
+      "on_true": {
+        "type": "minecraft:range_dispatch",
+        "entries": [
+          {
+            "model": {
+              "type": "minecraft:model",
+              "model": "outsider_survival:item/tinder_ember_0"
+            },
+            "threshold": 0.0
+          },
+          {
+            "model": {
+              "type": "minecraft:model",
+              "model": "outsider_survival:item/tinder_ember_1"
+            },
+            "threshold": 0.25
+          },
+          {
+            "model": {
+              "type": "minecraft:model",
+              "model": "outsider_survival:item/tinder_ember_2"
+            },
+            "threshold": 0.5
+          },
+          {
+            "model": {
+              "type": "minecraft:model",
+              "model": "outsider_survival:item/tinder_ember_3"
+            },
+            "threshold": 0.75
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "outsider_survival:item/tinder_ember_0"
+        },
+        "property": "outsider_survival:ember_heat"
+      },
+      "phase": "nursing_embers",
+      "property": "outsider_survival:lighting_phase"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "outsider_survival:item/tinder_lit"
+    },
+    "property": "minecraft:has_component"
+  }
+}

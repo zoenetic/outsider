@@ -32,6 +32,36 @@ public class ItemInHandRendererMixin {
         }
     }
 
+    @Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
+    private void outsider_survival$hideOtherHandWhileTwoHanded(
+            AbstractClientPlayer player, float frameInterp, float xRot,
+            InteractionHand hand, float attack, ItemStack itemStack,
+            float inverseArmHeight, PoseStack poseStack,
+            SubmitNodeCollector submitNodeCollector, int lightCoords,
+            CallbackInfo ci
+    ) {
+        OutsiderItemUseAnimation animation = OutsiderItemUseAnimations.INSTANCE.of(player);
+        if (animation != null && animation.getTwoHanded() && hand != player.getUsedItemHand()) ci.cancel();
+    }
+
+    @Inject(method = "submitHandsWithItems", at = @At("TAIL"))
+    private void outsider_survival$renderTwoHandedArms(
+            float frameInterp, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+            LocalPlayer player, int lightCoords, CallbackInfo ci
+    ) {
+        if (player.isInvisible() || player.isScoping()) return;
+        OutsiderItemUseAnimation animation = OutsiderItemUseAnimations.INSTANCE.of(player);
+        if (animation == null || !animation.getTwoHanded()) return;
+        float ticks = player.getTicksUsingItem() + frameInterp;
+        for (HumanoidArm arm : HumanoidArm.values()) {
+            poseStack.pushPose();
+            animation.firstPersonArm(poseStack, arm, ticks);
+            ((ItemInHandRendererInvoker) this).outsider_survival$renderPlayerArm(
+                    poseStack, submitNodeCollector, lightCoords, 0F, 0F, arm);
+            poseStack.popPose();
+        }
+    }
+
     @Inject(
             method = "submitArmWithItem",
             at = @At(
