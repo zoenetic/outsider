@@ -48,6 +48,7 @@ val items: List<String?> = listOf(
     "tinder_lit",
     "tinder_lit",
     "tinder_lit",
+    "plant_fibre",
 )
 
 val sheet = readImage(sheetPath)

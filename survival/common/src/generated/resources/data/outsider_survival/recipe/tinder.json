@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "#outsider_survival:tinder_materials"
+  ],
+  "result": {
+    "id": "outsider_survival:tinder"
+  }
+}

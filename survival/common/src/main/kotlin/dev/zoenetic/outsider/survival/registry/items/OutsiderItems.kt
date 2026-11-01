@@ -36,11 +36,18 @@ public object OutsiderItems {
             .component(DataComponents.USE_EFFECTS, UseEffects(false, true, 0F))
     }
 
+    public val PLANT_FIBRE: Item by Survival.platform.register.item(
+        "plant_fibre",
+        ::Item,
+    ) {
+        Item.Properties()
+    }
+
     public val TINDER: Item by Survival.platform.register.item(
         "tinder",
         ::TinderItem,
     ) {
-        Item.Properties().stacksTo(16)
+        Item.Properties()
     }
 
     public val TORCH: Item by Survival.platform.register.standingAndWallBlockItem(

@@ -14,7 +14,8 @@ public object OutsiderBlockBehaviour {
             .ignitedByLava()
             .noOcclusion()
 
-        public fun deadCampfire(): BlockBehaviour.Properties = campfire().sound(SoundType.TUFF)
+        public fun deadCampfire(): BlockBehaviour.Properties =
+            campfire().instabreak().sound(SoundType.TUFF)
 
         public fun firewood(): BlockBehaviour.Properties = BlockBehaviour.Properties
             .of()

@@ -5,6 +5,7 @@ import dev.zoenetic.outsider.survival.datagen.models.deadCampfireModel
 import dev.zoenetic.outsider.survival.datagen.models.firewoodModel
 import dev.zoenetic.outsider.survival.datagen.models.handDrillModel
 import dev.zoenetic.outsider.survival.datagen.models.looseStoneModel
+import dev.zoenetic.outsider.survival.datagen.models.plantFibreModel
 import dev.zoenetic.outsider.survival.datagen.models.tinderModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadTorchModel
 import dev.zoenetic.outsider.survival.datagen.models.torch.deadWallTorchModel
@@ -66,6 +67,8 @@ class OutsiderFabricModelProvider(output: FabricPackOutput) : FabricModelProvide
             blocks.blockStateOutput,
             wallTorch0,
         )
+
+        plantFibreModel(blocks.modelOutput, blocks.itemModelOutput)
 
         OutsiderLooseStones.ALL.forEach {
             looseStoneModel(it, blocks.blockStateOutput, blocks.modelOutput, blocks.itemModelOutput)

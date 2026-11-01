@@ -31,3 +31,7 @@ logs/
 
 # Vanilla client jar cached by scripts/vanilla_palette.py
 scripts/.cache/
+
+# krita
+*.kra~
+*.png~

@@ -18,10 +18,8 @@ public fun deadCampfireLootTable() = LootTable.lootTable()
                 LootItem.lootTableItem(Items.CHARCOAL)
                     .apply(
                         SetItemCountFunction.setCount(
-                            BinomialDistributionGenerator.binomial(
-                                2,
-                                0.5f,
-                            ),
+                            BinomialDistributionGenerator.binomial(3, 0.25F),
+                            true,
                         ),
                     ),
             ),

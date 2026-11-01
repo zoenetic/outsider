@@ -1,6 +1,7 @@
 package dev.zoenetic.outsider.survival.datagen
 
 import dev.zoenetic.outsider.survival.registry.OutsiderLooseStones
+import dev.zoenetic.outsider.survival.registry.items.OutsiderItemTags
 import dev.zoenetic.outsider.survival.registry.items.OutsiderItems
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.DataProvider
@@ -54,6 +55,16 @@ class OutsiderRecipes(registries: HolderLookup.Provider, output: RecipeOutput) :
                 has(Items.STONE_PICKAXE),
             )
             .save(output, "minecraft:torch")
+
+        shapeless(RecipeCategory.TOOLS, OutsiderItems.HAND_DRILL)
+            .requires(Items.STICK, 2)
+            .unlockedBy("has_stick", has(Items.STICK))
+            .save(output)
+
+        shapeless(RecipeCategory.MISC, OutsiderItems.TINDER)
+            .requires(OutsiderItemTags.TINDER_MATERIALS)
+            .unlockedBy("has_tinder_material", has(OutsiderItemTags.TINDER_MATERIALS))
+            .save(output)
     }
 
     private class Factory(

@@ -329,52 +329,6 @@
             }
           ],
           "name": "outsider_survival:firewood"
-        },
-        {
-          "type": "minecraft:item",
-          "conditions": [
-            {
-              "block": "outsider_survival:campfire",
-              "condition": "minecraft:block_state_property",
-              "properties": {
-                "fuel_level": "14"
-              }
-            }
-          ],
-          "functions": [
-            {
-              "count": {
-                "type": "minecraft:binomial",
-                "n": 3.0,
-                "p": 0.93333334
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "outsider_survival:firewood"
-        },
-        {
-          "type": "minecraft:item",
-          "conditions": [
-            {
-              "block": "outsider_survival:campfire",
-              "condition": "minecraft:block_state_property",
-              "properties": {
-                "fuel_level": "15"
-              }
-            }
-          ],
-          "functions": [
-            {
-              "count": {
-                "type": "minecraft:binomial",
-                "n": 3.0,
-                "p": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "outsider_survival:firewood"
         }
       ],
       "rolls": 1.0
@@ -707,7 +661,17 @@
             }
           ],
           "name": "minecraft:charcoal"
-        },
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
         {
           "type": "minecraft:item",
           "conditions": [
@@ -719,17 +683,7 @@
               }
             }
           ],
-          "functions": [
-            {
-              "count": {
-                "type": "minecraft:binomial",
-                "n": 2.0,
-                "p": 0.03333333
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:charcoal"
+          "name": "outsider_survival:campfire"
         },
         {
           "type": "minecraft:item",
@@ -742,17 +696,7 @@
               }
             }
           ],
-          "functions": [
-            {
-              "count": {
-                "type": "minecraft:binomial",
-                "n": 2.0,
-                "p": 0.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:charcoal"
+          "name": "outsider_survival:campfire"
         }
       ],
       "rolls": 1.0

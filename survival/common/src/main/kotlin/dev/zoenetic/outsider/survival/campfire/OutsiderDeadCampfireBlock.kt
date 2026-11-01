@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.SimpleWaterloggedBlock
@@ -18,6 +19,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.VoxelShape
 
 public class OutsiderDeadCampfireBlock(properties: Properties) :
     Block(properties),
@@ -33,6 +36,13 @@ public class OutsiderDeadCampfireBlock(properties: Properties) :
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(WATERLOGGED, FACING)
     }
+
+    override fun getShape(
+        state: BlockState,
+        level: BlockGetter,
+        pos: BlockPos,
+        context: CollisionContext,
+    ): VoxelShape = SHAPE
 
     override fun useItemOn(
         itemStack: ItemStack,
@@ -58,7 +68,9 @@ public class OutsiderDeadCampfireBlock(properties: Properties) :
     }
 
     public companion object {
-        public val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED
+        private val SHAPE: VoxelShape = box(0.0, 0.0, 0.0, 16.0, 5.0, 16.0)
+
         public val FACING: EnumProperty<Direction> = BlockStateProperties.HORIZONTAL_FACING
+        public val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED
     }
 }

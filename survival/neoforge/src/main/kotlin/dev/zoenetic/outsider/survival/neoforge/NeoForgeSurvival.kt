@@ -7,6 +7,7 @@ import dev.zoenetic.outsider.survival.debug.rootCommand
 import dev.zoenetic.outsider.survival.debug.setBodyTemperatureCommand
 import dev.zoenetic.outsider.survival.debug.watchCommand
 import dev.zoenetic.outsider.survival.emission.EmitterIndex.reconcileEmitters
+import dev.zoenetic.outsider.survival.registry.items.PlantFibreDrops
 import dev.zoenetic.outsider.survival.vitals.Exertion
 import dev.zoenetic.outsider.survival.work.Work
 import dev.zoenetic.outsider.survival.work.WorkClosePacketPayload
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.neoforge.event.LootTableLoadEvent
 import net.neoforged.neoforge.event.RegisterCommandsEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
@@ -32,6 +34,12 @@ public class NeoForgeSurvival(modBus: IEventBus) {
         NeoForgePlatform.init(modBus)
 
         val eventBus = NeoForge.EVENT_BUS
+
+        eventBus.addListener(LootTableLoadEvent::class.java) { event ->
+            if (event.key in PlantFibreDrops.TABLES) {
+                event.table.addPool(PlantFibreDrops.pool(event.registries))
+            }
+        }
 
         eventBus.addListener(RegisterCommandsEvent::class.java) { event ->
             event.dispatcher.register(

@@ -17,26 +17,36 @@ import net.minecraft.world.level.storage.loot.providers.number.BinomialDistribut
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
 
+private val GRACE_LEVELS = Fuel.MAX.level - 1..Fuel.MAX.level
+
+private fun atFuel(level: Int) =
+    LootItemBlockStatePropertyCondition.hasBlockStateProperties((OutsiderBlocks.CAMPFIRE))
+        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(FUEL_LEVEL, level))
+
 private fun campfirePool(
     item: Item,
     count: (remaining: Float) -> NumberProvider,
 ): LootPool.Builder {
     val pool = LootPool.lootPool()
-        .setRolls(ConstantValue.exactly(1f))
+        .setRolls(ConstantValue.exactly(1F))
         .`when`(ExplosionCondition.survivesExplosion())
     for (level in FUEL_LEVEL.possibleValues) {
+        if (level in GRACE_LEVELS) continue
         pool.add(
             LootItem.lootTableItem(item)
                 .apply(SetItemCountFunction.setCount(count(level / Fuel.MAX.level.toFloat())))
-                .`when`(
-                    LootItemBlockStatePropertyCondition.hasBlockStateProperties(
-                        OutsiderBlocks.CAMPFIRE,
-                    ).setProperties(
-                        StatePropertiesPredicate.Builder.properties()
-                            .hasProperty(FUEL_LEVEL, level),
-                    ),
-                ),
+                .`when`(atFuel(level)),
         )
+    }
+    return pool
+}
+
+private fun wholeCampfirePool(): LootPool.Builder {
+    val pool = LootPool.lootPool()
+        .setRolls(ConstantValue.exactly(1F))
+        .`when`(ExplosionCondition.survivesExplosion())
+    for (level in GRACE_LEVELS) {
+        pool.add(LootItem.lootTableItem(OutsiderItems.CAMPFIRE).`when`(atFuel(level)))
     }
     return pool
 }
@@ -50,3 +60,4 @@ private fun campfireCharcoal(remaining: Float): NumberProvider =
 public fun campfireLootTable() = LootTable.lootTable()
     .withPool(campfirePool(OutsiderItems.FIREWOOD, ::campfireFirewood))
     .withPool(campfirePool(Items.CHARCOAL, ::campfireCharcoal))
+    .withPool(wholeCampfirePool())

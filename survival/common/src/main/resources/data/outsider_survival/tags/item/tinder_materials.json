@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "outsider_survival:plant_fibre",
+    "minecraft:dead_bush",
+    "minecraft:short_dry_grass",
+    "minecraft:tall_dry_grass",
+    "minecraft:wheat",
+    "minecraft:dried_kelp",
+    "minecraft:paper"
+  ]
+}
