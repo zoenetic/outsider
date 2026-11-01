@@ -71,6 +71,13 @@ loom {
             client()
             setConfigName('Fabric Client')
             runDir('runs/client')
+            programArgs('--username', 'Player')
+        }
+        client2 {
+            client()
+            setConfigName('Fabric Client 2')
+            runDir('runs/client2')
+            programArgs('--username', 'Watcher')
         }
         server {
             server()
