@@ -6,6 +6,7 @@
   "mixins": [
     "AxeItemMixin",
     "BlockStateBaseMixin",
+    "EntityMixin",
     "LevelChunkMixin",
     "LivingEntityMixin",
     "ServerGamePacketListenerImplMixin"
@@ -21,7 +22,8 @@
     "LevelRendererMixin",
     "LivingEntityRendererMixin",
     "LivingEntityRenderStateMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "PlayerModelMixin"
   ],
   "server": [],
   "injectors": {

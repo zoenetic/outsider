@@ -1,5 +1,7 @@
 package dev.zoenetic.outsider.survival.gametest
 
+import dev.zoenetic.outsider.survival.campfire.CampfireBurn
+import dev.zoenetic.outsider.survival.campfire.CampfireStage
 import dev.zoenetic.outsider.survival.fuel.Fuel
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockStateProperties.FUEL_LEVEL
 import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlocks
@@ -71,6 +73,38 @@ object CampfireBreakingTests {
         helper.succeed()
     }
 
+    fun aCampfireSinksAsItBurns(helper: GameTestHelper) {
+        val heights = mapOf(
+            CampfireStage.FULL to 7,
+            CampfireStage.TOP_SUNK to 6,
+            CampfireStage.SUNK to 5,
+        )
+        for (level in 1..Fuel.MAX.level) {
+            val state = campfireAt(level)
+            helper.setBlock(CAMPFIRE_POS, state)
+            val pos = helper.absolutePos(CAMPFIRE_POS)
+            val expected = heights.getValue(CampfireBurn.stage(Fuel(level))) / 16.0
+            val outline = state.getShape(helper.level, pos).max(Direction.Axis.Y)
+            val collision = state.getCollisionShape(helper.level, pos, CollisionContext.empty())
+                .max(Direction.Axis.Y)
+            helper.ensure(outline == expected && collision == expected) {
+                "a campfire at fuel $level is ${outline * 16} px high to the eye and " +
+                    "${collision * 16} to walk on, expected ${expected * 16}"
+            }
+        }
+        helper.succeed()
+    }
+
+    fun aCampfireOnItsLastFuelDropsCharcoalLikeADeadOne(helper: GameTestHelper) {
+        val counts = (1..BREAKS).map { _ ->
+            helper.dropsOf(campfireAt(1)).filter { it.`is`(Items.CHARCOAL) }.sumOf { it.count }
+        }
+        helper.ensure(counts.all { it in 1..4 }) {
+            "a campfire at fuel 1 dropped ${counts.filter { it !in 1..4 }.distinct()} charcoal"
+        }
+        helper.succeed()
+    }
+
     fun aBarelyUsedCampfireDropsWhole(helper: GameTestHelper) {
         for (level in Fuel.MAX.level - 1..Fuel.MAX.level) {
             val drops = helper.dropsOf(campfireAt(level))
@@ -110,6 +144,16 @@ object CampfireBreakingTests {
             "a_dead_campfire_drops_one_to_four_charcoal",
             TEST_TICKS,
             ::aDeadCampfireDropsOneToFourCharcoal,
+        ),
+        SurvivalTest(
+            "a_campfire_sinks_as_it_burns",
+            TEST_TICKS,
+            ::aCampfireSinksAsItBurns,
+        ),
+        SurvivalTest(
+            "a_campfire_on_its_last_fuel_drops_charcoal_like_a_dead_one",
+            TEST_TICKS,
+            ::aCampfireOnItsLastFuelDropsCharcoalLikeADeadOne,
         ),
         SurvivalTest(
             "a_barely_used_campfire_drops_whole",

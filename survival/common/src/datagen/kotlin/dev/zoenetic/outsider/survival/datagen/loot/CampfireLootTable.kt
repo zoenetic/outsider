@@ -16,8 +16,10 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
+import net.minecraft.world.level.storage.loot.providers.number.Sum
 
 private val GRACE_LEVELS = Fuel.MAX.level - 1..Fuel.MAX.level
+private val LAST_EMBERS = 1F / Fuel.MAX.level
 
 private fun atFuel(level: Int) =
     LootItemBlockStatePropertyCondition.hasBlockStateProperties((OutsiderBlocks.CAMPFIRE))
@@ -55,9 +57,13 @@ private fun campfireFirewood(remaining: Float): NumberProvider =
     BinomialDistributionGenerator.binomial(3, remaining)
 
 private fun campfireCharcoal(remaining: Float): NumberProvider =
-    BinomialDistributionGenerator.binomial(2, (1f - remaining) / 2f)
+    if (remaining <= LAST_EMBERS) {
+        Sum.sum(ConstantValue.exactly(1F), DEAD_CAMPFIRE_EXTRA_CHARCOAL)
+    } else {
+        BinomialDistributionGenerator.binomial(2, (1F - remaining) / 2F)
+    }
 
-public fun campfireLootTable() = LootTable.lootTable()
+public fun campfireLootTable(): LootTable.Builder = LootTable.lootTable()
     .withPool(campfirePool(OutsiderItems.FIREWOOD, ::campfireFirewood))
     .withPool(campfirePool(Items.CHARCOAL, ::campfireCharcoal))
     .withPool(wholeCampfirePool())

@@ -18,11 +18,14 @@ import dev.zoenetic.outsider.survival.units.Power
 import dev.zoenetic.outsider.survival.units.Time
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
@@ -35,6 +38,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.VoxelShape
 
 public open class OutsiderCampfireBlock(
     private val spawnParticles: Boolean,
@@ -68,6 +73,16 @@ public open class OutsiderCampfireBlock(
     override val burnRate: Duration get() = Duration(800L)
 
     override val lightTable: LightTable get() = LightTable.IDENTITY
+    
+    override fun burnedOut(level: ServerLevel, pos: BlockPos) {
+        level.sendParticles(
+            ParticleTypes.LARGE_SMOKE,
+            pos.x + 0.5, pos.y + 0.3, pos.z + 0.5,
+            BURN_OUT_SMOKE,
+            0.25, 0.1, 0.25,
+            0.01,
+        )
+    }
 
     override fun getHeat(state: BlockState): Power {
         if (!state.getValue(LIT)) return Power.ZERO
@@ -80,6 +95,8 @@ public open class OutsiderCampfireBlock(
     }
 
     override fun getFuel(state: BlockState): Fuel = Fuel(state.getValue(FUEL_LEVEL))
+
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = SHAPES.getValue(CampfireBurn.stage(getFuel(state)))
 
     override fun setFuel(state: BlockState, fuel: Fuel): BlockState {
         val newValue = fuel.coerceAtMost(Fuel.MAX)
@@ -149,5 +166,13 @@ public open class OutsiderCampfireBlock(
         public val WATERLOGGED: BooleanProperty = BlockStateProperties.WATERLOGGED
         public val FACING: EnumProperty<Direction> = BlockStateProperties.HORIZONTAL_FACING
         public const val SMOKE_DISTANCE: Int = 5
+
+        private const val BURN_OUT_SMOKE: Int = 12
+                        
+        private val SHAPES: Map<CampfireStage, VoxelShape> = mapOf(
+            CampfireStage.FULL to box(0.0, 0.0, 0.0, 16.0, 7.0, 16.0),
+            CampfireStage.TOP_SUNK to box(0.0, 0.0, 0.0, 16.0, 6.0, 16.0),
+            CampfireStage.SUNK to box(0.0, 0.0, 0.0, 16.0, 5.0, 16.0),
+        )
     }
 }

@@ -354,9 +354,15 @@
           "functions": [
             {
               "count": {
-                "type": "minecraft:binomial",
-                "n": 2.0,
-                "p": 0.5
+                "type": "minecraft:sum",
+                "summands": [
+                  1.0,
+                  {
+                    "type": "minecraft:binomial",
+                    "n": 3.0,
+                    "p": 0.25
+                  }
+                ]
               },
               "function": "minecraft:set_count"
             }
@@ -377,9 +383,15 @@
           "functions": [
             {
               "count": {
-                "type": "minecraft:binomial",
-                "n": 2.0,
-                "p": 0.46666667
+                "type": "minecraft:sum",
+                "summands": [
+                  1.0,
+                  {
+                    "type": "minecraft:binomial",
+                    "n": 3.0,
+                    "p": 0.25
+                  }
+                ]
               },
               "function": "minecraft:set_count"
             }

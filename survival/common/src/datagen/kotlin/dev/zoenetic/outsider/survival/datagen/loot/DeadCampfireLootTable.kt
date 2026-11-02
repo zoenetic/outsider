@@ -9,7 +9,9 @@ import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 
-public fun deadCampfireLootTable() = LootTable.lootTable()
+internal val DEAD_CAMPFIRE_EXTRA_CHARCOAL = BinomialDistributionGenerator.binomial(3, 0.25F)
+
+public fun deadCampfireLootTable(): LootTable.Builder = LootTable.lootTable()
     .withPool(
         LootPool.lootPool()
             .setRolls(ConstantValue.exactly(1f))
@@ -18,7 +20,7 @@ public fun deadCampfireLootTable() = LootTable.lootTable()
                 LootItem.lootTableItem(Items.CHARCOAL)
                     .apply(
                         SetItemCountFunction.setCount(
-                            BinomialDistributionGenerator.binomial(3, 0.25F),
+                            DEAD_CAMPFIRE_EXTRA_CHARCOAL,
                             true,
                         ),
                     ),

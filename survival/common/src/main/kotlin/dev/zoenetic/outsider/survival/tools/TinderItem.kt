@@ -7,6 +7,7 @@ import dev.zoenetic.outsider.survival.registry.blocks.OutsiderBlockTags
 import dev.zoenetic.outsider.survival.registry.items.OutsiderComponents
 import dev.zoenetic.outsider.survival.units.Duration
 import dev.zoenetic.outsider.survival.units.Time
+import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.Unit
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.HumanoidArm
+import net.minecraft.world.entity.Interaction
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
@@ -46,6 +48,7 @@ public class TinderItem(properties: Properties) :
         val burnsOutAt = itemStack.get(OutsiderComponents.BURNS_OUT_AT) ?: Time(0)
         if (Time(level.gameTime) >= burnsOutAt) {
             burnOut(itemStack)
+            smokeOut(level, owner, slot)
             level.playSound(
                 null,
                 owner.x,
@@ -98,10 +101,25 @@ public class TinderItem(properties: Properties) :
         burnOut(context.itemInHand)
         return InteractionResult.SUCCESS
     }
+    
+    private fun smokeOut(level: ServerLevel, owner: Entity, slot: EquipmentSlot?) {
+        val hand: InteractionHand? = when (slot) {
+            EquipmentSlot.MAINHAND -> InteractionHand.MAIN_HAND
+            EquipmentSlot.OFFHAND -> InteractionHand.OFF_HAND
+            else -> null
+        }
+        val at: Vec3 = if (owner is Player && hand != null) {
+            handPosition(owner, hand)
+        } else {
+            owner.position().add(0.0, owner.bbHeight / 2.0, 0.0)
+        }
+        level.sendParticles(ParticleTypes.SMOKE, at.x, at.y, at.z, BURN_OUT_SMOKE, 0.05, 0.05, 0.05, 0.01)
+    }
 
-    public companion object {
+    public companion object {    
         public const val FLAME_CHANCE: Float = 0.2F
 
+        private const val BURN_OUT_SMOKE: Int = 8
         private const val HAND_SPREAD: Double = 0.35
         private const val HAND_REACH: Double = 0.3
         private const val HAND_HEIGHT: Double = 0.8

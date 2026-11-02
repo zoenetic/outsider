@@ -19,6 +19,14 @@ class CampfireBreakingGameTests {
         CampfireBreakingTests.aDeadCampfireDropsOneToFourCharcoal(helper)
 
     @GameTest
+    fun aCampfireSinksAsItBurns(helper: GameTestHelper): Unit =
+        CampfireBreakingTests.aCampfireSinksAsItBurns(helper)
+
+    @GameTest
+    fun aCampfireOnItsLastFuelDropsCharcoalLikeADeadOne(helper: GameTestHelper): Unit =
+        CampfireBreakingTests.aCampfireOnItsLastFuelDropsCharcoalLikeADeadOne(helper)
+
+    @GameTest
     fun aBarelyUsedCampfireDropsWhole(helper: GameTestHelper): Unit =
         CampfireBreakingTests.aBarelyUsedCampfireDropsWhole(helper)
 

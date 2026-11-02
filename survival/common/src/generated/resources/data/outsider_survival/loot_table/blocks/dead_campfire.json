@@ -12,10 +12,11 @@
           "type": "minecraft:item",
           "functions": [
             {
+              "add": true,
               "count": {
                 "type": "minecraft:binomial",
-                "n": 2.0,
-                "p": 0.5
+                "n": 3.0,
+                "p": 0.25
               },
               "function": "minecraft:set_count"
             }

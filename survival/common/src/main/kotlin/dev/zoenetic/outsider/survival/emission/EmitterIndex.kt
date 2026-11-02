@@ -273,6 +273,7 @@ public object EmitterIndex {
             val drained = fuelled.setFuel(state, wanted)
             val next = if (wanted.level == 0) fuelled.exhausted(drained) else (drained)
             level.setBlock(pos, next, Block.UPDATE_CLIENTS)
+            if (wanted.level == 0) fuelled.burnedOut(level as ServerLevel, pos)
         }
     }
 
